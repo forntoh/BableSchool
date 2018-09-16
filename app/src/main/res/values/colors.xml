@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#000</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="event_color_01">#59dbe0</color>
+    <color name="event_color_02">#f57f68</color>
+    <color name="event_color_03">#87d288</color>
+    <color name="event_color_04">#f8b552</color>
+
+    <color name="btnLoginStart">#89F7FE</color>
+    <color name="btnLoginEnd">#66A6FF</color>
+
+    <color name="bgLightGrey">#fafafa</color>
+
+    <color name="textDarker">#333333</color>
+    <color name="textBlue">#2283FF</color>
+    <color name="colorOverlay">#3c000000</color>
+
+    <color name="good">#078B75</color>
+    <color name="bad">#B92D00</color>
+</resources>

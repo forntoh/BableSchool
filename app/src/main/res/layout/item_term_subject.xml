@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ga.forntoh.bableschool.utils.SquareConstraintLayout
+        android:id="@+id/subject_circle"
+        android:layout_width="54dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/subject_abbr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Bio" />
+    </ga.forntoh.bableschool.utils.SquareConstraintLayout>
+
+    <TextView
+        android:id="@+id/subject_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/textDarker"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv"
+        app:layout_constraintStart_toEndOf="@+id/subject_circle"
+        app:layout_constraintTop_toTopOf="@+id/subject_circle"
+        tools:text="Math" />
+
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="SEQ1: "
+        android:textColor="@color/textDarker"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
+        app:layout_constraintStart_toEndOf="@+id/subject_first" />
+
+    <TextView
+        android:id="@+id/subject_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/bad"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
+        app:layout_constraintStart_toEndOf="@+id/tv2"
+        tools:text="16.69" />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="SEQ1: "
+        android:textColor="@color/textDarker"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
+        app:layout_constraintStart_toStartOf="@+id/subject_title" />
+
+    <TextView
+        android:id="@+id/subject_first"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/good"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
+        app:layout_constraintStart_toEndOf="@+id/tv"
+        tools:text="16.69" />
+
+    <TextView
+        android:id="@+id/subject_average"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_condensed_bold"
+        android:textColor="@color/textBlue"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="18.51" />
+
+</android.support.constraint.ConstraintLayout>
