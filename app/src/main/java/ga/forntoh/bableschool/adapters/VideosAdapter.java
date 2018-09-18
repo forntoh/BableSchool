@@ -1,5 +1,6 @@
 package ga.forntoh.bableschool.adapters;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -57,9 +58,9 @@ public class VideosAdapter extends CategoryAdapter {
             author = itemView.findViewById(R.id.video_author);
             duration = itemView.findViewById(R.id.video_time);
             thumbnail = itemView.findViewById(R.id.video_thumbnail);
-
         }
 
+        @SuppressLint("InflateParams")
         @Override
         public void onClick(View view) {
             View layout = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_video_player, null);
@@ -82,20 +83,6 @@ public class VideosAdapter extends CategoryAdapter {
             Uri videoUri = Uri.parse(((Video) list.get(getAdapterPosition())).getUrl());
             videoView.setVideoURI(videoUri);
             videoView.start();
-
-            /*Utils.MediaSourceAsyncCallbackHandler mMediaSourceAsyncCallbackHandler =
-                    new Utils.MediaSourceAsyncCallbackHandler() {
-                        @Override
-                        public void onMediaSourceLoaded(MediaSource mediaSource) {
-                            videoView.setVideoSource(mediaSource);
-                            videoView.start();
-                        }
-
-                        @Override
-                        public void onException(Exception e) {
-                        }
-                    };
-            Utils.uriToMediaSourceAsync(view.getContext(), videoUri, mMediaSourceAsyncCallbackHandler);*/
         }
 
         private void initPlayer() {

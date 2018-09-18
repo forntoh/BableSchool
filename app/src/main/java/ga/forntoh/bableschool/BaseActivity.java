@@ -2,14 +2,19 @@ package ga.forntoh.bableschool;
 
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.text.TextUtils;
 import android.transition.Fade;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import ga.forntoh.bableschool.store.StorageUtil;
 
 @SuppressLint("VisibleForTests")
 public class BaseActivity extends AppCompatActivity {
@@ -85,5 +90,19 @@ public class BaseActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String matriculation = StorageUtil.with(this).loadMatriculation();
+        String pass = StorageUtil.with(this).loadPassword();
+
+        if (TextUtils.isEmpty(matriculation) || TextUtils.isEmpty(pass)) {
+            Toast.makeText(this, "Please login", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
     }
 }

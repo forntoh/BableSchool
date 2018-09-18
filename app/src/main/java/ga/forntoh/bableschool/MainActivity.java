@@ -1,16 +1,27 @@
 package ga.forntoh.bableschool;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import ga.forntoh.bableschool.adapters.CategoryAdapter;
 import ga.forntoh.bableschool.model.Category;
+import ga.forntoh.bableschool.network.ApiService;
+import ga.forntoh.bableschool.network.RetrofitBuilder;
+import ga.forntoh.bableschool.store.MyStores;
+import ga.forntoh.bableschool.store.StoreRepository;
 import ga.forntoh.bableschool.utils.InsetDecoration;
+import io.reactivex.schedulers.Schedulers;
 
 import static ga.forntoh.bableschool.utils.Utils.setupListDisplay;
 
+@SuppressWarnings("unchecked")
 public class MainActivity extends BaseActivity {
 
     private CategoryAdapter adapter;
@@ -33,9 +44,22 @@ public class MainActivity extends BaseActivity {
         fetchItems();
     }
 
+    @SuppressLint("CheckResult")
     private void fetchItems() {
-        categoriesList.clear();
-        categoriesList.addAll(Category.getDummyCategories());
-        adapter.notifyDataSetChanged();
+        ApiService service = RetrofitBuilder.createService(ApiService.class);
+        StoreRepository repository = new StoreRepository(getApplication());
+        repository
+                .create(service.getFunctions(), new TypeToken<List<Category>>() {
+                }.getType())
+                .get(MyStores.CATEGORIES)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        categories -> {
+                            categoriesList.clear();
+                            categoriesList.addAll((Collection<? extends Category>) categories);
+                            runOnUiThread(() -> adapter.notifyDataSetChanged());
+                        },
+                        t -> ((Throwable) t).printStackTrace()
+                );
     }
 }

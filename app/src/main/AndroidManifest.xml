@@ -29,7 +29,8 @@
 
         <activity android:name=".CategoryActivity" />
         <activity android:name=".ScoreSheetActivity" />
-        <activity android:name=".TimeTableActivity"></activity>
+        <activity android:name=".TimeTableActivity" />
+        <activity android:name=".BaseActivity" />
     </application>
 
 </manifest>

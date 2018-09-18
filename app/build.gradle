@@ -8,6 +8,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -20,6 +21,9 @@ android {
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
+    }
+    lintOptions {
+        disable 'ContentDescription'
     }
 }
 
@@ -52,8 +56,8 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
-    implementation 'net.protyposis.android.mediaplayer:mediaplayer:4.4.0'
-    implementation 'net.protyposis.android.mediaplayer:mediaplayer-dash:4.4.0'
+    implementation 'com.nytimes.android:store3:3.1.0'
+    implementation 'com.nytimes.android:middleware3:3.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

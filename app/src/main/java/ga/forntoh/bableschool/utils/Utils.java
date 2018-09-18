@@ -3,8 +3,6 @@ package ga.forntoh.bableschool.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -21,12 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-
-import net.protyposis.android.mediaplayer.MediaSource;
-import net.protyposis.android.mediaplayer.UriSource;
-import net.protyposis.android.mediaplayer.dash.AdaptationLogic;
-import net.protyposis.android.mediaplayer.dash.DashSource;
-import net.protyposis.android.mediaplayer.dash.SimpleRateBasedAdaptationLogic;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -50,44 +42,12 @@ public class Utils {
         layout.setLayoutParams(layoutParams);
     }
 
-    public static MediaSource uriToMediaSource(Context context, Uri uri) {
-        MediaSource source = null;
-
-        // A DASH source is either detected if the given URL has an .mpd extension or if the DASH
-        // pseudo protocol has been prepended.
-        if (uri.toString().endsWith(".mpd") || uri.toString().startsWith("dash://")) {
-            AdaptationLogic adaptationLogic;
-
-            // Strip dash:// pseudo protocol
-            if (uri.toString().startsWith("dash://")) {
-                uri = Uri.parse(uri.toString().substring(7));
-            }
-
-            //adaptationLogic = new ConstantPropertyBasedLogic(ConstantPropertyBasedLogic.Mode.HIGHEST_BITRATE);
-            adaptationLogic = new SimpleRateBasedAdaptationLogic();
-
-            source = new DashSource(context, uri, adaptationLogic);
-        } else {
-            source = new UriSource(context, uri);
-        }
-        return source;
-    }
-
-    public static void uriToMediaSourceAsync(final Context context, Uri uri, MediaSourceAsyncCallbackHandler callback) {
-        LoadMediaSourceAsyncTask loadingTask = new LoadMediaSourceAsyncTask(context, callback);
-
-        try {
-            loadingTask.execute(uri).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static PopupWindow startPopUpWindow(View layout, View root, View.OnTouchListener onTouch) {
         PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, false);
         popupWindow.showAtLocation(root, Gravity.CENTER, 0, 0);
         popupWindow.setTouchable(true);
         popupWindow.setTouchInterceptor(onTouch);
+        popupWindow.setAnimationStyle(R.style.PopUpAnimation);
         popupWindow.setOnDismissListener(() -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 ((Activity) layout.getContext()).getWindow().setStatusBarColor(root.getContext().getResources().getColor(R.color.bgLightGrey));
@@ -170,42 +130,7 @@ public class Utils {
         return thread;
     }
 
-    public interface MediaSourceAsyncCallbackHandler {
-        void onMediaSourceLoaded(MediaSource mediaSource);
-
-        void onException(Exception e);
-    }
-
-    private static class LoadMediaSourceAsyncTask extends AsyncTask<Uri, Void, MediaSource> {
-
-        private Context mContext;
-        private MediaSourceAsyncCallbackHandler mCallbackHandler;
-        private MediaSource mMediaSource;
-        private Exception mException;
-
-        LoadMediaSourceAsyncTask(Context context, MediaSourceAsyncCallbackHandler callbackHandler) {
-            mContext = context;
-            mCallbackHandler = callbackHandler;
-        }
-
-        @Override
-        protected MediaSource doInBackground(Uri... params) {
-            try {
-                mMediaSource = Utils.uriToMediaSource(mContext, params[0]);
-                return mMediaSource;
-            } catch (Exception e) {
-                mException = e;
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(MediaSource mediaSource) {
-            if (mException != null) {
-                mCallbackHandler.onException(mException);
-            } else {
-                mCallbackHandler.onMediaSourceLoaded(mMediaSource);
-            }
-        }
+    public static String getKey(Object o, String val) {
+        return o.getClass().getSimpleName() + "-" + val;
     }
 }

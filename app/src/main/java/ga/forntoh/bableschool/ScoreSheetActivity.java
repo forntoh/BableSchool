@@ -31,7 +31,7 @@ public class ScoreSheetActivity extends BaseActivity {
         TextView toolbar_title = findViewById(R.id.title);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        toolbar_title.setText(R.string.my_score_sheeh);
+        toolbar_title.setText(R.string.my_score_sheet);
 
         setSupportActionBar(findViewById(R.id.toolbar));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);

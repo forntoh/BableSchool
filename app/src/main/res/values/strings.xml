@@ -7,6 +7,13 @@
     <string name="like_counter">%1$d likes</string>
     <string name="news_meta">By %1$s  |  %2$s  |  %3$s</string>
 
-    <string name="my_score_sheeh">My Score sheet</string>
+    <string name="my_score_sheet">My Score sheet</string>
     <string name="my_timetable">My Timetable</string>
+
+    <string name="please_wait">Please wait…!</string>
+    <string name="loading">Loading</string>
+
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
 </resources>
