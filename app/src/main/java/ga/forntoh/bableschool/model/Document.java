@@ -4,17 +4,10 @@ import android.support.annotation.DrawableRes;
 
 import ga.forntoh.bableschool.R;
 
+@SuppressWarnings("unused")
 public class Document {
 
     private String title, author, size, published, url;
-
-    Document(String title, String author, String size, String published, String url) {
-        this.title = title;
-        this.author = author;
-        this.size = size;
-        this.published = published;
-        this.url = url;
-    }
 
     public String getTitle() {
         return title;

@@ -14,7 +14,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -49,15 +49,17 @@ dependencies {
     implementation 'com.github.AnyChart:AnyChart-Android:1.0.2'
     implementation 'com.github.alamkanak:android-week-view:1.2.6'
 
-    //noinspection GradleDependency
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    //noinspection GradleDependency
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    //noinspection GradleDependency
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.2'
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
 
     implementation 'com.nytimes.android:store3:3.1.0'
     implementation 'com.nytimes.android:middleware3:3.1.0'
+
+    //My Libs
+    implementation 'com.github.forntoh:EasyRecyclerView-Android:0.3.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.forntoh.EasyRecyclerView.EasyRecyclerView;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -26,10 +27,7 @@ import ga.forntoh.bableschool.network.RetrofitBuilder;
 import ga.forntoh.bableschool.store.MyStores;
 import ga.forntoh.bableschool.store.StorageUtil;
 import ga.forntoh.bableschool.store.StoreRepository;
-import ga.forntoh.bableschool.utils.InsetDecoration;
 import io.reactivex.schedulers.Schedulers;
-
-import static ga.forntoh.bableschool.utils.Utils.setupVerticalDisplay;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +39,6 @@ public class MyProfileFragment extends Fragment {
     private TextView profile_class, profile_username;
     private CircleImageView profile_image;
     private RecyclerView rv_profile_data;
-    private ProfileDataAdapter adapter;
 
     public MyProfileFragment() {
         // Required empty public constructor
@@ -82,7 +79,13 @@ public class MyProfileFragment extends Fragment {
             Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(profile_image);
         else
             Picasso.get().load(user.getPicture()).placeholder(R.drawable.placeholder).fit().centerCrop().into(profile_image);
-        adapter = new ProfileDataAdapter(user.getProfileData());
-        setupVerticalDisplay(adapter, rv_profile_data, false, new InsetDecoration(getContext(), 16));
+
+        ProfileDataAdapter adapter = new ProfileDataAdapter(user.getProfileData());
+        new EasyRecyclerView()
+                .setType(EasyRecyclerView.Type.VERTICAL)
+                .setAdapter(adapter)
+                .setRecyclerView(rv_profile_data)
+                .setItemSpacing(16, null)
+                .initialize();
     }
 }

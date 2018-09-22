@@ -1,14 +1,10 @@
 package ga.forntoh.bableschool.model;
 
+@SuppressWarnings("unused")
 public class Category {
 
     private int id;
-    private String title;
-    private String thumbnail;
-    private String color;
-
-    public Category() {
-    }
+    private String title, thumbnail, color;
 
     public String getTitle() {
         return title;

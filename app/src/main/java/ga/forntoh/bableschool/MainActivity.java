@@ -2,8 +2,8 @@ package ga.forntoh.bableschool;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 
+import com.forntoh.EasyRecyclerView.EasyRecyclerView;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -16,10 +16,7 @@ import ga.forntoh.bableschool.network.ApiService;
 import ga.forntoh.bableschool.network.RetrofitBuilder;
 import ga.forntoh.bableschool.store.MyStores;
 import ga.forntoh.bableschool.store.StoreRepository;
-import ga.forntoh.bableschool.utils.InsetDecoration;
 import io.reactivex.schedulers.Schedulers;
-
-import static ga.forntoh.bableschool.utils.Utils.setupListDisplay;
 
 @SuppressWarnings("unchecked")
 public class MainActivity extends BaseActivity {
@@ -37,9 +34,14 @@ public class MainActivity extends BaseActivity {
 
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        RecyclerView rvCategories = findViewById(R.id.rv_categories);
         adapter = new CategoryAdapter(categoriesList);
-        setupListDisplay(adapter, rvCategories, 2, false, new InsetDecoration(this, 16));
+        new EasyRecyclerView()
+                .setType(EasyRecyclerView.Type.GRID)
+                .setAdapter(adapter)
+                .setRecyclerView(findViewById(R.id.rv_categories))
+                .setItemSpacing(16, null)
+                .setSpan(2)
+                .initialize();
 
         fetchItems();
     }

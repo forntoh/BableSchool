@@ -2,13 +2,11 @@ package ga.forntoh.bableschool.model;
 
 import java.util.LinkedHashMap;
 
+@SuppressWarnings("ALL")
 public class User {
 
     private String username, classe, picture;
     private LinkedHashMap<String, String> profileData;
-
-    public User() {
-    }
 
     public String getUsername() {
         return "@" + username;

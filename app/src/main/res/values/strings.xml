@@ -16,4 +16,15 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+
+    <string name="average">Average</string>
+    <string name="dash_empty">--</string>
+    <string name="position">Position</string>
+
+    <string name="top_students_of_my_class">Top students of my class</string>
+    <string name="school_ranking">School ranking</string>
+
+    <string name="seq1">SEQ1:</string>
+    <string name="seq2">SEQ2:</string>
+    <string name="rank">Rank:</string>
 </resources>

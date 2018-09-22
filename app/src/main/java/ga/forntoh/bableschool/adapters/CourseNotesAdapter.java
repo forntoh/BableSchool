@@ -27,6 +27,10 @@ public class CourseNotesAdapter extends CategoryAdapter {
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (startColors == null)
+            startColors = parent.getContext().getResources().getStringArray(R.array.start_colors);
+        if (endColors == null)
+            endColors = parent.getContext().getResources().getStringArray(R.array.end_colors);
         return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course_note, parent, false));
     }
 
@@ -39,7 +43,7 @@ public class CourseNotesAdapter extends CategoryAdapter {
         holder.abbreviation.setText(note.getAbbr());
         holder.stats.setText(String.format("%d Videos | %d Documents", note.getVideos().size(), note.getDocuments().size()));
 
-        GradientDrawable bg = new GradientDrawable(GradientDrawable.Orientation.TR_BL, new int[]{Color.parseColor(note.startColor), Color.parseColor(note.endColor)});
+        GradientDrawable bg = new GradientDrawable(GradientDrawable.Orientation.TR_BL, new int[]{Color.parseColor(startColors[position % startColors.length]), Color.parseColor(endColors[position % startColors.length])});
         bg.setShape(GradientDrawable.OVAL);
         holder.color_circle.setBackground(bg);
     }
@@ -58,6 +62,7 @@ public class CourseNotesAdapter extends CategoryAdapter {
         public void onClick(View view) {
             Bundle bundle = new Bundle();
             bundle.putString("course", new Gson().toJson(list.get(getAdapterPosition())));
+            bundle.putInt("index", getAdapterPosition() % startColors.length);
             CourseNoteFragment fragment = new CourseNoteFragment();
             fragment.setArguments(bundle);
             ((CategoryActivity) view.getContext()).loadFragment(fragment).addToBackStack(null);

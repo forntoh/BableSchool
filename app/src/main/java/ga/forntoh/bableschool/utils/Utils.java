@@ -6,13 +6,6 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -21,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 
 import ga.forntoh.bableschool.R;
 
@@ -57,20 +50,6 @@ public class Utils {
         return popupWindow;
     }
 
-    public static void setupListDisplay(RecyclerView.Adapter adapter, RecyclerView rv, int span, boolean dividers, RecyclerView.ItemDecoration decoration) {
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(rv.getContext(), span);
-        rv.setLayoutManager(layoutManager);
-        rv.setItemAnimator(new DefaultItemAnimator());
-        rv.setAdapter(adapter);
-        rv.setNestedScrollingEnabled(false);
-
-        if (decoration != null) rv.addItemDecoration(decoration);
-        else if (dividers) {
-            rv.addItemDecoration(new DividerItemDecoration(rv.getContext(), LinearLayoutManager.VERTICAL));
-            rv.addItemDecoration(new DividerItemDecoration(rv.getContext(), LinearLayoutManager.HORIZONTAL));
-        }
-    }
-
     public static float dpToPixels(Context c, float value) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, c.getResources().getDisplayMetrics());
     }
@@ -79,58 +58,27 @@ public class Utils {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
-    public static void setupVerticalDisplay(RecyclerView.Adapter adapter, RecyclerView rv, boolean dividers, RecyclerView.ItemDecoration decoration) {
-        try {
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(rv.getContext(), LinearLayoutManager.VERTICAL, false);
-            rv.setLayoutManager(layoutManager);
-            rv.setItemAnimator(new DefaultItemAnimator());
-            rv.setAdapter(adapter);
-            rv.setNestedScrollingEnabled(false);
-            rv.addItemDecoration(decoration);
-            if (dividers)
-                rv.addItemDecoration(new DividerItemDecoration(rv.getContext(), LinearLayoutManager.VERTICAL));
-        } catch (Exception ignored) {
-        }
-    }
-
-    public static Thread setupHorizontalDisplay(RecyclerView.Adapter adapter, ArrayList list, RecyclerView rv, int time, boolean snap, RecyclerView.ItemDecoration decoration) {
-        Thread thread = null;
-        try {
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(rv.getContext(), LinearLayoutManager.HORIZONTAL, false);
-            rv.setLayoutManager(layoutManager);
-            rv.setItemAnimator(new DefaultItemAnimator());
-            rv.setAdapter(adapter);
-            rv.setNestedScrollingEnabled(false);
-            rv.addItemDecoration(decoration);
-
-            if (snap) {
-                SnapHelper helper = new LinearSnapHelper();
-                helper.attachToRecyclerView(rv);
-            }
-
-            if (time > 0) {
-                thread = new Thread(() -> {
-                    while (true) {
-                        try {
-                            LinearLayoutManager mL = (LinearLayoutManager) rv.getLayoutManager();
-                            int pos = mL.findLastCompletelyVisibleItemPosition();
-                            rv.smoothScrollToPosition(pos == list.size() - 1 ? 0 : pos + 1);
-                            Thread.sleep(time);
-                        } catch (InterruptedException e) {
-                            break;
-                        }
-                    }
-                });
-                thread.start();
-                thread.setName("Horizontal Scroll:" + rv.getId());
-            } else return null;
-
-        } catch (Exception ignored) {
-        }
-        return thread;
-    }
-
     public static String getKey(Object o, String val) {
         return o.getClass().getSimpleName() + "-" + val;
+    }
+
+
+    public static String getKey(Object o, String val, long i) {
+        return o.getClass().getSimpleName() + "-" + val + "-" + i;
+    }
+
+    public static String getTermYear() {
+        Calendar calendar = Calendar.getInstance();
+        if (calendar.get(Calendar.MONTH) >= Calendar.SEPTEMBER && calendar.get(Calendar.MONTH) <= Calendar.DECEMBER)
+            return calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.YEAR) + 1);
+        else return (calendar.get(Calendar.YEAR) - 1) + "-" + (calendar.get(Calendar.YEAR));
+    }
+
+    public static String capEachWord(String sentence) {
+        String[] words = sentence.split(" ");
+        StringBuilder inCaps = new StringBuilder();
+        for (String word : words)
+            inCaps.append(String.valueOf(word.charAt(0)).toUpperCase()).append(word.substring(1, word.length()).toLowerCase()).append(" ");
+        return inCaps.toString();
     }
 }

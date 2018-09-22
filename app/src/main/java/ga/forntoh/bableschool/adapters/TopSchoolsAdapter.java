@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import ga.forntoh.bableschool.R;
 import ga.forntoh.bableschool.model.misc.TopSchool;
+import ga.forntoh.bableschool.utils.Utils;
 
 public class TopSchoolsAdapter extends CategoryAdapter {
 
@@ -30,11 +31,12 @@ public class TopSchoolsAdapter extends CategoryAdapter {
         TopSchool topStudent = (TopSchool) list.get(position);
         holder.name.setText(topStudent.getTopStudentName());
         holder.school.setText(topStudent.getSchoolName());
-        holder.average.setText(topStudent.getAverage());
+        holder.average.setText(Utils.formatScore(topStudent.getAverage()));
         if (TextUtils.isEmpty(topStudent.getImage()))
             Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(holder.thumbnail);
         else
             Picasso.get().load(topStudent.getImage()).placeholder(R.drawable.placeholder).fit().centerCrop().into(holder.thumbnail);
+        holder.school.setSelected(true);
     }
 
     class MyViewHolder extends CategoryAdapter.MyViewHolder {

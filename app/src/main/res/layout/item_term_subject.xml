@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="SmallSp">
 
     <ga.forntoh.bableschool.utils.SquareConstraintLayout
         android:id="@+id/subject_circle"
@@ -54,7 +55,7 @@
         android:layout_marginBottom="4dp"
         android:layout_marginStart="8dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="SEQ1: "
+        android:text="@string/seq1"
         android:textColor="@color/textDarker"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
@@ -78,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="SEQ1: "
+        android:text="@string/seq2"
         android:textColor="@color/textDarker"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
@@ -103,9 +104,33 @@
         android:fontFamily="@font/roboto_condensed_bold"
         android:textColor="@color/textBlue"
         android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/subject_rank"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/subject_circle"
         tools:text="18.51" />
+
+    <TextView
+        android:id="@+id/subject_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/rank"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/subject_circle"
+        app:layout_constraintEnd_toStartOf="@+id/subject_rank"
+        app:layout_constraintTop_toTopOf="@+id/subject_rank" />
 
 </android.support.constraint.ConstraintLayout>

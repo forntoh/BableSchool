@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.forntoh.EasyRecyclerView.EasyRecyclerView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -25,9 +26,6 @@ import ga.forntoh.bableschool.R;
 import ga.forntoh.bableschool.adapters.CommentsAdapter;
 import ga.forntoh.bableschool.model.Comment;
 import ga.forntoh.bableschool.model.News;
-import ga.forntoh.bableschool.utils.InsetDecoration;
-
-import static ga.forntoh.bableschool.utils.Utils.setupVerticalDisplay;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,7 +70,13 @@ public class SingleNewsFragment extends Fragment {
                 Picasso.get().load(news.getThumbnail()).placeholder(R.drawable.placeholder).fit().centerCrop().into(thumbnail);
 
             adapter = new CommentsAdapter(news.getComments());
-            setupVerticalDisplay(adapter, v.findViewById(R.id.rv_comments), false, new InsetDecoration(getContext(), 16));
+            new EasyRecyclerView()
+                    .setType(EasyRecyclerView.Type.VERTICAL)
+                    .setAdapter(adapter)
+                    .setRecyclerView(v.findViewById(R.id.rv_comments))
+                    .setItemSpacing(16, null)
+                    .initialize();
+
             adapter.notifyDataSetChanged();
         }
         return v;

@@ -8,15 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.forntoh.EasyRecyclerView.EasyRecyclerView;
+
 import java.util.ArrayList;
 
 import ga.forntoh.bableschool.R;
 import ga.forntoh.bableschool.adapters.NewsAdapter;
 import ga.forntoh.bableschool.model.News;
-import ga.forntoh.bableschool.utils.InsetDecoration;
-
-import static ga.forntoh.bableschool.utils.Utils.setupHorizontalDisplay;
-import static ga.forntoh.bableschool.utils.Utils.setupVerticalDisplay;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,10 +35,20 @@ public class NewsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
 
         newsAdapter1 = new NewsAdapter(topNewsList, false);
-        newsAdapter2 = new NewsAdapter(allNewsList, true);
+        t1 = new EasyRecyclerView()
+                .setType(EasyRecyclerView.Type.HORIZONTAL)
+                .setAdapter(newsAdapter1)
+                .setRecyclerView(view.findViewById(R.id.rv_top_news))
+                .setItemSpacing(16, null)
+                .initialize(topNewsList.size(), 5000, true);
 
-        t1 = setupHorizontalDisplay(newsAdapter1, topNewsList, view.findViewById(R.id.rv_top_news), 5000, true, new InsetDecoration(getContext(), 16));
-        setupVerticalDisplay(newsAdapter2, view.findViewById(R.id.rv_all_news), false, new InsetDecoration(getContext(), 16));
+        newsAdapter2 = new NewsAdapter(allNewsList, true);
+        new EasyRecyclerView()
+                .setType(EasyRecyclerView.Type.VERTICAL)
+                .setAdapter(newsAdapter2)
+                .setRecyclerView(view.findViewById(R.id.rv_all_news))
+                .setItemSpacing(16, null)
+                .initialize();
 
         fetchItems();
 

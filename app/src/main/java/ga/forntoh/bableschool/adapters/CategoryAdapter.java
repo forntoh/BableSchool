@@ -27,6 +27,8 @@ import ga.forntoh.bableschool.utils.Utils;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
 
     ArrayList list;
+    String[] startColors = null;
+    String[] endColors = null;
 
     public CategoryAdapter(ArrayList list) {
         this.list = list;
@@ -35,8 +37,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
-        return new MyViewHolder(itemView);
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false));
     }
 
     @Override
@@ -51,7 +52,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
             Picasso.get().load(category.getThumbnail()).placeholder(R.drawable.category).fit().centerInside().into(holder.thumbnail);
 
         GradientDrawable drawable = (GradientDrawable) holder.parent.getBackground();
-        drawable.setStroke((int) Utils.dpToPixels(holder.thumbnail.getContext(), 2), Color.parseColor(category.getColor()));
+        drawable.setStroke((int) Utils.dpToPixels(holder.thumbnail.getContext(), 2.5f), Color.parseColor(category.getColor()));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     @SuppressWarnings("unchecked")
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView title, abbreviation, stats, author, duration, message, date, name, school, average, firstAv, secondAv;
+        TextView title, abbreviation, stats, author, duration, message, date, name, school, average, firstAv, secondAv, rank;
         ImageView thumbnail, download_thumbnail;
         SquareConstraintLayout parent, color_circle;
 

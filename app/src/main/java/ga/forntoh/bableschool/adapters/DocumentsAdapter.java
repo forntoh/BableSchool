@@ -1,5 +1,6 @@
 package ga.forntoh.bableschool.adapters;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ public class DocumentsAdapter extends CategoryAdapter {
 
     class MyViewHolder extends CategoryAdapter.MyViewHolder {
 
+        @SuppressLint("InflateParams")
         MyViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.document_title);
