@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,14 +15,14 @@
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -31,6 +32,7 @@
         <activity android:name=".ScoreSheetActivity" />
         <activity android:name=".TimeTableActivity" />
         <activity android:name=".BaseActivity" />
+        <activity android:name=".ChatActivity"></activity>
     </application>
 
 </manifest>

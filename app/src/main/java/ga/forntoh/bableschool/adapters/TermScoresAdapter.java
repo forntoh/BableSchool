@@ -53,7 +53,7 @@ public class TermScoresAdapter extends CategoryAdapter {
                         total += ((Score) list.get(i)).getScoreAverage();
                 average = total / (list.size() - 1);
                 holder.rank.setText(((Score) list.get(list.size() - 1)).getTermRank());
-                holder.average.setText(Utils.formatScore(average));
+                holder.average.setText(Utils.INSTANCE.formatScore(average));
                 holder.average.setTextColor(holder.average.getContext().getResources().getColor(average > 10 ? R.color.textBlue : R.color.bad));
                 break;
             case 1:
@@ -65,9 +65,9 @@ public class TermScoresAdapter extends CategoryAdapter {
                 holder.title.setText(course.getTitle());
                 holder.abbreviation.setText(course.getAbbr());
                 holder.rank.setText(score.getRank());
-                holder.firstAv.setText(Utils.formatScore(score.getFirstSequenceMark()));
-                holder.secondAv.setText(Utils.formatScore(score.getSecondSequenceMark()));
-                holder.average.setText(Utils.formatScore(score.getScoreAverage()));
+                holder.firstAv.setText(Utils.INSTANCE.formatScore(score.getFirstSequenceMark()));
+                holder.secondAv.setText(Utils.INSTANCE.formatScore(score.getSecondSequenceMark()));
+                holder.average.setText(Utils.INSTANCE.formatScore(score.getScoreAverage()));
 
                 holder.firstAv.setTextColor(holder.title.getContext().getResources().getColor(score.getFirstSequenceMark() > 10 ? R.color.good : R.color.bad));
                 holder.secondAv.setTextColor(holder.title.getContext().getResources().getColor(score.getSecondSequenceMark() > 10 ? R.color.good : R.color.bad));

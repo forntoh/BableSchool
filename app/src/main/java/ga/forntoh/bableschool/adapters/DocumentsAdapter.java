@@ -54,7 +54,7 @@ public class DocumentsAdapter extends CategoryAdapter {
             download_thumbnail = itemView.findViewById(R.id.document_download);
             download_thumbnail.setOnClickListener((view) -> {
                 View layout = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_pdf_viewer, null);
-                Utils.startPopUpWindow(layout, itemView.getRootView().getRootView(), null);
+                Utils.INSTANCE.startPopUpWindow(layout, itemView.getRootView().getRootView(), null);
 
                 PDFView pdfView = layout.findViewById(R.id.pdfView);
                 ProgressBar loadingProgress = layout.findViewById(R.id.progressBar);

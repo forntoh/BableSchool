@@ -61,10 +61,10 @@ public class ScoreSheetActivity extends BaseActivity {
         sPager.addTabLayout(tabLayout);
         sPager.build();
 
-        Utils.setTabWidthAsWrapContent(tabLayout, tabLayout.getTabCount() - 1);
+        Utils.INSTANCE.setTabWidthAsWrapContent(tabLayout, tabLayout.getTabCount() - 1);
         tabLayout.getTabAt(tabLayout.getTabCount() - 1).setIcon(R.drawable.ic_multiline_chart);
 
-        Utils.setTabWidthAsWrapContent(tabLayout, 0);
+        Utils.INSTANCE.setTabWidthAsWrapContent(tabLayout, 0);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_class);
 
         sPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

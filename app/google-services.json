@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1043936134063",
+    "firebase_url": "https://bable-school.firebaseio.com",
+    "project_id": "bable-school",
+    "storage_bucket": "bable-school.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043936134063:android:183ea1d0acbd5e8e",
+        "android_client_info": {
+          "package_name": "ga.forntoh.bableschool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043936134063-b4448csb1hsv3gsca4f9u9h541nokonm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6ZQJWNU3twwTmXhJJxltNKqbaPpUyXQk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

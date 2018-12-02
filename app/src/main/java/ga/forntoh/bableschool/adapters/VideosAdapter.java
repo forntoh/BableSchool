@@ -64,7 +64,7 @@ public class VideosAdapter extends CategoryAdapter {
         @Override
         public void onClick(View view) {
             View layout = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_video_player, null);
-            popupWindow = Utils.startPopUpWindow(layout, itemView.getRootView().getRootView(), this::onTouch);
+            popupWindow = Utils.INSTANCE.startPopUpWindow(layout, itemView.getRootView().getRootView(), this::onTouch);
 
             videoView = layout.findViewById(R.id.videoView);
 

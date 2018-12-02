@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import ga.forntoh.bableschool.CategoryActivity;
 import ga.forntoh.bableschool.R;
@@ -39,7 +41,7 @@ public class NewsAdapter extends CategoryAdapter {
     public void onBindViewHolder(@NonNull CategoryAdapter.MyViewHolder holder, int position) {
         News news = (News) list.get(position);
         holder.title.setText(news.getTitle());
-        holder.author.setText(isNormal ? news.getRelativeDate() + "  |  " + "@" + news.getAuthor() : "By " + news.getAuthor() + " on " + DateFormat.format("EEE, MMM d, yyyy", news.getLongDate()));
+        holder.author.setText(isNormal ? Utils.INSTANCE.getRelativeTimeSpanString(news.getDate(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())) + "  |  " + "@" + news.getAuthor() : "By " + news.getAuthor() + " on " + DateFormat.format("EEE, MMM d, yyyy", Utils.INSTANCE.getLongDate(news.getDate())));
         if (TextUtils.isEmpty(news.getThumbnail()))
             Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(holder.thumbnail);
         else
@@ -55,7 +57,7 @@ public class NewsAdapter extends CategoryAdapter {
             author = itemView.findViewById(R.id.news_meta);
             thumbnail = itemView.findViewById(R.id.news_thumbnail);
             if (!isNormal)
-                parent.getLayoutParams().width = (int) (Utils.getScreenWidth() - Utils.dpToPixels(itemView.getContext(), 56));
+                parent.getLayoutParams().width = (int) (Utils.INSTANCE.getScreenWidth() - Utils.INSTANCE.dpToPixels(itemView.getContext(), 56));
         }
 
         @Override

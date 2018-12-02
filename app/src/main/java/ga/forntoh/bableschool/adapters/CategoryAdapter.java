@@ -52,7 +52,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
             Picasso.get().load(category.getThumbnail()).placeholder(R.drawable.category).fit().centerInside().into(holder.thumbnail);
 
         GradientDrawable drawable = (GradientDrawable) holder.parent.getBackground();
-        drawable.setStroke((int) Utils.dpToPixels(holder.thumbnail.getContext(), 2.5f), Color.parseColor(category.getColor()));
+        drawable.setStroke((int) Utils.INSTANCE.dpToPixels(holder.thumbnail.getContext(), 2.5f), Color.parseColor(category.getColor()));
     }
 
     @Override

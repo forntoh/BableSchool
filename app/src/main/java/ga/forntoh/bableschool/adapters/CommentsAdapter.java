@@ -8,10 +8,13 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import ga.forntoh.bableschool.R;
 import ga.forntoh.bableschool.model.Comment;
+import ga.forntoh.bableschool.utils.Utils;
 
 public class CommentsAdapter extends CategoryAdapter {
 
@@ -30,7 +33,7 @@ public class CommentsAdapter extends CategoryAdapter {
         Comment comment = (Comment) list.get(position);
         holder.author.setText(comment.getSender());
         holder.message.setText(comment.getMessage());
-        holder.date.setText(comment.getRelativeDate());
+        holder.date.setText(Utils.INSTANCE.getRelativeTimeSpanString(comment.getDate(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())));
         if (TextUtils.isEmpty(comment.getThumbnail()))
             Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(holder.thumbnail);
         else

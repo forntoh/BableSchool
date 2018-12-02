@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import ga.forntoh.bableschool.R;
-import ga.forntoh.bableschool.model.misc.TopStudent;
+import ga.forntoh.bableschool.model.TopStudent;
 import ga.forntoh.bableschool.utils.Utils;
 
 public class TopStudentsAdapter extends CategoryAdapter {
@@ -29,9 +29,9 @@ public class TopStudentsAdapter extends CategoryAdapter {
     @Override
     public void onBindViewHolder(@NonNull CategoryAdapter.MyViewHolder holder, int position) {
         TopStudent topStudent = (TopStudent) list.get(position);
-        holder.name.setText(topStudent.getName());
+        holder.name.setText(Utils.INSTANCE.capEachWord(topStudent.getName()));
         holder.school.setText(topStudent.getSchool());
-        holder.average.setText(Utils.formatScore(topStudent.getAverage()));
+        holder.average.setText(Utils.INSTANCE.formatScore(topStudent.getAverage()));
         if (TextUtils.isEmpty(topStudent.getImage()))
             Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(holder.thumbnail);
         else

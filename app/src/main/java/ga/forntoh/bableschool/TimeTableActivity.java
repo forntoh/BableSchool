@@ -20,10 +20,10 @@ public class TimeTableActivity extends BaseActivity {
     private MonthLoader.MonthChangeListener mMonthChangeListener = (newYear, newMonth) -> {
         List<WeekViewEvent> events = new ArrayList<>();
 
-        ArrayList<Period> periods = Period.getDummyPeriods();
+        ArrayList<Period> periods = Utils.INSTANCE.getDummyPeriods();
         for (int i = 0; i < periods.size(); i++) {
-            WeekViewEvent event = new WeekViewEvent(i + 1, periods.get(i).getCourse(), periods.get(i).getTime(newMonth, newYear, true), periods.get(i).getTime(newMonth, newYear, false));
-            event.setLocation(periods.get(i).getEventSubTitle());
+            WeekViewEvent event = new WeekViewEvent(i + 1, periods.get(i).getCourse(), Utils.INSTANCE.getTime(periods.get(i).getStart(), newMonth, newYear, periods.get(i).getDayOfWeek()), Utils.INSTANCE.getTime(periods.get(i).getEnd(), newMonth, newYear, periods.get(i).getDayOfWeek()));
+            event.setLocation(String.format("%s to %s", periods.get(i).getStart(), periods.get(i).getEnd()));
             event.setColor(Color.parseColor(periods.get(i).getColor()));
             events.add(event);
         }
@@ -44,10 +44,10 @@ public class TimeTableActivity extends BaseActivity {
         enableWhiteStatusBar();
 
         WeekView weekView = findViewById(R.id.weekView);
-        weekView.setEventMarginVertical((int) Utils.dpToPixels(this, 2));
-        weekView.setEventCornerRadius((int) Utils.dpToPixels(this, 4));
-        weekView.setEventPadding((int) Utils.dpToPixels(this, 6));
-        weekView.setHourHeight((int) Utils.dpToPixels(this, 72));
+        weekView.setEventMarginVertical((int) Utils.INSTANCE.dpToPixels(this, 2));
+        weekView.setEventCornerRadius((int) Utils.INSTANCE.dpToPixels(this, 4));
+        weekView.setEventPadding((int) Utils.INSTANCE.dpToPixels(this, 6));
+        weekView.setHourHeight((int) Utils.INSTANCE.dpToPixels(this, 72));
 
         weekView.setMonthChangeListener(mMonthChangeListener);
         weekView.goToToday();
