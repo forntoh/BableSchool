@@ -38,7 +38,7 @@ class MyProfileFragment : Fragment() {
         v.findViewById<View>(R.id.btn_time_table).setOnClickListener { activity!!.startActivity(Intent(context, TimeTableActivity::class.java)) }
 
         val service = RetrofitBuilder.createService(ApiService::class.java)
-        service.getUserProfile(StorageUtil.getInstance(context!!).loadMatriculation(), StorageUtil.getInstance(context!!).loadPassword())
+        service.getUserProfile(StorageUtil.getInstance(activity!!.baseContext).loadMatriculation(), StorageUtil.getInstance(context!!).loadPassword())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ user -> activity!!.runOnUiThread { showItems(user) } }) { it.printStackTrace() }
         return v

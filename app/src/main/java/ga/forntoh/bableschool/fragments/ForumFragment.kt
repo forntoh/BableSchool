@@ -16,10 +16,10 @@ import com.stfalcon.chatkit.dialogs.DialogsListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import ga.forntoh.bableschool.ChatActivity
 import ga.forntoh.bableschool.R
+import ga.forntoh.bableschool.StorageUtil
 import ga.forntoh.bableschool.model.DefaultDialog
 import ga.forntoh.bableschool.model.FUser
 import ga.forntoh.bableschool.model.Message
-import java.util.*
 
 class ForumFragment : Fragment() {
 
@@ -32,57 +32,51 @@ class ForumFragment : Fragment() {
         }
     }
     private val dialogListener = object : ChildEventListener {
+
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
             val forum = dataSnapshot.getValue(DefaultDialog::class.java) ?: return
-
-            val users = ArrayList<FUser>()
-            forum.setUsers(users)
-
-            // Get list of users
-            for (i in 0 until forum.activeForumUsers!!.size) {
-                database.getReference("users")
-                        .child(forum.activeForumUsers[i])
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                users.add(dataSnapshot.getValue(FUser::class.java)!!)
-                            }
-
-                            override fun onCancelled(databaseError: DatabaseError) = Unit
-                        })
-                if (i == forum.activeForumUsers.size - 1) {
-                    dialogsListAdapter.updateItemById(forum)
-                    getLastMessage(forum, true)
-                }
-            }
+            getUsers(forum, true)
         }
 
         override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
             val forum = dataSnapshot.getValue(DefaultDialog::class.java) ?: return
-            getLastMessage(forum, false)
+            getUsers(forum, false)
+        }
+
+        private fun getUsers(forum: DefaultDialog, toAdd: Boolean) {
+            if (forum.activeForumUsers!!.find { it == StorageUtil.getInstance(root.context).loadMatriculation() }.isNullOrEmpty()) return
+            forum.activeForumUsers.forEach {
+                database.getReference("users").child(it)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                forum.addUser(dataSnapshot.getValue(FUser::class.java)!!)
+                                if (forum.users.size == forum.activeForumUsers.size) getLastMessage(forum, toAdd)
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) = Unit
+                        })
+            }
         }
 
         private fun getLastMessage(forum: DefaultDialog, toAdd: Boolean) {
-            database.getReference("forumGroup")
-                    .child(forum.id)
-                    .child(forum.lastMessageId!!)
+            database.getReference("forumGroup").child(forum.id).child(forum.lastMessageId!!)
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             val message = dataSnapshot.getValue(Message::class.java) ?: return
                             message.id = dataSnapshot.key
-                            database.getReference("users")
-                                    .child(message.userId)
+                            message.setUser(forum.users.find { it.id == message.userId })
+                            forum.lastMessage = message
+                            database.getReference("unseenMsgCountData").child(forum.id)
+                                    .child(StorageUtil.getInstance(root.context).loadMatriculation())
                                     .addListenerForSingleValueEvent(object : ValueEventListener {
-                                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                            message.setUser(dataSnapshot.getValue(FUser::class.java))
-                                            if (toAdd) {
-                                                forum.lastMessage = message
-                                                dialogsListAdapter.addItem(forum)
-                                                dialogsListAdapter.sortByLastMessageDate()
-                                            } else
-                                                dialogsListAdapter.updateDialogWithMessage(forum.id, message)
-                                        }
+                                        override fun onCancelled(p0: DatabaseError) = Unit
 
-                                        override fun onCancelled(databaseError: DatabaseError) = Unit
+                                        override fun onDataChange(p0: DataSnapshot) {
+                                            if (p0.value != null) forum.unreadCount = (p0.value as Long).toInt()
+                                            if (toAdd) dialogsListAdapter.addItem(forum)
+                                            else dialogsListAdapter.updateItemById(forum)
+                                            dialogsListAdapter.sortByLastMessageDate()
+                                        }
                                     })
                         }
 

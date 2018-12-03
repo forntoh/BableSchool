@@ -8,6 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.forntoh.EasyRecyclerView.EasyRecyclerView
+import com.raizlabs.android.dbflow.kotlinextensions.from
+import com.raizlabs.android.dbflow.kotlinextensions.list
+import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.kotlinextensions.select
+import com.raizlabs.android.dbflow.sql.language.Delete
 import ga.forntoh.bableschool.ApiService
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.RetrofitBuilder
@@ -16,13 +21,14 @@ import ga.forntoh.bableschool.adapters.TopSchoolsAdapter
 import ga.forntoh.bableschool.adapters.TopStudentsAdapter
 import ga.forntoh.bableschool.model.TopSchool
 import ga.forntoh.bableschool.model.TopStudent
+import ga.forntoh.bableschool.utils.Utils.dealWithData
+import ga.forntoh.bableschool.utils.Utils.isConnected
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 class RankingFragment : Fragment() {
 
     private lateinit var v: View
-
     private var t1: Thread? = null
     private val topStudentsAdapter by lazy { TopStudentsAdapter(topStudents) }
     private val topSchoolsAdapter by lazy { TopSchoolsAdapter(topSchools) }
@@ -55,23 +61,28 @@ class RankingFragment : Fragment() {
     @SuppressLint("CheckResult")
     private fun fetchItems() {
         val service = RetrofitBuilder.createService(ApiService::class.java)
-        service.topSchools
-                .flatMap { list ->
-                    //TODO: Save Top Schools
-                    topSchools.clear()
-                    topSchools.addAll(list)
-                    activity!!.runOnUiThread { topSchoolsAdapter.notifyDataSetChanged() }
-                    service.getTopStudents(StorageUtil.getInstance(activity!!).loadMatriculation())
-                }
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        { list ->
-                            //TODO: Save Top Students
-                            topStudents.clear()
-                            topStudents.addAll(list)
-                            activity!!.runOnUiThread { topStudentsAdapter.notifyDataSetChanged() }
-                        }
-                ) { it.printStackTrace() }
+
+        if (isConnected(activity!!))
+            service.topSchools
+                    .flatMap { list ->
+                        Delete.table(TopSchool::class.java)
+                        list.forEach { it.save() }
+                        dealWithData(activity!!, list, topSchools, topSchoolsAdapter)
+                        return@flatMap service.getTopStudents(StorageUtil.getInstance(activity!!.baseContext).loadMatriculation())
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ list ->
+                        Delete.table(TopStudent::class.java)
+                        list.forEach { it.save() }
+                        dealWithData(activity!!, list, topStudents, topStudentsAdapter)
+                    }) {
+                        dealWithData(activity!!, (select from TopStudent::class).list, topStudents, topStudentsAdapter)
+                        dealWithData(activity!!, (select from TopSchool::class).list, topSchools, topSchoolsAdapter)
+                    }
+        else {
+            dealWithData(activity!!, (select from TopStudent::class).list, topStudents, topStudentsAdapter)
+            dealWithData(activity!!, (select from TopSchool::class).list, topSchools, topSchoolsAdapter)
+        }
     }
 
     override fun onDestroy() {

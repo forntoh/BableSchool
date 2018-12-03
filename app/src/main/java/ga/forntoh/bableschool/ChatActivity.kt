@@ -1,5 +1,6 @@
 package ga.forntoh.bableschool
 
+import android.graphics.Color
 import android.os.Bundle
 import com.google.firebase.database.*
 import com.google.gson.Gson
@@ -14,10 +15,17 @@ import ga.forntoh.bableschool.model.Message
 
 class ChatActivity : BaseActivity() {
 
+    private lateinit var dialog: DefaultDialog
+    private val fUsers: ArrayList<FUser> = ArrayList()
     private val database by lazy { FirebaseDatabase.getInstance() }
     private val messageInput by lazy { findViewById<MessageInput>(R.id.input) }
     private val messagesList by lazy { findViewById<MessagesList>(R.id.messagesList) }
-    private val messagesListAdapter by lazy { MessagesListAdapter<Message>(StorageUtil.getInstance(this).loadMatriculation(), ImageLoader { imageView, url, _ -> Picasso.get().load(url).fit().centerCrop().into(imageView) }) }
+    private val messagesListAdapter by lazy {
+        MessagesListAdapter<Message>(StorageUtil.getInstance(this).loadMatriculation(), ImageLoader { imageView, url, _ ->
+            imageView.setBackgroundColor(Color.WHITE)
+            Picasso.get().load(url).fit().centerCrop().into(imageView)
+        })
+    }
     private val messageListener = object : ChildEventListener {
         override fun onCancelled(p0: DatabaseError) = Unit
 
@@ -36,21 +44,14 @@ class ChatActivity : BaseActivity() {
         }
 
         private fun loadUserInfo(p0: DataSnapshot, message: Message, i: Int) {
+            database.getReference("unseenMsgCountData").child(dialog.id).child(StorageUtil.getInstance(baseContext).loadMatriculation()).setValue(0)
             message.id = p0.key
-            database.getReference("users")
-                    .child(message.userId)
-                    .addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            message.setUser(dataSnapshot.getValue(FUser::class.java))
-                            when (i) {
-                                0 -> messagesListAdapter.addToStart(message, true)
-                                1 -> messagesListAdapter.deleteById(message.id)
-                                else -> messagesListAdapter.update(message)
-                            }
-                        }
-
-                        override fun onCancelled(databaseError: DatabaseError) = Unit
-                    })
+            message.setUser(fUsers.find { it.id == message.userId })
+            when (i) {
+                0 -> messagesListAdapter.addToStart(message, true)
+                1 -> messagesListAdapter.deleteById(message.id)
+                else -> messagesListAdapter.update(message)
+            }
         }
     }
 
@@ -60,17 +61,19 @@ class ChatActivity : BaseActivity() {
         disableFlags(true)
         enableWhiteStatusBar()
 
-        val dialog = Gson().fromJson(intent.getStringExtra("dialog"), DefaultDialog::class.java)
+        dialog = Gson().fromJson(intent.getStringExtra("dialog"), DefaultDialog::class.java)
 
         val myRef = database.getReference("forumGroup").child(dialog.id)
 
-        myRef.orderByChild("createdAt/timestamp").addChildEventListener(messageListener)
+        fUsers.addAll(dialog.users)
+
+        myRef.addChildEventListener(messageListener)
 
         messagesList.setAdapter(messagesListAdapter)
 
         messageInput.setInputListener {
-            if (it.isNotEmpty()) {
-                val message = Message(myRef.push().key, it.toString(), hashMapOf(Pair("timestamp", ServerValue.TIMESTAMP)), null, StorageUtil.getInstance(this).loadMatriculation())
+            if (it.trim().isNotEmpty()) {
+                val message = Message(myRef.push().key, it.toString().trim(), hashMapOf(Pair("timestamp", ServerValue.TIMESTAMP)), null, StorageUtil.getInstance(baseContext).loadMatriculation())
 
                 val messageValues = message.toMap()
                 val childUpdates = HashMap<String, Any>()
@@ -78,6 +81,18 @@ class ChatActivity : BaseActivity() {
                 database.getReference("forumGroupMetadata").child(dialog.id).child("lastMessageId").setValue(message.id)
 
                 database.reference.updateChildren(childUpdates)
+
+                dialog.activeForumUsers?.filter { id -> id != StorageUtil.getInstance(baseContext).loadMatriculation() }?.forEach { uid ->
+                    database.getReference("unseenMsgCountData").child(dialog.id).child(uid).apply {
+                        addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) = Unit
+
+                            override fun onDataChange(p0: DataSnapshot) {
+                                setValue(p0.getValue(Long::class.java)?.plus(1) ?: 1)
+                            }
+                        })
+                    }
+                }
             }
             it.isNotEmpty()
         }

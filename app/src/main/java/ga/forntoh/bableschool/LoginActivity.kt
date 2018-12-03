@@ -43,9 +43,9 @@ class LoginActivity : AppCompatActivity() {
         service.getUserProfile(matriculation, pass)
                 .subscribeOn(Schedulers.io())
                 .subscribe({ (_, classS, _, profileData) ->
-                    StorageUtil.getInstance(this).saveMatriculation(profileData!!["Matriculation"])
-                    StorageUtil.getInstance(this).savePassword(profileData["Password"])
-                    StorageUtil.getInstance(this).saveClass(classS)
+                    StorageUtil.getInstance(baseContext).saveMatriculation(profileData!!["Matriculation"])
+                    StorageUtil.getInstance(baseContext).savePassword(profileData["Password"])
+                    StorageUtil.getInstance(baseContext).saveClass(classS)
                     runOnUiThread {
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()

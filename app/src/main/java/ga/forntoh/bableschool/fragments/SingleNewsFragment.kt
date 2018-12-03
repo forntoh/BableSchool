@@ -67,6 +67,7 @@ class SingleNewsFragment : Fragment() {
     private fun onPostClicked() {
         val text = commentBox.text.toString()
         if (!TextUtils.isEmpty(text)) {
+            //TODO: Post comment to server
             val comment = Comment("Michy", SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()), text, "https://images.pexels.com/photos/450271/pexels-photo-450271.jpeg?auto=compress&cs=tinysrgb&h=250")
             (news.comments as ArrayList<Comment>).add(comment)
             adapter.notifyItemInserted(news.comments!!.size)

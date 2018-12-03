@@ -38,7 +38,7 @@ class YearScoreFragment : Fragment() {
         statusManager.setStatus(R.id.student_position, Status.PROGRESS)
 
         val service = RetrofitBuilder.createService(ApiService::class.java)
-        service.annualRank(StorageUtil.getInstance(activity!!).loadMatriculation(), Utils.termYear)
+        service.annualRank(StorageUtil.getInstance(activity!!.baseContext).loadMatriculation(), Utils.termYear)
                 .subscribeOn(Schedulers.io())
                 .subscribe({ dealWithRank(it) }, { dealWithError(it) })
         return v

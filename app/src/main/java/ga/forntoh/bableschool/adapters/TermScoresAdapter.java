@@ -58,9 +58,12 @@ public class TermScoresAdapter extends CategoryAdapter {
                 break;
             case 1:
                 Score score = (Score) list.get(position);
+
                 if (score == null) return;
 
                 Course course = score.getCourse();
+
+                if (course == null) return;
 
                 holder.title.setText(course.getTitle());
                 holder.abbreviation.setText(course.getAbbr());

@@ -1,6 +1,5 @@
 package ga.forntoh.bableschool
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import com.forntoh.EasyRecyclerView.EasyRecyclerView
 import com.raizlabs.android.dbflow.kotlinextensions.from
@@ -10,7 +9,8 @@ import com.raizlabs.android.dbflow.kotlinextensions.select
 import com.raizlabs.android.dbflow.sql.language.Delete
 import ga.forntoh.bableschool.adapters.CategoryAdapter
 import ga.forntoh.bableschool.model.Category
-import ga.forntoh.bableschool.utils.Utils
+import ga.forntoh.bableschool.utils.Utils.dealWithData
+import ga.forntoh.bableschool.utils.Utils.isConnected
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
@@ -40,26 +40,17 @@ class MainActivity : BaseActivity() {
         fetchItems()
     }
 
-    @SuppressLint("CheckResult")
     private fun fetchItems() {
         val service = RetrofitBuilder.createService(ApiService::class.java)
 
-        if (Utils.isConnected(this))
+        if (isConnected(this))
             service.functions
                     .subscribeOn(Schedulers.io())
                     .subscribe({ categories ->
                         Delete.table(Category::class.java)
                         categories.forEach { it.save() }
-                        dealWithData(categories)
-                    }, { dealWithData((select from Category::class).list) })
-        else {
-            dealWithData((select from Category::class).list)
-        }
-    }
-
-    private fun dealWithData(list: Collection<Category>?) {
-        categoriesList.clear()
-        if (list != null) categoriesList.addAll(list)
-        runOnUiThread { adapter.notifyDataSetChanged() }
+                        dealWithData(this, categories, categoriesList, adapter)
+                    }, { dealWithData(this, (select from Category::class).list, categoriesList, adapter) })
+        else dealWithData(this, (select from Category::class).list, categoriesList, adapter)
     }
 }

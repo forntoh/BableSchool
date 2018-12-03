@@ -7,6 +7,7 @@ import com.stfalcon.chatkit.commons.models.IDialog
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.commons.models.IUser
 import java.util.*
+import kotlin.collections.ArrayList
 
 @IgnoreExtraProperties
 class FUser(private val id: String? = null, private val name: String? = null, private val avatar: String? = null) : IUser {
@@ -55,7 +56,7 @@ data class Message(private var id: String? = "", private var text: String = "", 
 }
 
 @IgnoreExtraProperties
-class DefaultDialog(private val id: String = "", private val dialogPhoto: String = "", private val dialogName: String = "", private var lastMessage: Message? = null, private var unreadCount: Int = 0, private var users: List<FUser>? = null, val lastMessageId: String? = null, val activeForumUsers: List<String>? = null) : IDialog<Message> {
+class DefaultDialog(private val id: String = "", private val dialogPhoto: String = "", private val dialogName: String = "", private var lastMessage: Message? = null, private var unreadCount: Int = 0, private var users: List<FUser> = ArrayList(), val lastMessageId: String? = null, val activeForumUsers: List<String>? = null) : IDialog<Message> {
 
     override fun getId(): String = id
 
@@ -63,7 +64,7 @@ class DefaultDialog(private val id: String = "", private val dialogPhoto: String
 
     override fun getDialogName(): String = dialogName
 
-    override fun getUsers(): List<FUser>? = users
+    override fun getUsers(): List<FUser> = users
 
     @Exclude
     override fun getLastMessage(): Message? = lastMessage
@@ -73,12 +74,14 @@ class DefaultDialog(private val id: String = "", private val dialogPhoto: String
         this.lastMessage = message
     }
 
-    override fun getUnreadCount(): Int {
-        return unreadCount
+    fun setUnreadCount(count: Int) {
+        unreadCount = count
     }
 
-    fun setUsers(list: List<FUser>) {
-        users = list
+    override fun getUnreadCount(): Int = unreadCount
+
+    fun addUser(user: FUser) {
+        (users as ArrayList).add(user)
     }
 
 }

@@ -66,7 +66,7 @@ open class BaseActivity : AppCompatActivity() {
                 return true
             }
             R.id.logout -> {
-                StorageUtil.getInstance(this).deleteMatriculation()
+                StorageUtil.getInstance(baseContext).deleteMatriculation()
                 onResume()
                 return true
             }
@@ -77,8 +77,8 @@ open class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val matriculation = StorageUtil.getInstance(this).loadMatriculation()
-        val pass = StorageUtil.getInstance(this).loadPassword()
+        val matriculation = StorageUtil.getInstance(baseContext).loadMatriculation()
+        val pass = StorageUtil.getInstance(baseContext).loadPassword()
 
         if (matriculation.isEmpty() || pass.isEmpty()) {
             Toast.makeText(this, "Please login", Toast.LENGTH_SHORT).show()

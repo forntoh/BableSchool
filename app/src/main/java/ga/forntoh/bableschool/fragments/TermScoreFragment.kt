@@ -1,21 +1,23 @@
 package ga.forntoh.bableschool.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.forntoh.EasyRecyclerView.EasyRecyclerView
+import com.raizlabs.android.dbflow.kotlinextensions.*
 import ga.forntoh.bableschool.ApiService
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.RetrofitBuilder
 import ga.forntoh.bableschool.StorageUtil
 import ga.forntoh.bableschool.adapters.TermScoresAdapter
 import ga.forntoh.bableschool.model.Score
+import ga.forntoh.bableschool.model.Score_Table
 import ga.forntoh.bableschool.utils.Utils
+import ga.forntoh.bableschool.utils.Utils.dealWithData
+import ga.forntoh.bableschool.utils.Utils.isConnected
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 class TermScoreFragment : Fragment() {
 
@@ -36,21 +38,18 @@ class TermScoreFragment : Fragment() {
         return v
     }
 
-    @SuppressLint("CheckResult")
     private fun fetchItems(term: Int) {
         val service = RetrofitBuilder.createService(ApiService::class.java)
-        service.getTermScores(StorageUtil.getInstance(activity!!).loadMatriculation(), term, Utils.termYear)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ scores ->
-                    //TODO: Save scores
-                    scores.forEach { it.term = term }
-                    dealWithScores(scores)
-                }) { t -> t.printStackTrace() }
+        if (isConnected(activity!!))
+            service.getTermScores(StorageUtil.getInstance(activity!!.baseContext).loadMatriculation(), term, Utils.termYear)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ scores ->
+                        (delete(Score::class) where Score_Table.term.eq(term)).execute()
+                        scores.forEach { it.term = term; it.save() }
+                        dealWithData(activity!!, scores.apply { this as ArrayList<Score>; add(0, Score()) }, this.scores, termScoresAdapter)
+                    }) { dealWithData(activity!!, (select from Score::class where Score_Table.term.eq(term)).list.apply { add(0, Score()) }, this.scores, termScoresAdapter) }
+        else {
+            dealWithData(activity!!, (select from Score::class where Score_Table.term.eq(term)).list.apply { add(0, Score()) }, this.scores, termScoresAdapter)
+        }
     }
-
-    private fun dealWithScores(o: Collection<Score>) {
-        scores.apply { clear(); addAll(o); add(0, Score()) }
-        activity!!.runOnUiThread { termScoresAdapter.notifyDataSetChanged() }
-    }
-
 }

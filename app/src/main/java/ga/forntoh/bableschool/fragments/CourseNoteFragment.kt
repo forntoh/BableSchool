@@ -23,7 +23,7 @@ class CourseNoteFragment : Fragment() {
 
     private val videosAdapter by lazy { VideosAdapter(course.videos as ArrayList<*>) }
     private val documentsAdapter by lazy { DocumentsAdapter(course.documents as ArrayList<*>) }
-    private val course by lazy { Gson().fromJson(arguments!!.getString("course"), Course::class.java) }
+    private lateinit var course: Course
 
     @SuppressLint("CheckResult")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,12 +39,11 @@ class CourseNoteFragment : Fragment() {
 
         if (arguments != null) {
             val index = arguments!!.getInt("index")
+            var (code, title) = Gson().fromJson(arguments!!.getString("course"), Course::class.java)
 
             subjectTitleView.text = course.title
-
             subjectAbbrView.text = course.abbr
-
-            subjectClassView.text = StorageUtil.getInstance(this.context!!).loadClass()
+            subjectClassView.text = StorageUtil.getInstance(activity!!.baseContext).loadClass()
 
             val bg = GradientDrawable(GradientDrawable.Orientation.TR_BL, intArrayOf(Color.parseColor(startColors[index]), Color.parseColor(endColors[index])))
             bg.shape = GradientDrawable.OVAL

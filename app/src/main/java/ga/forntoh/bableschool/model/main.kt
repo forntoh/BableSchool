@@ -2,10 +2,9 @@ package ga.forntoh.bableschool.model
 
 import android.support.annotation.DrawableRes
 import com.raizlabs.android.dbflow.annotation.*
-import com.raizlabs.android.dbflow.kotlinextensions.from
-import com.raizlabs.android.dbflow.kotlinextensions.oneToMany
-import com.raizlabs.android.dbflow.kotlinextensions.select
-import com.raizlabs.android.dbflow.kotlinextensions.where
+import com.raizlabs.android.dbflow.annotation.OneToMany
+import com.raizlabs.android.dbflow.kotlinextensions.*
+import com.raizlabs.android.dbflow.structure.BaseModel
 import ga.forntoh.bableschool.AppDatabase
 import ga.forntoh.bableschool.R
 
@@ -18,7 +17,8 @@ data class News(
         @Column var date: String? = null,
         @Column var thumbnail: String? = null,
         @Column var category: String? = null,
-        @Column var likes: Int = 0
+        @Column var likes: Int = 0,
+        @Column var isTop: Boolean = false
 ) {
     @get:OneToMany(methods = [OneToMany.Method.ALL])
     var comments by oneToMany { select from Comment::class where (Comment_Table.newsId.eq(id)) }
@@ -27,28 +27,35 @@ data class News(
 @Table(database = AppDatabase::class)
 data class Score(
         @PrimaryKey(autoincrement = true) var id: Long = 0,
-        @ForeignKey var course: Course? = null,
+        @ForeignKey(saveForeignKeyModel = true) var course: Course? = null,
         @Column var firstSequenceMark: Double = 0.toDouble(),
         @Column var secondSequenceMark: Double = 0.toDouble(),
         @Column var rank: String? = null,
         @Column var termRank: String? = null
 ) {
     val scoreAverage: Double get() = if (firstSequenceMark < 0 || secondSequenceMark < 0) -1.0 else (firstSequenceMark + secondSequenceMark) / 2.0
+    @Column
     var term: Int = 1
 }
 
 @Table(database = AppDatabase::class)
 data class Course(
-        @PrimaryKey(autoincrement = true) var id: Long = 0,
-        @Column var code: String? = null,
+        @PrimaryKey var code: String? = null,
         @Column var title: String? = null
-) {
+) : BaseModel() {
 
     @get:OneToMany(methods = [OneToMany.Method.ALL])
-    var videos by oneToMany { select from Video::class where (Video_Table.courseId.eq(id)) }
+    var videos by oneToMany { select from Video::class where (Video_Table.courseCode.eq(code)) }
 
     @get:OneToMany(methods = [OneToMany.Method.ALL])
-    var documents by oneToMany { select from Document::class where (Document_Table.courseId.eq(id)) }
+    var documents by oneToMany { select from Document::class where (Document_Table.courseCode.eq(code)) }
+
+    override fun save(): Boolean {
+        val res = super.save()
+        if (!videos.isNullOrEmpty()) videos!!.forEach { it.courseCode = code; it.save() }
+        if (!documents.isNullOrEmpty()) documents!!.forEach { it.courseCode = code; it.save() }
+        return res
+    }
 
     val abbr: String
         get() {
@@ -63,7 +70,7 @@ data class Course(
 @Table(database = AppDatabase::class)
 data class Video(
         @PrimaryKey(autoincrement = true) var id: Long = 0,
-        @ForeignKey(tableClass = Course::class, references = [ForeignKeyReference(columnName = "courseId", foreignKeyColumnName = "id")]) var courseId: Long? = 0,
+        @ForeignKey(tableClass = Course::class, references = [ForeignKeyReference(columnName = "courseCode", foreignKeyColumnName = "code")]) var courseCode: String? = null,
         @Column var title: String? = null,
         @Column var author: String? = null,
         @Column var duration: String? = null,
@@ -74,7 +81,7 @@ data class Video(
 @Table(database = AppDatabase::class)
 data class Document(
         @PrimaryKey(autoincrement = true) var id: Long = 0,
-        @ForeignKey(tableClass = Course::class, references = [ForeignKeyReference(columnName = "courseId", foreignKeyColumnName = "id")]) var courseId: Long? = 0,
+        @ForeignKey(tableClass = Course::class, references = [ForeignKeyReference(columnName = "courseCode", foreignKeyColumnName = "code")]) var courseCode: String? = null,
         @Column var title: String? = null,
         @Column var author: String? = null,
         @Column var size: String? = null,

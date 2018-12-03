@@ -8,6 +8,7 @@ import android.net.NetworkInfo
 import android.os.Build
 import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -21,6 +22,7 @@ import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 object Utils {
 
@@ -135,4 +137,10 @@ object Utils {
 
             return periods
         }
+
+    fun <T> dealWithData(activity: Activity, srcList: Collection<T>?, destList: ArrayList<T>, adapter: RecyclerView.Adapter<*>) {
+        destList.clear()
+        if (srcList != null) destList.addAll(srcList)
+        activity.runOnUiThread { adapter.notifyDataSetChanged() }
+    }
 }

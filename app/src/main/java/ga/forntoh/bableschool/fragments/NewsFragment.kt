@@ -7,16 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.forntoh.EasyRecyclerView.EasyRecyclerView
+import com.raizlabs.android.dbflow.kotlinextensions.from
+import com.raizlabs.android.dbflow.kotlinextensions.list
+import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.kotlinextensions.select
 import ga.forntoh.bableschool.ApiService
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.RetrofitBuilder
 import ga.forntoh.bableschool.adapters.NewsAdapter
 import ga.forntoh.bableschool.model.News
+import ga.forntoh.bableschool.utils.Utils.dealWithData
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 class NewsFragment : Fragment() {
 
+    private lateinit var v: View
     private var t1: Thread? = null
     private val topNewsList = ArrayList<News>()
     private val allNewsList = ArrayList<News>()
@@ -24,8 +30,7 @@ class NewsFragment : Fragment() {
     private val newsAdapter2 by lazy { NewsAdapter(allNewsList, true) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        val v = inflater.inflate(R.layout.fragment_news, container, false)
+        v = inflater.inflate(R.layout.fragment_news, container, false)
 
         t1 = EasyRecyclerView()
                 .setType(EasyRecyclerView.Type.HORIZONTAL)
@@ -53,20 +58,14 @@ class NewsFragment : Fragment() {
         service.news
                 .subscribeOn(Schedulers.io())
                 .subscribe({ news ->
-                    //TODO: Save News T
-                    topNewsList.clear()
-                    topNewsList.addAll(news)
-                    newsAdapter1.notifyDataSetChanged()
-                }) { it.printStackTrace() }
-
-        service.news
-                .subscribeOn(Schedulers.io())
-                .subscribe({ news ->
-                    //TODO: Save News A
-                    allNewsList.clear()
-                    allNewsList.addAll(news)
-                    newsAdapter2.notifyDataSetChanged()
-                }) { it.printStackTrace() }
+                    news.forEach { it.save() }
+                    dealWithData(activity!!, news.filter { n -> n.isTop }, topNewsList, newsAdapter1)
+                    dealWithData(activity!!, news, allNewsList, newsAdapter2)
+                }) {
+                    val news = (select from News::class).list
+                    dealWithData(activity!!, news.filter { n -> n.isTop }, topNewsList, newsAdapter1)
+                    dealWithData(activity!!, news, allNewsList, newsAdapter2)
+                }
     }
 
     override fun onDestroy() {
