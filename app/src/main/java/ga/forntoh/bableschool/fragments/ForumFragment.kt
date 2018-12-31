@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import com.google.firebase.database.*
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-import com.stfalcon.chatkit.dialogs.DialogsList
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import ga.forntoh.bableschool.ChatActivity
@@ -20,11 +19,11 @@ import ga.forntoh.bableschool.StorageUtil
 import ga.forntoh.bableschool.model.DefaultDialog
 import ga.forntoh.bableschool.model.FUser
 import ga.forntoh.bableschool.model.Message
+import kotlinx.android.synthetic.main.fragment_forum.*
 
 class ForumFragment : Fragment() {
 
     private val database by lazy { FirebaseDatabase.getInstance() }
-    private val dialogsList by lazy { root.findViewById<DialogsList>(R.id.dialogsList) }
     private val dialogsListAdapter by lazy {
         DialogsListAdapter<DefaultDialog>(R.layout.item_dialog) { imageView, url, _ ->
             imageView.setBackgroundColor(Color.WHITE)
@@ -44,7 +43,7 @@ class ForumFragment : Fragment() {
         }
 
         private fun getUsers(forum: DefaultDialog, toAdd: Boolean) {
-            if (forum.activeForumUsers!!.find { it == StorageUtil.getInstance(root.context).loadMatriculation() }.isNullOrEmpty()) return
+            if (forum.activeForumUsers!!.find { it == StorageUtil.getInstance(this@ForumFragment.context!!).loadMatriculation() }.isNullOrEmpty()) return
             forum.activeForumUsers.forEach {
                 database.getReference("users").child(it)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -67,7 +66,7 @@ class ForumFragment : Fragment() {
                             message.setUser(forum.users.find { it.id == message.userId })
                             forum.lastMessage = message
                             database.getReference("unseenMsgCountData").child(forum.id)
-                                    .child(StorageUtil.getInstance(root.context).loadMatriculation())
+                                    .child(StorageUtil.getInstance(this@ForumFragment.context!!).loadMatriculation())
                                     .addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onCancelled(p0: DatabaseError) = Unit
 
@@ -93,11 +92,11 @@ class ForumFragment : Fragment() {
 
         override fun onCancelled(databaseError: DatabaseError) = Unit
     }
-    private lateinit var root: View
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        root = inflater.inflate(R.layout.fragment_forum, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_forum, container, false)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         with(dialogsListAdapter) {
             setDatesFormatter { date ->
                 return@setDatesFormatter when {
@@ -107,7 +106,7 @@ class ForumFragment : Fragment() {
                 }
             }
             setOnDialogClickListener { dialog ->
-                startActivity(Intent(root.context, ChatActivity::class.java).apply {
+                startActivity(Intent(context, ChatActivity::class.java).apply {
                     putExtra("dialog", Gson().toJson(dialog))
                 })
             }
@@ -117,7 +116,5 @@ class ForumFragment : Fragment() {
         val myRef = database.getReference("forumGroupMetadata")
 
         myRef.addChildEventListener(dialogListener)
-
-        return root
     }
 }

@@ -1,7 +1,9 @@
 package ga.forntoh.bableschool
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.TextView
 import com.google.firebase.database.*
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
@@ -12,6 +14,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import ga.forntoh.bableschool.model.DefaultDialog
 import ga.forntoh.bableschool.model.FUser
 import ga.forntoh.bableschool.model.Message
+import kotlinx.android.synthetic.main.toolbar_chat.*
 
 class ChatActivity : BaseActivity() {
 
@@ -54,14 +57,24 @@ class ChatActivity : BaseActivity() {
             }
         }
     }
+    private val toolbarTitle by lazy { findViewById<TextView>(R.id.title) }
+    private val toolbarSubtitle by lazy { findViewById<TextView>(R.id.subtitle) }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         disableFlags(true)
         enableWhiteStatusBar()
 
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
         dialog = Gson().fromJson(intent.getStringExtra("dialog"), DefaultDialog::class.java)
+
+        toolbarTitle.text = dialog.dialogName
+        toolbarSubtitle.text = "${dialog.activeForumUsers!!.size} students"
+        Picasso.get().load(dialog.dialogPhoto).fit().centerCrop().into(photo)
 
         val myRef = database.getReference("forumGroup").child(dialog.id)
 

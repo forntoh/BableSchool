@@ -45,8 +45,8 @@ class TermScoreFragment : Fragment() {
                     .subscribeOn(Schedulers.io())
                     .subscribe({ scores ->
                         (delete(Score::class) where Score_Table.term.eq(term)).execute()
-                        scores.forEach { it.term = term; it.save() }
-                        dealWithData(activity!!, scores.apply { this as ArrayList<Score>; add(0, Score()) }, this.scores, termScoresAdapter)
+                        if (!scores.isNullOrEmpty()) scores.forEach { it.term = term; it.save() }
+                        dealWithData(activity!!, (select from Score::class where Score_Table.term.eq(term)).list.apply { add(0, Score()) }, this.scores, termScoresAdapter)
                     }) { dealWithData(activity!!, (select from Score::class where Score_Table.term.eq(term)).list.apply { add(0, Score()) }, this.scores, termScoresAdapter) }
         else {
             dealWithData(activity!!, (select from Score::class where Score_Table.term.eq(term)).list.apply { add(0, Score()) }, this.scores, termScoresAdapter)

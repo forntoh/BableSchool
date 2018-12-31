@@ -7,6 +7,10 @@
     android:orientation="vertical"
     tools:context=".ChatActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_chat" />
+
     <com.stfalcon.chatkit.messages.MessagesList
         android:id="@+id/messagesList"
         android:layout_width="match_parent"

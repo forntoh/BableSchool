@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import ga.forntoh.bableschool.utils.Utils
 
 @SuppressLint("VisibleForTests")
 open class BaseActivity : AppCompatActivity() {
@@ -85,6 +86,12 @@ open class BaseActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+    }
+
+    override fun onBackPressed() {
+        if (Utils.currentPopupWindow != null && Utils.currentPopupWindow!!.isShowing)
+            Utils.currentPopupWindow!!.dismiss()
+        else super.onBackPressed()
     }
 
     companion object {

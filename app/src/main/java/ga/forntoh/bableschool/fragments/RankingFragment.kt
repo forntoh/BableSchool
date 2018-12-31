@@ -1,7 +1,6 @@
 package ga.forntoh.bableschool.fragments
 
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +23,7 @@ import ga.forntoh.bableschool.model.TopStudent
 import ga.forntoh.bableschool.utils.Utils.dealWithData
 import ga.forntoh.bableschool.utils.Utils.isConnected
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_ranking.*
 import java.util.*
 
 class RankingFragment : Fragment() {
@@ -36,29 +36,26 @@ class RankingFragment : Fragment() {
     private val topSchools = ArrayList<TopSchool>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.fragment_ranking, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_ranking, container, false)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         t1 = EasyRecyclerView()
                 .setType(EasyRecyclerView.Type.HORIZONTAL)
                 .setAdapter(topStudentsAdapter)
-                .setRecyclerView(v.findViewById(R.id.rv_top_students))
+                .setRecyclerView(rv_top_students)
                 .setItemSpacing(16, null)
                 .initialize(topStudents.size, 5000, false)
 
         EasyRecyclerView()
                 .setType(EasyRecyclerView.Type.VERTICAL)
                 .setAdapter(topSchoolsAdapter)
-                .setRecyclerView(v.findViewById(R.id.rv_school_ranking))
+                .setRecyclerView(rv_school_ranking)
                 .setItemSpacing(16, null)
                 .initialize()
-
         fetchItems()
-
-        return v
     }
 
-    @SuppressLint("CheckResult")
     private fun fetchItems() {
         val service = RetrofitBuilder.createService(ApiService::class.java)
 

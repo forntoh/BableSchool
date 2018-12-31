@@ -15,11 +15,24 @@ interface ApiService {
     @get:GET("categories")
     val functions: Single<List<Category>>
 
-    @get:GET("news")
-    val news: Observable<List<News>>
-
     @get:GET("top_schools")
     val topSchools: Single<List<TopSchool>>
+
+    @FormUrlEncoded
+    @POST("news")
+    fun getNews(@Field("uid") uid: String): Observable<List<News>>
+
+    @FormUrlEncoded
+    @POST("postComment")
+    fun postComment(@Field("subject") subject: String, @Field("data") comment: String): Observable<Comment>
+
+    @FormUrlEncoded
+    @POST("like")
+    fun likeNews(@Field("uid") uid: String, @Field("subject") subject: String): Observable<String>
+
+    @FormUrlEncoded
+    @POST("time_table")
+    fun getTimetable(@Field("class_code") clazz: String): Observable<List<Period>>
 
     @FormUrlEncoded
     @POST("profile/{uid}")

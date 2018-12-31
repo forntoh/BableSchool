@@ -1,6 +1,7 @@
 package ga.forntoh.bableschool.model
 
 import android.support.annotation.DrawableRes
+import com.google.gson.annotations.SerializedName
 import com.raizlabs.android.dbflow.annotation.*
 import com.raizlabs.android.dbflow.annotation.OneToMany
 import com.raizlabs.android.dbflow.kotlinextensions.*
@@ -10,8 +11,10 @@ import ga.forntoh.bableschool.R
 
 @Table(database = AppDatabase::class)
 data class News(
-        @PrimaryKey(autoincrement = true) var id: Long = 0,
+        @PrimaryKey var id: Long = 0,
         @Column var title: String? = null,
+        @SerializedName("liked")
+        @Column var liked: Boolean = false,
         @Column var author: String? = null,
         @Column var description: String? = null,
         @Column var date: String? = null,
@@ -19,9 +22,22 @@ data class News(
         @Column var category: String? = null,
         @Column var likes: Int = 0,
         @Column var isTop: Boolean = false
-) {
+) : BaseModel() {
     @get:OneToMany(methods = [OneToMany.Method.ALL])
     var comments by oneToMany { select from Comment::class where (Comment_Table.newsId.eq(id)) }
+
+    val isLiked: Boolean
+        get() {
+            return liked
+        }
+
+    private var cmts: List<Comment>? = null
+
+    override fun save(): Boolean {
+        val res = super.save()
+        if (!cmts.isNullOrEmpty()) cmts!!.forEach { it.newsId = id; it.save() }
+        return res
+    }
 }
 
 @Table(database = AppDatabase::class)
@@ -50,10 +66,14 @@ data class Course(
     @get:OneToMany(methods = [OneToMany.Method.ALL])
     var documents by oneToMany { select from Document::class where (Document_Table.courseCode.eq(code)) }
 
+    private var docs: List<Document>? = null
+
+    private var vids: List<Video>? = null
+
     override fun save(): Boolean {
         val res = super.save()
-        if (!videos.isNullOrEmpty()) videos!!.forEach { it.courseCode = code; it.save() }
-        if (!documents.isNullOrEmpty()) documents!!.forEach { it.courseCode = code; it.save() }
+        if (!docs.isNullOrEmpty()) docs!!.forEach { it.courseCode = code; it.save() }
+        if (!vids.isNullOrEmpty()) vids!!.forEach { it.courseCode = code; it.save() }
         return res
     }
 
@@ -110,14 +130,15 @@ data class Category(
 @Table(database = AppDatabase::class)
 data class Comment(
         @Column var sender: String? = null,
-        @Column var date: String? = null,
         @Column var message: String? = null,
         @Column var thumbnail: String? = null
 ) {
-    @PrimaryKey(autoincrement = true)
+    @PrimaryKey
     var id: Long = 0
     @ForeignKey(tableClass = News::class, references = [ForeignKeyReference(columnName = "newsId", foreignKeyColumnName = "id")])
     var newsId: Long? = 0
+    @Column
+    var date: String? = null
 }
 
 @Table(database = AppDatabase::class)
@@ -127,7 +148,7 @@ data class Period(
         @Column var end: String = "",
         @Column var course: String? = "",
         @Column var dayOfWeek: Int = 0,
-        @Column var color: String? = ""
+        @Column var color: String = "#000000"
 )
 
 data class User(

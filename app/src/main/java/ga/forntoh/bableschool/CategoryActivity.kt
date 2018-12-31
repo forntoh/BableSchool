@@ -27,11 +27,11 @@ class CategoryActivity : BaseActivity() {
         enableWhiteStatusBar()
 
         when (id.toInt()) {
-            0 -> loadFragment(NewsFragment())
-            1 -> loadFragment(CourseNotesFragment())
-            2 -> loadFragment(RankingFragment())
-            3 -> loadFragment(ForumFragment())
-            4 -> loadFragment(MyProfileFragment())
+            1 -> loadFragment(NewsFragment())
+            2 -> loadFragment(CourseNotesFragment())
+            3 -> loadFragment(RankingFragment())
+            4 -> loadFragment(ForumFragment())
+            5 -> loadFragment(MyProfileFragment())
         }
     }
 

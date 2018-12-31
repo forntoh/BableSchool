@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
 import ga.forntoh.bableschool.CategoryActivity;
@@ -61,7 +59,7 @@ public class CourseNotesAdapter extends CategoryAdapter {
         @Override
         public void onClick(View view) {
             Bundle bundle = new Bundle();
-            bundle.putString("course", new Gson().toJson(list.get(getAdapterPosition())));
+            bundle.putString("course", ((Course) list.get(getAdapterPosition())).getCode());
             bundle.putInt("index", getAdapterPosition() % startColors.length);
             CourseNoteFragment fragment = new CourseNoteFragment();
             fragment.setArguments(bundle);

@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -63,7 +62,7 @@ public class NewsAdapter extends CategoryAdapter {
         @Override
         public void onClick(View view) {
             Bundle bundle = new Bundle();
-            bundle.putString("news", new Gson().toJson(list.get(getAdapterPosition())));
+            bundle.putLong("news", ((News) list.get(getAdapterPosition())).getId());
             SingleNewsFragment fragment = new SingleNewsFragment();
             fragment.setArguments(bundle);
             ((CategoryActivity) view.getContext()).loadFragment(fragment).addToBackStack(null);

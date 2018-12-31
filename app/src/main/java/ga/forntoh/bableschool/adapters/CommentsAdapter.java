@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -38,6 +40,12 @@ public class CommentsAdapter extends CategoryAdapter {
             Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(holder.thumbnail);
         else
             Picasso.get().load(comment.getThumbnail()).placeholder(R.drawable.placeholder).fit().centerCrop().into(holder.thumbnail);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void addComment(@NotNull Comment comment) {
+        list.add(comment);
+        notifyItemInserted(list.size());
     }
 
     class MyViewHolder extends CategoryAdapter.MyViewHolder {

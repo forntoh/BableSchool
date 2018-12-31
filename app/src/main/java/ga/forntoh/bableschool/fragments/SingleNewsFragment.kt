@@ -1,78 +1,99 @@
 package ga.forntoh.bableschool.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.TextUtils
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import com.forntoh.EasyRecyclerView.EasyRecyclerView
 import com.google.gson.Gson
+import com.raizlabs.android.dbflow.kotlinextensions.*
 import com.squareup.picasso.Picasso
+import ga.forntoh.bableschool.ApiService
 import ga.forntoh.bableschool.R
+import ga.forntoh.bableschool.RetrofitBuilder
+import ga.forntoh.bableschool.StorageUtil
 import ga.forntoh.bableschool.adapters.CommentsAdapter
 import ga.forntoh.bableschool.model.Comment
 import ga.forntoh.bableschool.model.News
+import ga.forntoh.bableschool.model.News_Table
 import ga.forntoh.bableschool.utils.Utils
-import java.text.SimpleDateFormat
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_single_news.*
 import java.util.*
 
 class SingleNewsFragment : Fragment() {
 
-    private lateinit var v: View
-    private val adapter by lazy { CommentsAdapter(news.comments as ArrayList<*>) }
-    private val commentBox by lazy { v.findViewById<EditText>(R.id.et_message) }
-    private val postBtn by lazy { v.findViewById<Button>(R.id.btn_post) }
-    private val news by lazy { Gson().fromJson(arguments!!.getString("news"), News::class.java) }
+    private val adapter by lazy { CommentsAdapter(news.comments as ArrayList<Comment>) }
+    private lateinit var news: News
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.fragment_single_news, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_single_news, container, false)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (arguments != null) {
-            val title = v.findViewById<TextView>(R.id.news_title)
-            val meta = v.findViewById<TextView>(R.id.news_meta)
-            val description = v.findViewById<TextView>(R.id.news_description)
-            val commentCountV = v.findViewById<TextView>(R.id.comment_count)
-            val likeCountV = v.findViewById<TextView>(R.id.like_count)
-            val thumbnail = v.findViewById<ImageView>(R.id.news_thumbnail)
+            news = (select from News::class where (News_Table.id.eq(arguments!!.getLong("news")))).result!!
 
-            postBtn.setOnClickListener { onPostClicked() }
+            btn_post.setOnClickListener { onPostClicked() }
+            btn_like.setOnClickListener { onLikeClicked() }
 
-            title.text = news.title
-            description.text = news.description
-            commentCountV.text = getString(R.string.comment_counter, news.comments?.size)
-            meta.text = getString(R.string.news_meta, news.author, DateFormat.format("EEE, MMM d, yyyy", Utils.getLongDate(news.date)), news.category)
-            likeCountV.text = getString(R.string.like_counter, news.likes)
+            news_title.text = news.title
+            news_description.text = news.description
+            comment_count.text = getString(R.string.comment_counter, news.comments?.size)
+            news_meta.text = getString(R.string.news_meta, news.author, DateFormat.format("EEE, MMM d, yyyy", Utils.getLongDate(news.date)), news.category)
+            like_count.text = getString(R.string.like_counter, news.likes)
+            if (news.isLiked) Picasso.get().load(R.drawable.ic_heart).into(btn_like)
+            else btn_like.setImageResource(R.drawable.ic_heart_outline)
 
-            if (news.thumbnail.isNullOrEmpty()) Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(thumbnail)
-            else Picasso.get().load(news.thumbnail).placeholder(R.drawable.placeholder).fit().centerCrop().into(thumbnail)
+            if (news.thumbnail.isNullOrEmpty()) Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(news_thumbnail)
+            else Picasso.get().load(news.thumbnail).placeholder(R.drawable.placeholder).fit().centerCrop().into(news_thumbnail)
 
             EasyRecyclerView()
                     .setType(EasyRecyclerView.Type.VERTICAL)
                     .setAdapter(adapter)
-                    .setRecyclerView(v.findViewById(R.id.rv_comments))
+                    .setRecyclerView(rv_comments)
                     .setItemSpacing(16, null)
                     .initialize()
 
             adapter.notifyDataSetChanged()
         }
-        return v
     }
 
+    @SuppressLint("CheckResult")
+    private fun onLikeClicked() {
+        btn_like.isClickable = false
+        val service = RetrofitBuilder.createService(ApiService::class.java)
+        service.likeNews(StorageUtil.getInstance(activity!!.baseContext).loadMatriculation(), news.id.toString())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            btn_like.isClickable = true
+                            btn_like.post {
+                                if (news.isLiked) btn_like.setImageResource(R.drawable.ic_heart_outline)
+                                else Picasso.get().load(R.drawable.ic_heart).into(btn_like)
+                            }
+                        },
+                        { btn_like.post { btn_like.isClickable = true; Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() } })
+    }
+
+    @SuppressLint("CheckResult")
     private fun onPostClicked() {
-        val text = commentBox.text.toString()
-        if (!TextUtils.isEmpty(text)) {
-            //TODO: Post comment to server
-            val comment = Comment("Michy", SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()), text, "https://images.pexels.com/photos/450271/pexels-photo-450271.jpeg?auto=compress&cs=tinysrgb&h=250")
-            (news.comments as ArrayList<Comment>).add(comment)
-            adapter.notifyItemInserted(news.comments!!.size)
-            commentBox.setText("")
+        val text = et_message.text.toString()
+        if (!text.isEmpty()) {
+            val service = RetrofitBuilder.createService(ApiService::class.java)
+            service.postComment(news.id.toString(), Gson().toJson(Comment(StorageUtil.getInstance(activity!!.baseContext).loadMatriculation(), text)))
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            {
+                                activity!!.runOnUiThread {
+                                    adapter.addComment(it.apply { newsId = news.id; it.save() })
+                                    et_message.setText("")
+                                }
+                            },
+                            { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() })
         }
     }
-
 }

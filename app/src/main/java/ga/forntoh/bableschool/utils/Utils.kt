@@ -26,6 +26,8 @@ import kotlin.collections.ArrayList
 
 object Utils {
 
+    var currentPopupWindow: PopupWindow? = null
+
     val screenWidth: Int get() = Resources.getSystem().displayMetrics.widthPixels
 
     fun isConnected(context: Context): Boolean {
@@ -63,7 +65,7 @@ object Utils {
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 (layout.context as Activity).window.statusBarColor = ContextCompat.getColor(root.context, android.R.color.black)
-        }
+        }.also { currentPopupWindow = it }
     }
 
     fun capEachWord(sentence: String): String {

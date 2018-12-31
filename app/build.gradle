@@ -70,6 +70,7 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     implementation "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
     implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:${dbflow_version}@aar"
+    kapt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
 
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.google.firebase:firebase-database:16.0.5'
@@ -77,8 +78,6 @@ dependencies {
     //My Libs
     implementation 'com.github.forntoh:EasyRecyclerView-Android:0.3.0'
     implementation 'com.github.forntoh:ViewStatusManager-Android:0.4.0'
-
-    kapt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

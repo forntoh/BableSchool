@@ -57,7 +57,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (list != null && !list.isEmpty())
+            return list.size();
+        else return 0;
     }
 
     @SuppressWarnings("unchecked")

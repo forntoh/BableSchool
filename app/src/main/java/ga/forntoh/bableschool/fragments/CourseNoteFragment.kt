@@ -8,15 +8,18 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.forntoh.EasyRecyclerView.EasyRecyclerView
-import com.google.gson.Gson
+import com.raizlabs.android.dbflow.kotlinextensions.from
+import com.raizlabs.android.dbflow.kotlinextensions.result
+import com.raizlabs.android.dbflow.kotlinextensions.select
+import com.raizlabs.android.dbflow.kotlinextensions.where
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.StorageUtil
 import ga.forntoh.bableschool.adapters.DocumentsAdapter
 import ga.forntoh.bableschool.adapters.VideosAdapter
 import ga.forntoh.bableschool.model.Course
-import ga.forntoh.bableschool.utils.SquareConstraintLayout
+import ga.forntoh.bableschool.model.Course_Table
+import kotlinx.android.synthetic.main.fragment_course_note.*
 import java.util.*
 
 class CourseNoteFragment : Fragment() {
@@ -26,44 +29,41 @@ class CourseNoteFragment : Fragment() {
     private lateinit var course: Course
 
     @SuppressLint("CheckResult")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_course_note, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_course_note, container, false)
 
-        val subjectCircleView = v.findViewById<SquareConstraintLayout>(R.id.subject_circle)
-        val subjectAbbrView = v.findViewById<TextView>(R.id.subject_abbr)
-        val subjectTitleView = v.findViewById<TextView>(R.id.subject_title)
-        val subjectClassView = v.findViewById<TextView>(R.id.subject_class)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val startColors = activity!!.resources.getStringArray(R.array.start_colors)
         val endColors = activity!!.resources.getStringArray(R.array.end_colors)
 
         if (arguments != null) {
             val index = arguments!!.getInt("index")
-            var (code, title) = Gson().fromJson(arguments!!.getString("course"), Course::class.java)
 
-            subjectTitleView.text = course.title
-            subjectAbbrView.text = course.abbr
-            subjectClassView.text = StorageUtil.getInstance(activity!!.baseContext).loadClass()
+            course = (select from Course::class where Course_Table.code.eq(arguments!!.getString("course"))).result!!
+
+            subject_title.text = course.title
+            subject_abbr.text = course.abbr
+            subject_class.text = StorageUtil.getInstance(activity!!.baseContext).loadClass()
 
             val bg = GradientDrawable(GradientDrawable.Orientation.TR_BL, intArrayOf(Color.parseColor(startColors[index]), Color.parseColor(endColors[index])))
             bg.shape = GradientDrawable.OVAL
-            subjectCircleView.background = bg
+            subject_circle.background = bg
 
             EasyRecyclerView().apply {
                 setType(EasyRecyclerView.Type.HORIZONTAL)
                 setAdapter(videosAdapter)
-                setRecyclerView(v.findViewById(R.id.rv_videos))
+                setRecyclerView(rv_videos)
                 setItemSpacing(16, null)
                 initialize()
             }
             EasyRecyclerView().apply {
                 setType(EasyRecyclerView.Type.VERTICAL)
                 setAdapter(documentsAdapter)
-                setRecyclerView(v.findViewById(R.id.rv_documents))
+                setRecyclerView(rv_documents)
                 setItemSpacing(16, null)
                 initialize()
             }
         }
-        return v
     }
 }
