@@ -13,10 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,11 +28,11 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".CategoryActivity" />
-        <activity android:name=".ScoreSheetActivity" />
-        <activity android:name=".TimeTableActivity" />
-        <activity android:name=".BaseActivity" />
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".ui.CategoryActivity" />
+        <activity android:name=".ui.profile.score.ScoreSheetActivity" />
+        <activity android:name=".ui.profile.timeTable.TimeTableActivity" />
+        <activity android:name=".ui.BaseActivity" />
+        <activity android:name=".ui.forum.ChatActivity"></activity>
     </application>
 
 </manifest>

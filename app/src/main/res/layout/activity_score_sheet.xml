@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ScoreSheetActivity">
+    tools:context=".ui.profile.score.ScoreSheetActivity">
 
     <include
         android:id="@+id/toolbar"
@@ -12,29 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TabItem
+        <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Left" />
 
-        <android.support.design.widget.TabItem
+        <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Center" />
 
-        <android.support.design.widget.TabItem
+        <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Right" />
-    </android.support.design.widget.TabLayout>
+    </com.google.android.material.tabs.TabLayout>
 
-    <com.alfianyusufabdullah.SPager
-        android:id="@+id/mainPage"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/main_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

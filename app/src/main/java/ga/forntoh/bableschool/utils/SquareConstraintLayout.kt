@@ -1,10 +1,9 @@
 package ga.forntoh.bableschool.utils
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 
-class SquareConstraintLayout : ConstraintLayout {
+class SquareConstraintLayout : androidx.constraintlayout.widget.ConstraintLayout {
 
     constructor(context: Context) : super(context)
 
@@ -14,7 +13,7 @@ class SquareConstraintLayout : ConstraintLayout {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         try {
-            val params = this.layoutParams as ConstraintLayout.LayoutParams
+            val params = this.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
             if (params.height == 0)
                 super.onMeasure(heightMeasureSpec, heightMeasureSpec)
             else

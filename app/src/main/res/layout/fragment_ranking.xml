@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".fragments.RankingFragment">
+    tools:context=".ui.ranking.RankingFragment">
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         android:text="@string/top_students_of_my_class"
         android:textSize="20sp" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_top_students"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -34,7 +34,7 @@
         android:text="@string/school_ranking"
         android:textSize="20sp" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_school_ranking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

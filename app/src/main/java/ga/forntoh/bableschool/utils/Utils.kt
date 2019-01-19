@@ -6,18 +6,17 @@ import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
-import android.support.design.widget.TabLayout
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.google.android.material.tabs.TabLayout
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.model.Period
+import ga.forntoh.bableschool.data.model.Period
 import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -28,31 +27,17 @@ object Utils {
 
     var currentPopupWindow: PopupWindow? = null
 
-    val screenWidth: Int get() = Resources.getSystem().displayMetrics.widthPixels
-
     fun isConnected(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         return activeNetwork?.isConnected ?: false
     }
 
-    fun formatScore(d: Double): String = if (d < 0) "N/A" else DecimalFormat("##.##").format(d)
-
-    fun dpToPixels(c: Context, value: Float): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, c.resources.displayMetrics)
-
     val termYear: String
         get() = with(Calendar.getInstance()) {
             return if (get(Calendar.MONTH) >= Calendar.SEPTEMBER && get(Calendar.MONTH) <= Calendar.DECEMBER) get(Calendar.YEAR).toString() + "-" + (get(Calendar.YEAR) + 1)
             else (get(Calendar.YEAR) - 1).toString() + "-" + get(Calendar.YEAR)
         }
-
-    fun setTabWidthAsWrapContent(tabLayout: TabLayout, tabPosition: Int) {
-        val layout = (tabLayout.getChildAt(0) as LinearLayout).getChildAt(tabPosition) as LinearLayout
-        val layoutParams = layout.layoutParams as LinearLayout.LayoutParams
-        layoutParams.weight = 0f
-        layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.layoutParams = layoutParams
-    }
 
     fun startPopUpWindow(layout: View, root: View, onTouch: View.OnTouchListener?): PopupWindow {
         return PopupWindow(layout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, false).apply {
@@ -66,13 +51,6 @@ object Utils {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 (layout.context as Activity).window.statusBarColor = ContextCompat.getColor(root.context, android.R.color.black)
         }.also { currentPopupWindow = it }
-    }
-
-    fun capEachWord(sentence: String): String {
-        val words = sentence.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val inCaps = StringBuilder()
-        for (word in words) inCaps.append(word[0].toString().toUpperCase()).append(word.substring(1, word.length).toLowerCase()).append(" ")
-        return inCaps.toString()
     }
 
     fun getRelativeTimeSpanString(date: String?, simpleDateFormat: SimpleDateFormat): String =
@@ -139,10 +117,35 @@ object Utils {
 
             return periods
         }
+}
 
-    fun <T> dealWithData(activity: Activity, srcList: Collection<T>?, destList: ArrayList<T>, adapter: RecyclerView.Adapter<*>) {
-        destList.clear()
-        if (srcList != null) destList.addAll(srcList)
-        activity.runOnUiThread { adapter.notifyDataSetChanged() }
+val Double.in2Dp: String get() = if (this < 0) "N/A" else DecimalFormat("##.##").format(this)
+
+val Int.inPx: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+val Float.inPx: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+val Int.screenWidth: Int get() = Resources.getSystem().displayMetrics.widthPixels
+
+val String.capitalizeEachWord: String
+    get() {
+        val words = this.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val inCaps = StringBuilder()
+        for (word in words) inCaps.append(word[0].toString().toUpperCase()).append(word.substring(1, word.length).toLowerCase()).append(" ")
+        return inCaps.toString()
+    }
+
+fun TabLayout.setTabWidthAsWrapContent(tabPosition: Int) {
+    val layout = (this.getChildAt(0) as LinearLayout).getChildAt(tabPosition) as LinearLayout
+    val layoutParams = layout.layoutParams as LinearLayout.LayoutParams
+    layoutParams.weight = 0f
+    layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.layoutParams = layoutParams
+}
+
+fun Activity.enableWhiteStatusBar() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.statusBarColor = ResourcesCompat.getColor(resources, R.color.bgLightGrey, null)
     }
 }

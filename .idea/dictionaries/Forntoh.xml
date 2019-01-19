@@ -2,6 +2,9 @@
   <dictionary name="Forntoh">
     <words>
       <w>cmts</w>
+      <w>coroutines</w>
+      <w>firebase</w>
+      <w>gson</w>
       <w>vids</w>
     </words>
   </dictionary>
