@@ -7,7 +7,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.data.model.main.Course
-import ga.forntoh.bableschool.utils.in2Dp
+import ga.forntoh.bableschool.utilities.in2Dp
 import kotlinx.android.synthetic.main.item_term_subject.view.*
 
 data class ItemScore(var course: Course?, var firstSequenceMark: Double, var secondSequenceMark: Double, var rank: String?, var termRank: String?, var scoreAverage: Double) : Item() {

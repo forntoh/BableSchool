@@ -1,9 +1,7 @@
 package ga.forntoh.bableschool.data.db
 
-import com.raizlabs.android.dbflow.annotation.Database
+import com.dbflow5.annotation.Database
+import com.dbflow5.config.DBFlowDatabase
 
-@Database(name = AppDatabase.NAME, version = AppDatabase.VERSION)
-object AppDatabase {
-    const val NAME: String = "AppDB"
-    const val VERSION = 2
-}
+@Database(version = 1)
+abstract class AppDatabase : DBFlowDatabase()

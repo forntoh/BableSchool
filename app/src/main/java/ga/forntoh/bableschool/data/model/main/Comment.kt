@@ -1,6 +1,6 @@
 package ga.forntoh.bableschool.data.model.main
 
-import com.raizlabs.android.dbflow.annotation.*
+import com.dbflow5.annotation.*
 import ga.forntoh.bableschool.data.db.AppDatabase
 
 @Table(database = AppDatabase::class)

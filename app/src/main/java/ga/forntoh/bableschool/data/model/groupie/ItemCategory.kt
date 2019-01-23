@@ -7,11 +7,11 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.utils.SquareConstraintLayout
-import ga.forntoh.bableschool.utils.inPx
+import ga.forntoh.bableschool.internal.SquareConstraintLayout
+import ga.forntoh.bableschool.utilities.inPx
 import kotlinx.android.synthetic.main.item_category.view.*
 
-data class ItemCategory(var title: String?, var thumbnail: String?, var color: String?) : Item() {
+data class ItemCategory(var identity: Long, var title: String?, var thumbnail: String?, var color: String?) : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.category_title.text = title

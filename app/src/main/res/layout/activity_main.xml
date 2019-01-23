@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.category.CategoriesActivity">
 
     <include
         android:id="@+id/toolbar"

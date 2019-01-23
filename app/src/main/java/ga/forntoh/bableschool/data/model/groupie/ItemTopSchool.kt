@@ -4,8 +4,8 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.utils.capitalizeEachWord
-import ga.forntoh.bableschool.utils.in2Dp
+import ga.forntoh.bableschool.utilities.capitalizeEachWord
+import ga.forntoh.bableschool.utilities.in2Dp
 import kotlinx.android.synthetic.main.item_school_ranking.view.*
 
 data class ItemTopSchool(var schoolName: String?, var image: String?, var topStudentName: String, var average: Double) : Item() {

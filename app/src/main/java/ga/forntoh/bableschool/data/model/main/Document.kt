@@ -1,18 +1,17 @@
 package ga.forntoh.bableschool.data.model.main
 
 import androidx.annotation.DrawableRes
-import com.raizlabs.android.dbflow.annotation.*
+import com.dbflow5.annotation.*
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.data.db.AppDatabase
 
 @Table(database = AppDatabase::class)
 data class Document(
-        @PrimaryKey(autoincrement = true) var id: Long = 0,
         @ForeignKey(tableClass = Course::class, references = [ForeignKeyReference(columnName = "courseCode", foreignKeyColumnName = "code")]) var courseCode: String? = null,
         @Column var title: String? = null,
         @Column var author: String? = null,
         @Column var size: String? = null,
-        @Column var url: String? = null
+        @PrimaryKey var url: String? = null
 ) {
     val type: Int
         @DrawableRes get() {

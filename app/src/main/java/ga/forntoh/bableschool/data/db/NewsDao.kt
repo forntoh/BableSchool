@@ -1,11 +1,20 @@
 package ga.forntoh.bableschool.data.db
 
+import androidx.lifecycle.LiveData
+import ga.forntoh.bableschool.data.model.main.Comment
 import ga.forntoh.bableschool.data.model.main.News
-import kotlinx.coroutines.Deferred
 
-interface NewsDao : DBProvider<AppDatabase> {
+interface NewsDao {
 
-    fun saveNews(news: News) = news.save()
+    fun retrieveAllNews(): MutableList<News>
 
-    fun retrieveNews(): Deferred<MutableList<News>>
+    fun retrieveSingleNews(id: Long): News?
+
+    fun retrieveComments(id: Long): LiveData<MutableList<Comment>>
+
+    fun saveNews(news: List<News>)
+
+    fun saveComment(comment: Comment)
+
+    fun saveLike(id: Long, liked: Boolean)
 }

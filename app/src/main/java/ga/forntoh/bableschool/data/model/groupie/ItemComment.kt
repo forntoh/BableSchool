@@ -4,7 +4,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.utils.Utils
+import ga.forntoh.bableschool.utilities.Utils
 import kotlinx.android.synthetic.main.item_comment.view.*
 import java.text.SimpleDateFormat
 import java.util.*

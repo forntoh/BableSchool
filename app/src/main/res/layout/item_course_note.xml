@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ga.forntoh.bableschool.utils.SquareConstraintLayout
+    <ga.forntoh.bableschool.internal.SquareConstraintLayout
         android:id="@+id/subject_circle"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Bio" />
-    </ga.forntoh.bableschool.utils.SquareConstraintLayout>
+    </ga.forntoh.bableschool.internal.SquareConstraintLayout>
 
     <TextView
         android:id="@+id/subject_title"

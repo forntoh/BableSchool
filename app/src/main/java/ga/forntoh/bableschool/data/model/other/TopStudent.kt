@@ -1,8 +1,8 @@
 package ga.forntoh.bableschool.data.model.other
 
-import com.raizlabs.android.dbflow.annotation.Column
-import com.raizlabs.android.dbflow.annotation.PrimaryKey
-import com.raizlabs.android.dbflow.annotation.Table
+import com.dbflow5.annotation.Column
+import com.dbflow5.annotation.PrimaryKey
+import com.dbflow5.annotation.Table
 import ga.forntoh.bableschool.data.db.AppDatabase
 
 @Table(database = AppDatabase::class)
