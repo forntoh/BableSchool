@@ -39,6 +39,6 @@ class NewsDaoImpl(private val database: AppDatabase) : NewsDao {
     override fun saveLike(id: Long, liked: Boolean) {
         (update<News>()
                 set (News_Table.liked eq liked)
-                where (News_Table.id eq id)).executeUpdateDelete(database)
+                where (News_Table.id eq id)).execute(database)
     }
 }

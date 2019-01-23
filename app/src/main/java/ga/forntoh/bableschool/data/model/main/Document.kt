@@ -15,12 +15,16 @@ data class Document(
 ) {
     val type: Int
         @DrawableRes get() {
-            val words = url!!.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val ext = words[words.size - 1].toLowerCase()
-            return when (ext) {
+            return when (extension) {
                 "pdf" -> R.drawable.ic_pdf
                 "doc" -> R.drawable.ic_doc
                 else -> -1
             }
+        }
+
+    val extension: String
+        get() {
+            val words = url!!.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            return words[words.size - 1].toLowerCase()
         }
 }

@@ -1,12 +1,15 @@
 package ga.forntoh.bableschool.ui.category.courseNotes.detail
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -105,7 +108,7 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
         course.videos?.map { ItemVideo(it.courseCode, it.title, it.author, it.duration, it.url, it.thumbnail) }?.let {
             videosSection.update(it)
         }
-        course.documents?.map { ItemDocument(it.courseCode, it.title, it.author, it.size, it.url, it.type) }?.let {
+        course.documents?.map { ItemDocument(it.courseCode, it.title, it.author, it.size, it.url, it.type, it.extension) }?.let {
             documentsSection.update(it)
         }
     }
@@ -122,14 +125,21 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
                     .asFile(object : FileRequestListener<File> {
                         override fun onLoad(request: FileLoadRequest, response: FileResponse<File>) {
                             val loadedFile = response.body
-                            layout.pdfView.fromFile(loadedFile)
-                                    .defaultPage(0)
-                                    .enableSwipe(true)
-                                    .enableDoubletap(true)
-                                    .enableAntialiasing(true)
-                                    .spacing(4)
-                                    .onLoad { layout.progressBar.visibility = View.GONE }
-                                    .load()
+
+                            if (item.extension != "pdf") {
+                                activity?.startActivity(Intent().apply {
+                                    action = Intent.ACTION_VIEW
+                                    setDataAndType(Uri.fromFile(loadedFile), MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(item.url)))
+                                })
+                            } else
+                                layout.pdfView.fromFile(loadedFile)
+                                        .defaultPage(0)
+                                        .enableSwipe(true)
+                                        .enableDoubletap(true)
+                                        .enableAntialiasing(true)
+                                        .spacing(4)
+                                        .onLoad { layout.progressBar.visibility = View.GONE }
+                                        .load()
                         }
 
                         override fun onError(request: FileLoadRequest, t: Throwable) {

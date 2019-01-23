@@ -5,7 +5,7 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import ga.forntoh.bableschool.R
 import kotlinx.android.synthetic.main.item_document.view.*
 
-data class ItemDocument(var courseCode: String?, var title: String?, var author: String?, var size: String?, var url: String?, val type: Int) : Item() {
+data class ItemDocument(var courseCode: String?, var title: String?, var author: String?, var size: String?, var url: String?, val type: Int, val extension: String?) : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.document_title.text = title

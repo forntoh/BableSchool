@@ -142,10 +142,11 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getTermScores(uid: String, term: Int, year: String) {
         try {
-            val fetchedScores = apiService.getTermScores(uid, term, year).await()
-            val temp = ArrayList<Score>()
-            fetchedScores.forEach { it.term = term; temp.add(it) }
-            _downloadedTermScores.postValue(temp)
+            val fetchedScores = ArrayList<Score>()
+            apiService.getTermScores(uid, term, year).await().forEach {
+                it.term = term; fetchedScores.add(it)
+            }
+            _downloadedTermScores.postValue(fetchedScores)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
         }

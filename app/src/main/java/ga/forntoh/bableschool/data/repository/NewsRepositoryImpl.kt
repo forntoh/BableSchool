@@ -53,7 +53,10 @@ class NewsRepositoryImpl(
 
     // Main
     override suspend fun likeNews(id: Long, liked: Boolean) {
-        appStorage.loadUser()?.profileData?.matriculation?.let { bableSchoolDataSource.likeNews(it, id) }
+        appStorage.loadUser()?.profileData?.matriculation?.let {
+            newsDao.saveLike(id, liked)
+            bableSchoolDataSource.likeNews(it, id)
+        }
     }
 
     override fun observableLikes() = bableSchoolDataSource.downloadedLikes

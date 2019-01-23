@@ -8,7 +8,7 @@ import ga.forntoh.bableschool.data.db.AppDatabase
 
 @Table(database = AppDatabase::class)
 data class Score(
-        @PrimaryKey(autoincrement = true) var id: Long = 0, // TODO: Find an appropriate Primary Key
+        @PrimaryKey
         @ForeignKey(saveForeignKeyModel = true) var course: Course? = null,
         @Column var firstSequenceMark: Double = 0.toDouble(),
         @Column var secondSequenceMark: Double = 0.toDouble(),
@@ -16,6 +16,6 @@ data class Score(
         @Column var termRank: String? = null
 ) {
     val scoreAverage: Double get() = if (firstSequenceMark < 0 || secondSequenceMark < 0) -1.0 else (firstSequenceMark + secondSequenceMark) / 2.0
-    @Column
+    @PrimaryKey
     var term: Int = 1
 }
