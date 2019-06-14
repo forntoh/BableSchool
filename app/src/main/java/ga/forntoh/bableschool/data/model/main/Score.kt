@@ -10,8 +10,8 @@ import ga.forntoh.bableschool.data.db.AppDatabase
 data class Score(
         @PrimaryKey
         @ForeignKey(saveForeignKeyModel = true) var course: Course? = null,
-        @Column var firstSequenceMark: Double = 0.toDouble(),
-        @Column var secondSequenceMark: Double = 0.toDouble(),
+        @Column var firstSequenceMark: Double = 0.0,
+        @Column var secondSequenceMark: Double = 0.0,
         @Column var rank: String? = null,
         @Column var termRank: String? = null
 ) {

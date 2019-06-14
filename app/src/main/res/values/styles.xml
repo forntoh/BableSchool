@@ -23,4 +23,20 @@
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
+    <style name="Clickable" parent="Theme.AppCompat.Light">
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Clickable.ExoControl" parent="@style/Clickable">
+        <item name="android:foreground">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="SmallText" parent="@android:style/TextAppearance">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
 </resources>

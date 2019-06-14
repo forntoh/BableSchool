@@ -68,7 +68,7 @@ class NewsDetailFragment : ScopedFragment(), KodeinAware {
         val groupAdapter = GroupAdapter<ViewHolder>().apply { add(section) }
 
         rv_comments.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, true)
             adapter = groupAdapter
             addItemDecoration(InsetDecoration(16))
         }

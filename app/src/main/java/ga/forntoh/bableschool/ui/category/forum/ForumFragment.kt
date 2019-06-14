@@ -41,8 +41,8 @@ class ForumFragment : androidx.fragment.app.Fragment() {
         }
 
         private fun getUsers(forum: DefaultDialog, toAdd: Boolean) {
-            if (forum.activeForumUsers!!.find { it == AppStorage(context!!).loadUser()?.profileData?.matriculation }.isNullOrEmpty()) return
-            forum.activeForumUsers.forEach {
+            if (forum.activeForumUsers?.find { it == AppStorage(context!!).loadUser()?.profileData?.matriculation }.isNullOrEmpty()) return
+            forum.activeForumUsers?.forEach {
                 database.getReference("users").child(it)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {

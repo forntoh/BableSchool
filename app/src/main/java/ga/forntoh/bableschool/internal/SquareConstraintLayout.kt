@@ -13,7 +13,7 @@ class SquareConstraintLayout : androidx.constraintlayout.widget.ConstraintLayout
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         try {
-            val params = this.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+            val params = this.layoutParams as LayoutParams
             if (params.height == 0)
                 super.onMeasure(heightMeasureSpec, heightMeasureSpec)
             else
