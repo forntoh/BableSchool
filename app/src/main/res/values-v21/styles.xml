@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ToolBar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:elevation">6dp</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+</resources>
