@@ -10,4 +10,8 @@ class CategoryViewModel(private val categoryRepository: CategoryRepository) : Vi
         categoryRepository.retrieveCategories()
     }
 
+    val isPasswordChanged = categoryRepository.passwordChanged()
+
+    fun setPasswordChanged() = categoryRepository.setPasswordChanged()
+
 }

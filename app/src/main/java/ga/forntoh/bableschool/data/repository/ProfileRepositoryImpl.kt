@@ -24,9 +24,15 @@ class ProfileRepositoryImpl(
     override suspend fun login(matriculation: String, password: String) =
             bableSchoolDataSource.getUserProfile(matriculation, password)
 
-    override fun logout() = appStorage.clearUser()
+    override fun logout() {
+        appStorage.clearUser()
+        appStorage.setChangedPassword(false)
+    }
 
     override suspend fun getUser(): User? = withContext(Dispatchers.IO) {
         return@withContext appStorage.loadUser()
     }
+
+    override suspend fun updatePassword(matriculation: String, password: String) =
+            bableSchoolDataSource.updatePassword(matriculation, appStorage.loadUser()?.profileDataMap()?.get("Password")!!, password)
 }

@@ -51,6 +51,11 @@ dependencies {
     implementation 'com.github.AndroidDeveloperLB:Android-Week-View:2.3.0.1'
     implementation 'com.github.stfalcon:chatkit:0.3.3'
 
+    // Material Dialogs
+    implementation 'com.afollestad.material-dialogs:core:3.0.1'
+    implementation 'com.afollestad.material-dialogs:input:3.1.0'
+    implementation 'com.afollestad.material-dialogs:lifecycle:3.0.1'
+
     // Navigation
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
     implementation "android.arch.navigation:navigation-ui:$navigation_version"
@@ -96,7 +101,7 @@ dependencies {
     implementation 'org.kodein.di:kodein-di-framework-android-x:6.0.1'
 
     // Better date-time support
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
 
     // ExoPlayer
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"

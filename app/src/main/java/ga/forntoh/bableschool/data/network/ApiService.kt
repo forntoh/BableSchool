@@ -13,7 +13,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import tech.linjiang.pandora.Pandora
+//import tech.linjiang.pandora.Pandora
 import java.util.concurrent.TimeUnit
 
 interface ApiService {
@@ -60,6 +60,14 @@ interface ApiService {
     ): Deferred<User>
 
     @FormUrlEncoded
+    @POST("profile/setpassword")
+    fun updatePassword(
+            @Field("matricule") uid: String,
+            @Field("oldpassword") oldPassword: String,
+            @Field("newpassword") newPassword: String
+    ): Deferred<User>
+
+    @FormUrlEncoded
     @POST("scores/{uid}")
     fun getTermScores(
             @Path("uid") uid: String,
@@ -96,7 +104,7 @@ interface ApiService {
                     .writeTimeout(1, TimeUnit.MINUTES)
                     .addInterceptor(requestInterceptor)
                     .addInterceptor(connectivityInterceptor)
-                    .addInterceptor(Pandora.get().interceptor)
+                    //.addInterceptor(Pandora.get().interceptor)
                     .build()
 
             return Retrofit.Builder()

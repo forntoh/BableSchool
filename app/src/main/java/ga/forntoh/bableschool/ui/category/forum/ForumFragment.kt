@@ -24,7 +24,6 @@ class ForumFragment : androidx.fragment.app.Fragment() {
     private val database by lazy { FirebaseDatabase.getInstance() }
     private val dialogsListAdapter by lazy {
         DialogsListAdapter<DefaultDialog>(R.layout.item_dialog) { imageView, url, _ ->
-            imageView.setBackgroundColor(Color.WHITE)
             if (!url.isNullOrEmpty()) Picasso.get().load(url).fit().centerCrop().into(imageView)
             else Picasso.get().load(R.drawable.placeholder).fit().centerCrop().into(imageView)
         }

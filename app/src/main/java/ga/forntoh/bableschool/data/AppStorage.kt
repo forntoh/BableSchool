@@ -3,6 +3,7 @@ package ga.forntoh.bableschool.data
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
+import com.dbflow5.structure.save
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ga.forntoh.bableschool.data.model.main.User
@@ -46,6 +47,12 @@ class AppStorage {
         preferences.edit().apply { putLong(key.name, time.toInstant().toEpochMilli()); apply() }
     }
 
+    fun setChangedPassword(isChanged: Boolean) {
+        save("isChanged", isChanged)
+    }
+
+    fun getChangedPassword() = loadB("isChanged")
+
     fun clearLastSaved(key: DataKey) = clear(key.name)
 
     private fun save(key: String, value: String?) {
@@ -55,9 +62,17 @@ class AppStorage {
         editor.apply()
     }
 
+    private fun save(key: String, value: Boolean) {
+        val editor = preferences.edit()
+        editor.putBoolean(key, value)
+        editor.apply()
+    }
+
     private fun load(key: String): String = with(preferences.getString(key, "")) {
         if (this.isNullOrEmpty()) "" else decode(this)
     }
+
+    private fun loadB(key: String) = preferences.getBoolean(key, false)
 
     private fun clear(key: String) {
         preferences.edit().apply { remove(key); apply() }

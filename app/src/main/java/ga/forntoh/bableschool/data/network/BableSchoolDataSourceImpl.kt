@@ -140,6 +140,15 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
         }
     }
 
+    override suspend fun updatePassword(uid: String, oldPassword: String, newPassword: String) {
+        try {
+            val fetchedUser = apiService.updatePassword(uid, oldPassword, newPassword).await()
+            _downloadedUserProfile.postValue(fetchedUser)
+        } catch (e: NoConnectivityException) {
+            Log.e("Connectivity", "No Internet", e)
+        }
+    }
+
     override suspend fun getTermScores(uid: String, term: Int, year: String) {
         try {
             val fetchedScores = ArrayList<Score>()

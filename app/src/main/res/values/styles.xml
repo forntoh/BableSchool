@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,6 +9,8 @@
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:textColor">@color/textDarker</item>
         <item name="android:fontFamily">@font/roboto</item>
+
+        <item name="md_color_button_text">@color/textBlue</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat">

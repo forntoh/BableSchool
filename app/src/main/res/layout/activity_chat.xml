@@ -15,7 +15,18 @@
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        app:incomingBubbleDrawable="@drawable/shape_incoming_message"
+        app:incomingBubblePaddingBottom="8dp"
+        app:incomingBubblePaddingLeft="8dp"
+        app:incomingBubblePaddingRight="8dp"
+        app:incomingBubblePaddingTop="8dp"
+        app:incomingTimeTextSize="12sp"
+        app:outcomingBubblePaddingBottom="8dp"
+        app:outcomingBubblePaddingLeft="8dp"
+        app:outcomingBubblePaddingRight="8dp"
+        app:outcomingBubblePaddingTop="8dp"
+        app:outcomingTimeTextSize="12sp" />
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"

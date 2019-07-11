@@ -8,12 +8,14 @@ import com.google.firebase.database.*
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
+import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.data.AppStorage
 import ga.forntoh.bableschool.data.model.forum.DefaultDialog
 import ga.forntoh.bableschool.data.model.forum.FUser
 import ga.forntoh.bableschool.data.model.forum.Message
+import ga.forntoh.bableschool.internal.IncomingMessageViewHolder
 import ga.forntoh.bableschool.ui.base.BaseActivity
 import ga.forntoh.bableschool.utilities.enableWhiteStatusBar
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -25,7 +27,10 @@ class ChatActivity : BaseActivity() {
     private val fUsers: ArrayList<FUser> = ArrayList()
     private val database by lazy { FirebaseDatabase.getInstance() }
     private val messagesListAdapter by lazy {
-        MessagesListAdapter<Message>(AppStorage(this).loadUser()?.profileData?.matriculation, ImageLoader { imageView, url, _ ->
+        val holdersConfig = MessageHolders().apply {
+            setIncomingTextConfig(IncomingMessageViewHolder::class.java ,R.layout.item_incoming_text_message)
+        }
+        MessagesListAdapter<Message>(AppStorage(this).loadUser()?.profileData?.matriculation, holdersConfig, ImageLoader { imageView, url, _ ->
             imageView.setBackgroundColor(Color.WHITE)
             Picasso.get().load(url).fit().centerCrop().into(imageView)
         })
@@ -81,6 +86,9 @@ class ChatActivity : BaseActivity() {
         val myRef = database.getReference("forumGroup").child(dialog.id)
 
         fUsers.addAll(dialog.users)
+        fUsers.forEachIndexed { index, user ->
+            user.color = resources.getStringArray(R.array.material_colors)[index  % fUsers.size]
+        }
 
         myRef.addChildEventListener(messageListener)
 

@@ -9,6 +9,9 @@ class ProfileViewModel(private val userRepository: ProfileRepository) : ViewMode
     suspend fun login(matriculation: String, password: String) =
             userRepository.login(matriculation, password)
 
+    suspend fun updatePassword(matriculation: String, password: String) =
+            userRepository.updatePassword(matriculation, password)
+
     fun logout() = userRepository.logout()
 
     val user by lazyDeferred {

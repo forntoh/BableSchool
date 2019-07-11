@@ -32,4 +32,10 @@
     <string name="hint_enter_a_message">Type a message…</string>
     <string name="date_header_yesterday">Yesterday</string>
 
+    <string name="save">Save</string>
+
+    <string name="change_password">Change password</string>
+    <string name="change_pass_message">You might be using the default password given to you by the system, please update your password to prevent unauthorised modification of your information, if you have already changed it, you can ignore this message.</string>
+    <string name="change_pass_title">Change your password</string>
+
 </resources>

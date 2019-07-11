@@ -9,4 +9,6 @@ interface ProfileRepository {
     suspend fun getUser(): User?
 
     fun logout()
+
+    suspend fun updatePassword(matriculation: String, password: String)
 }
