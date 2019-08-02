@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,14 +33,11 @@ import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.internal.exo.PlayerHolder
 import ga.forntoh.bableschool.internal.exo.PlayerState
 import ga.forntoh.bableschool.ui.base.ScopedFragment
-import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.courseNotes.CourseNotesViewModel
 import ga.forntoh.bableschool.ui.category.courseNotes.CourseNotesViewModelFactory
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModel
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModelFactory
-import ga.forntoh.bableschool.utilities.Utils
 import ga.forntoh.bableschool.utilities.inPx
-import kotlinx.android.synthetic.main.dialog_pdf_viewer.view.*
 import kotlinx.android.synthetic.main.exo_controller_ui.view.*
 import kotlinx.android.synthetic.main.fragment_course_note.*
 import kotlinx.android.synthetic.main.item_video.view.*
@@ -133,9 +129,6 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
     @SuppressLint("InflateParams")
     private val onDocumentClickListener = OnItemClickListener { item, _ ->
         if (item is ItemDocument) {
-            val layout = LayoutInflater.from(context).inflate(R.layout.dialog_pdf_viewer, null)
-            Utils.startPopUpWindow(layout, view!!, null)
-
             FileLoader.with(context)
                     .load(item.url, false)
                     .fromDirectory(context?.getString(R.string.app_name), FileLoader.DIR_INTERNAL)
@@ -148,23 +141,15 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
                                     action = Intent.ACTION_VIEW
                                     setDataAndType(Uri.fromFile(loadedFile), MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(item.url)))
                                 })
-                            } else
-                                layout.pdfView.fromFile(loadedFile)
-                                        .defaultPage(0)
-                                        .enableSwipe(true)
-                                        .enableDoubletap(true)
-                                        .enableAntialiasing(true)
-                                        .spacing(4)
-                                        .onLoad { layout.progressBar.visibility = View.GONE }
-                                        .load()
+                            } else {
+                                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                                    setDataAndType(Uri.fromFile(loadedFile), "application/pdf")
+                                })
+                            }
+
                         }
 
-                        override fun onError(request: FileLoadRequest, t: Throwable) {
-                            layout.progressBar.visibility = View.GONE
-                            t.printStackTrace()
-                            Toast.makeText(context, t.message, Toast.LENGTH_LONG).show()
-                            (context as CategoryActivity).onBackPressed()
-                        }
+                        override fun onError(request: FileLoadRequest, t: Throwable) = Unit
                     })
         }
     }

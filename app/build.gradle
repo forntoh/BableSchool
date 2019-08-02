@@ -31,6 +31,10 @@ android {
     }
     lintOptions {
         disable 'ContentDescription'
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 
@@ -45,7 +49,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    //implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
     implementation 'com.github.kk121:File-Loader:1.2'
     implementation 'com.github.AnyChart:AnyChart-Android:1.0.2'
     implementation 'com.github.AndroidDeveloperLB:Android-Week-View:2.3.0.1'
