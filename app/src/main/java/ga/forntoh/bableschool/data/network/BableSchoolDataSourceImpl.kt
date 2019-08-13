@@ -11,6 +11,7 @@ import ga.forntoh.bableschool.data.model.other.Likes
 import ga.forntoh.bableschool.data.model.other.TopSchool
 import ga.forntoh.bableschool.data.model.other.TopStudent
 import ga.forntoh.bableschool.internal.NoConnectivityException
+import java.net.SocketTimeoutException
 
 @SuppressLint("LogNotTimber")
 class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoolDataSource {
@@ -65,6 +66,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedCategories.postValue(fetchedCategories)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -74,6 +77,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedTopSchools.postValue(fetchedTopSchools)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -83,6 +88,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedCourseNotes.postValue(fetchedCourseNotes)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -92,6 +99,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedTopStudents.postValue(fetchedTopStudents)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -110,6 +119,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedTimetable.postValue(fetchedTimetable)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -119,6 +130,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedComment.postValue(fetchedComment)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -128,6 +141,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedLikes.postValue(fetchedLikes)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -137,6 +152,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedUserProfile.postValue(fetchedUser)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -146,6 +163,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedUserProfile.postValue(fetchedUser)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -158,6 +177,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedTermScores.postValue(fetchedScores)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 
@@ -167,6 +188,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
             _downloadedAnnualRank.postValue(fetchedRank)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
+        } catch (e: SocketTimeoutException) {
+            Log.e("SocketTimeout", "Could not connect to server")
         }
     }
 }

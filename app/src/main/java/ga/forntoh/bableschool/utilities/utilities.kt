@@ -4,20 +4,18 @@ import android.app.Activity
 import android.content.res.Resources
 import android.os.Build
 import android.text.format.DateUtils
-import android.transition.ChangeBounds
-import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.tripl3dev.prettystates.StatesConstants
+import com.tripl3dev.prettystates.setState
+import com.xwray.groupie.Section
 import ga.forntoh.bableschool.R
 import ga.forntoh.bableschool.data.model.main.Period
 import org.threeten.bp.ZonedDateTime
@@ -161,4 +159,14 @@ fun View.clipAllParents() {
 fun isFetchNeeded(lastFetchedTime: ZonedDateTime, minutes: Long = 5): Boolean {
     val fiveMinutesAgo = ZonedDateTime.now().minusMinutes(minutes)
     return lastFetchedTime.isBefore(fiveMinutesAgo)
+}
+
+fun RecyclerView.toggleViewState(section: Section) {
+    if (section.itemCount < 1) this.setState(StatesConstants.EMPTY_STATE)
+    else this.setState(StatesConstants.NORMAL_STATE)
+}
+
+fun RecyclerView.invalidateViewState() {
+    this.setState(StatesConstants.NORMAL_STATE)
+    this.setState(StatesConstants.LOADING_STATE)
 }

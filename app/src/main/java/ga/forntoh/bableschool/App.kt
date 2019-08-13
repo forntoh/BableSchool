@@ -10,6 +10,7 @@ import com.dbflow5.config.FlowManager
 import com.dbflow5.config.GeneratedDatabaseHolder
 import com.google.firebase.database.FirebaseDatabase
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.tripl3dev.prettystates.StatesConfigFactory
 import ga.forntoh.bableschool.data.AppStorage
 import ga.forntoh.bableschool.data.db.*
 import ga.forntoh.bableschool.data.network.*
@@ -82,6 +83,9 @@ class App : MultiDexApplication(), KodeinAware {
         FlowManager.init(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         AndroidThreeTen.init(this)
+        StatesConfigFactory.intialize().initViews()
+                .setDefaultEmptyLayout(R.layout.state_empty)
+                .setDefaultLoadingLayout(R.layout.state_loading)
     }
 
     override fun onTerminate() {

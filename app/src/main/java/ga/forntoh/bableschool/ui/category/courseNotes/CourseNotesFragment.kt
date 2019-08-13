@@ -15,6 +15,8 @@ import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
 import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.courseNotes.detail.CourseNoteFragment
+import ga.forntoh.bableschool.utilities.invalidateViewState
+import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.fragment_course_notes.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -38,10 +40,11 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CourseNotesViewModel::class.java)
+        init()
         buildUI()
     }
 
-    private fun buildUI() = launch {
+    private fun init() {
         val groupAdapter = GroupAdapter<ViewHolder>().apply { setOnItemClickListener(this@CourseNotesFragment) }
 
         rv_course_notes.apply {
@@ -49,10 +52,12 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
             adapter = groupAdapter
             addItemDecoration(InsetDecoration(16))
         }
-
         groupAdapter.add(section)
+    }
 
-        section.update(viewModel.allCourseNotes.await().map { it.toCourseView() })
+    private fun buildUI() = launch {
+        rv_course_notes.invalidateViewState()
+        rv_course_notes.toggleViewState(section.apply { update(viewModel.allCourseNotes.await().map { it.toCourseView() }) })
     }
 
     override fun onItemClick(item: Item<*>, view: View) {

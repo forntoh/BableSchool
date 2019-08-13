@@ -38,4 +38,6 @@
     <string name="change_pass_message">You might be using the default password given to you by the system, please update your password to prevent unauthorised modification of your information, if you have already changed it, you can ignore this message.</string>
     <string name="change_pass_title">Change your password</string>
 
+    <string name="state_empty">There are no items</string>
+    <string name="state_loading">Loading…</string>
 </resources>

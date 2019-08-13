@@ -2,7 +2,6 @@ package ga.forntoh.bableschool.ui.category
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -34,7 +33,7 @@ class CategoriesActivity : BaseActivity(), KodeinAware {
         setContentView(R.layout.activity_main)
         disableFlags(true)
         enableWhiteStatusBar()
-        setSupportActionBar(toolbar as Toolbar?)
+        setSupportActionBar(findViewById(R.id.toolbar))
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CategoryViewModel::class.java)
         buildUI()
     }

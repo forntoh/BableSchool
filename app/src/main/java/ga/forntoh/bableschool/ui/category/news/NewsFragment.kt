@@ -18,6 +18,8 @@ import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
 import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.news.detail.NewsDetailFragment
+import ga.forntoh.bableschool.utilities.invalidateViewState
+import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -42,10 +44,11 @@ class NewsFragment : ScopedFragment(), KodeinAware {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NewsViewModel::class.java)
+        init()
         buildUI()
     }
 
-    private fun buildUI() = launch {
+    private fun init() {
         val topNewsAdapter = GroupAdapter<ViewHolder>().apply {
             add(topNewsSection)
             setOnItemClickListener(onItemClickListener)
@@ -65,13 +68,17 @@ class NewsFragment : ScopedFragment(), KodeinAware {
             adapter = allNewsAdapter
             addItemDecoration(InsetDecoration(16))
         }
+    }
+
+    private fun buildUI() = launch {
+        rv_top_news.invalidateViewState()
+        rv_all_news.invalidateViewState()
 
         val news = viewModel.allNews.await()
-
         val mappedNews = news.map { it.toNewsView() }
 
-        topNewsSection.update(mappedNews.filter { it.isTop })
-        allNewsSection.update(mappedNews.filterNot { it.isTop })
+        rv_top_news.toggleViewState(topNewsSection.apply { update(mappedNews.filter { it.isTop }) })
+        rv_all_news.toggleViewState(allNewsSection.apply { update(mappedNews.filterNot { it.isTop }) })
     }
 
     private val onItemClickListener = OnItemClickListener { item, _ ->
