@@ -1,17 +1,25 @@
 package ga.forntoh.bableschool.data.model.main
 
-import com.dbflow5.annotation.*
-import ga.forntoh.bableschool.data.db.AppDatabase
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import ga.forntoh.bableschool.data.model.groupie.ItemVideo
 
-@Table(database = AppDatabase::class)
+@Entity(
+        foreignKeys = [ForeignKey(
+                entity = Course::class,
+                parentColumns = ["code"],
+                childColumns = ["courseCode"]
+        )]
+)
 data class Video(
-        @ForeignKey(tableClass = Course::class, references = [ForeignKeyReference(columnName = "courseCode", foreignKeyColumnName = "code")]) var courseCode: String? = null,
-        @Column var title: String? = null,
-        @Column var author: String? = null,
-        @Column var duration: String? = null,
-        @PrimaryKey var url: String? = null,
-        @Column var thumbnail: String? = null
+        @ColumnInfo(index = true) var courseCode: String? = null,
+        @ColumnInfo var title: String? = null,
+        @ColumnInfo var author: String? = null,
+        @ColumnInfo var duration: String? = null,
+        @PrimaryKey var url: String = "",
+        @ColumnInfo var thumbnail: String? = null
 )
 
 fun Video.toVideoView() = ItemVideo(courseCode, title, author, duration, url, thumbnail)

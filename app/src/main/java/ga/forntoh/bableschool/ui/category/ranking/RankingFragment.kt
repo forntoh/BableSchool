@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,8 @@ import ga.forntoh.bableschool.data.model.groupie.ItemTopSchool
 import ga.forntoh.bableschool.data.model.groupie.ItemTopStudent
 import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
+import ga.forntoh.bableschool.utilities.invalidateViewState
+import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.fragment_ranking.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -57,7 +60,14 @@ class RankingFragment : ScopedFragment(), KodeinAware {
         val topStudentSection = Section().apply { topStudentsAdapter.add(this) }
         val topSchoolSection = Section().apply { topSchoolAdapter.add(this) }
 
-        topStudentSection.update(viewModel.topStudent.await().map { ItemTopStudent(it.name, it.surname, it.image, it.school, it.average) })
-        topSchoolSection.update(viewModel.topSchool.await().map { ItemTopSchool(it.schoolName, it.image, it.topStudentName, it.average) })
+        rv_top_students.invalidateViewState()
+        rv_school_ranking.invalidateViewState()
+
+        viewModel.topStudent.await().observe(viewLifecycleOwner, Observer { list ->
+            rv_top_students.toggleViewState(topStudentSection.apply { update(list.map { ItemTopStudent(it.name, it.surname, it.image, it.school, it.average) }) })
+        })
+        viewModel.topSchool.await().observe(viewLifecycleOwner, Observer { list ->
+            rv_school_ranking.toggleViewState(topSchoolSection.apply { update(list.map { ItemTopSchool(it.schoolName, it.image, it.topStudentName, it.average) }) })
+        })
     }
 }

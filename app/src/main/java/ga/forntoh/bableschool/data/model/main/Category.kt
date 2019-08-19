@@ -1,17 +1,16 @@
 package ga.forntoh.bableschool.data.model.main
 
-import com.dbflow5.annotation.Column
-import com.dbflow5.annotation.PrimaryKey
-import com.dbflow5.annotation.Table
-import ga.forntoh.bableschool.data.db.AppDatabase
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import ga.forntoh.bableschool.data.model.groupie.ItemCategory
 
-@Table(database = AppDatabase::class)
+@Entity
 data class Category(
         @PrimaryKey var id: Long = 0,
-        @Column var title: String? = null,
-        @Column var thumbnail: String? = null,
-        @Column var color: String? = null
+        @ColumnInfo var title: String? = null,
+        @ColumnInfo var thumbnail: String? = null,
+        @ColumnInfo var color: String? = null
 )
 
 fun Category.toCategoryView() = ItemCategory(id, title, thumbnail, color)

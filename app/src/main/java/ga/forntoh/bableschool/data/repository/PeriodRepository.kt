@@ -1,8 +1,9 @@
 package ga.forntoh.bableschool.data.repository
 
+import androidx.lifecycle.LiveData
 import ga.forntoh.bableschool.data.model.main.Period
 
-interface PeriodRepository {
+abstract class PeriodRepository : BaseRepository() {
 
-    suspend fun retrievePeriods(): MutableList<Period>
+    abstract suspend fun retrievePeriods(): LiveData<MutableList<Period>?>
 }

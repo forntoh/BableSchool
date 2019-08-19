@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
@@ -39,7 +40,7 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CourseNotesViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CourseNotesViewModel::class.java)
         init()
         buildUI()
     }
@@ -57,7 +58,17 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
 
     private fun buildUI() = launch {
         rv_course_notes.invalidateViewState()
-        rv_course_notes.toggleViewState(section.apply { update(viewModel.allCourseNotes.await().map { it.toCourseView() }) })
+
+        viewModel.allCourseNotes.await().observe(viewLifecycleOwner, Observer { courses ->
+            if (!courses.isNullOrEmpty()) {
+                rv_course_notes.toggleViewState(section.apply {
+                    update(courses.map {
+                        viewModel.code = it.code
+                        it.toCourseView(/*viewModel.numberOfVideos*/ 0, /*viewModel.numberOfDocuments.await()*/ 0)
+                    })
+                })
+            }
+        })
     }
 
     override fun onItemClick(item: Item<*>, view: View) {

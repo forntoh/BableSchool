@@ -3,11 +3,16 @@
 package ga.forntoh.bableschool.ui.category.news
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import ga.forntoh.bableschool.data.model.main.Comment
 import ga.forntoh.bableschool.data.repository.NewsRepository
 import ga.forntoh.bableschool.internal.lazyDeferred
 
 class NewsViewModel(private val newsRepository: NewsRepository) : ViewModel() {
+
+    init {
+        newsRepository.scope = viewModelScope
+    }
 
     var id: Long = 0
 

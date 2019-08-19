@@ -1,20 +1,29 @@
 package ga.forntoh.bableschool.data.model.main
 
-import com.dbflow5.annotation.*
-import ga.forntoh.bableschool.data.db.AppDatabase
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import ga.forntoh.bableschool.data.model.groupie.ItemComment
 
-@Table(database = AppDatabase::class)
+@Entity(
+        foreignKeys = [ForeignKey(
+                entity = News::class,
+                parentColumns = ["id"],
+                childColumns = ["newsId"],
+                onDelete = ForeignKey.CASCADE
+        )]
+)
 data class Comment(
-        @Column var sender: String? = null,
-        @Column var message: String? = null,
-        @Column var thumbnail: String? = null
+        @ColumnInfo var sender: String? = null,
+        @ColumnInfo var message: String? = null,
+        @ColumnInfo var thumbnail: String? = null
 ) {
     @PrimaryKey
     var id: Long = 0
-    @ForeignKey(tableClass = News::class, references = [ForeignKeyReference(columnName = "newsId", foreignKeyColumnName = "id")])
+    @ColumnInfo(index = true)
     var newsId: Long? = 0
-    @Column
+    @ColumnInfo
     var date: String? = null
 }
 

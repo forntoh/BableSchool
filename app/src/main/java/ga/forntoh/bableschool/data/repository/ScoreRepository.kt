@@ -1,11 +1,12 @@
 package ga.forntoh.bableschool.data.repository
 
-import ga.forntoh.bableschool.data.model.main.Score
+import androidx.lifecycle.LiveData
+import ga.forntoh.bableschool.data.model.main.ScoreWithCourse
 import ga.forntoh.bableschool.data.model.other.AnnualRank
 
-interface ScoreRepository {
+abstract class ScoreRepository : BaseRepository() {
 
-    suspend fun retrieveTermScores(term: Int): MutableList<Score>
+    abstract suspend fun retrieveTermScores(term: Int): LiveData<MutableList<ScoreWithCourse>>
 
-    suspend fun retrieveYearScore(): AnnualRank?
+    abstract suspend fun retrieveYearScore(): AnnualRank?
 }

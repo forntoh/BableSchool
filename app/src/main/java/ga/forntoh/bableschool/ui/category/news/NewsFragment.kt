@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -74,11 +75,16 @@ class NewsFragment : ScopedFragment(), KodeinAware {
         rv_top_news.invalidateViewState()
         rv_all_news.invalidateViewState()
 
-        val news = viewModel.allNews.await()
-        val mappedNews = news.map { it.toNewsView() }
-
-        rv_top_news.toggleViewState(topNewsSection.apply { update(mappedNews.filter { it.isTop }) })
-        rv_all_news.toggleViewState(allNewsSection.apply { update(mappedNews.filterNot { it.isTop }) })
+        viewModel.allNews.await().observe(viewLifecycleOwner, Observer { news ->
+            if (!news.isNullOrEmpty()) {
+                val mappedNews = news.map {
+                    viewModel.id = it.id
+                    it.toNewsView()
+                }
+                rv_top_news.toggleViewState(topNewsSection.apply { update(mappedNews.filter { it.isTop }) })
+                rv_all_news.toggleViewState(allNewsSection.apply { update(mappedNews.filterNot { it.isTop }) })
+            }
+        })
     }
 
     private val onItemClickListener = OnItemClickListener { item, _ ->

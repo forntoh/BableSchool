@@ -1,11 +1,12 @@
 package ga.forntoh.bableschool.data.repository
 
+import androidx.lifecycle.LiveData
 import ga.forntoh.bableschool.data.model.other.TopSchool
 import ga.forntoh.bableschool.data.model.other.TopStudent
 
-interface RankingRepository {
+abstract class RankingRepository : BaseRepository() {
 
-    suspend fun retrieveTopSchools(): MutableList<TopSchool>
+    abstract suspend fun retrieveTopSchools(): LiveData<MutableList<TopSchool>>
 
-    suspend fun retrieveTopStudents(): MutableList<TopStudent>
+    abstract suspend fun retrieveTopStudents(): LiveData<MutableList<TopStudent>>
 }

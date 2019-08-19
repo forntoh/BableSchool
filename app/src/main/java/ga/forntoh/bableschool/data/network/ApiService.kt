@@ -3,10 +3,7 @@ package ga.forntoh.bableschool.data.network
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import ga.forntoh.bableschool.data.model.main.*
-import ga.forntoh.bableschool.data.model.other.AnnualRank
-import ga.forntoh.bableschool.data.model.other.Likes
-import ga.forntoh.bableschool.data.model.other.TopSchool
-import ga.forntoh.bableschool.data.model.other.TopStudent
+import ga.forntoh.bableschool.data.model.other.*
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -25,43 +22,43 @@ interface ApiService {
     val topSchools: Deferred<List<TopSchool>>
 
     @GET("course_notes/{uid}")
-    fun getCourseNotes(@Path("uid") uid: String): Deferred<List<Course>>
+    fun getCourseNotesAsync(@Path("uid") uid: String): Deferred<List<CourseResponse>>
 
     @GET("top_students/{uid}")
-    fun getTopStudents(@Path("uid") uid: String): Deferred<List<TopStudent>>
+    fun getTopStudentsAsync(@Path("uid") uid: String): Deferred<List<TopStudent>>
 
     @FormUrlEncoded
     @POST("news")
-    fun getNews(@Field("uid") uid: String): Deferred<MutableList<News>>
+    fun getNewsAsync(@Field("uid") uid: String): Deferred<MutableList<NewsResponse>>
 
     @FormUrlEncoded
     @POST("time_table")
-    fun getTimetable(@Field("class_code") clazz: String?, @Field("school") school: String?): Deferred<List<Period>>
+    fun getTimetableAsync(@Field("class_code") clazz: String?, @Field("school") school: String?): Deferred<List<Period>>
 
     @FormUrlEncoded
     @POST("postComment")
-    fun postComment(
+    fun postCommentAsync(
             @Field("subject") subject: String,
             @Field("data") comment: String
     ): Deferred<Comment>
 
     @FormUrlEncoded
     @POST("like")
-    fun likeNews(
+    fun likeNewsAsync(
             @Field("uid") uid: String,
             @Field("subject") subject: String
     ): Deferred<Likes>
 
     @FormUrlEncoded
     @POST("profile/{uid}")
-    fun getUserProfile(
+    fun getUserProfileAsync(
             @Path("uid") uid: String,
             @Field("password") password: String
     ): Deferred<User>
 
     @FormUrlEncoded
     @POST("profile/setpassword")
-    fun updatePassword(
+    fun updatePasswordAsync(
             @Field("matricule") uid: String,
             @Field("oldpassword") oldPassword: String,
             @Field("newpassword") newPassword: String
@@ -69,15 +66,15 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("scores/{uid}")
-    fun getTermScores(
+    fun getTermScoresAsync(
             @Path("uid") uid: String,
             @Field("term") term: Int,
             @Field("year") year: String
-    ): Deferred<MutableList<Score>>
+    ): Deferred<MutableList<ScoreWithCourse>>
 
     @FormUrlEncoded
     @POST("rank/{uid}")
-    fun annualRank(
+    fun annualRankAsync(
             @Path("uid") uid: String,
             @Field("year") year: String
     ): Deferred<AnnualRank>
@@ -104,7 +101,6 @@ interface ApiService {
                     .writeTimeout(1, TimeUnit.MINUTES)
                     .addInterceptor(requestInterceptor)
                     .addInterceptor(connectivityInterceptor)
-                    //.addInterceptor(Pandora.get().interceptor)
                     .build()
 
             return Retrofit.Builder()

@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 class ProfileRepositoryImpl(
         private val bableSchoolDataSource: BableSchoolDataSource,
         private val appStorage: AppStorage
-) : ProfileRepository {
+) : ProfileRepository() {
 
     init {
         bableSchoolDataSource.downloadedUserProfile.observeForever {

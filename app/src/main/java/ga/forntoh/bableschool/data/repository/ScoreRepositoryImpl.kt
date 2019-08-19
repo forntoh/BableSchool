@@ -1,8 +1,10 @@
 package ga.forntoh.bableschool.data.repository
 
+import androidx.lifecycle.LiveData
 import ga.forntoh.bableschool.data.AppStorage
 import ga.forntoh.bableschool.data.db.ScoreDao
 import ga.forntoh.bableschool.data.model.main.Score
+import ga.forntoh.bableschool.data.model.main.ScoreWithCourse
 import ga.forntoh.bableschool.data.model.other.AnnualRank
 import ga.forntoh.bableschool.data.network.BableSchoolDataSource
 import ga.forntoh.bableschool.internal.DataKey
@@ -10,6 +12,7 @@ import ga.forntoh.bableschool.utilities.Utils
 import ga.forntoh.bableschool.utilities.isFetchNeeded
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
 
@@ -17,22 +20,22 @@ class ScoreRepositoryImpl(
         private val scoreDao: ScoreDao,
         private val bableSchoolDataSource: BableSchoolDataSource,
         private val appStorage: AppStorage
-) : ScoreRepository {
+) : ScoreRepository() {
 
     init {
         bableSchoolDataSource.downloadedTermScores.observeForever {
-            saveScores(it)
+            scope.launch { saveScores(it) }
         }
         bableSchoolDataSource.downloadedAnnualRank.observeForever {
-            saveAnnualRank(it)
+            scope.launch { saveAnnualRank(it) }
         }
     }
 
-    override suspend fun retrieveTermScores(term: Int): MutableList<Score> =
+    override suspend fun retrieveTermScores(term: Int): LiveData<MutableList<ScoreWithCourse>> =
             withContext(Dispatchers.IO) {
                 initTermScores(term)
                 val data = scoreDao.retrieveTermScores(term)
-                if (data.isNullOrEmpty()) {
+                if (data.value.isNullOrEmpty()) {
                     appStorage.clearLastSaved(getKey(term))
                     initTermScores(term)
                 }
@@ -45,7 +48,7 @@ class ScoreRepositoryImpl(
     }
 
     private suspend fun initTermScores(term: Int) {
-        if (isFetchNeeded(appStorage.getLastSaved(getKey(term)))) {
+        if (isFetchNeeded(appStorage.getLastSaved(getKey(term))) || scoreDao.numberOfItemsTermScores() <= 0) {
             bableSchoolDataSource.getTermScores(appStorage.loadUser()?.profileData?.matriculation
                     ?: return, term, Utils.termYear)
             appStorage.setLastSaved(getKey(term), ZonedDateTime.now())
@@ -54,7 +57,7 @@ class ScoreRepositoryImpl(
     }
 
     private suspend fun initYearScore() {
-        if (isFetchNeeded(appStorage.getLastSaved(DataKey.ANNUAL_SCORE))) {
+        if (isFetchNeeded(appStorage.getLastSaved(DataKey.ANNUAL_SCORE)) || scoreDao.numberOfItemsYearScore() <= 0) {
             bableSchoolDataSource.annualRank(appStorage.loadUser()?.profileData?.matriculation
                     ?: return, Utils.termYear)
             appStorage.setLastSaved(DataKey.ANNUAL_SCORE, ZonedDateTime.now())
@@ -67,9 +70,14 @@ class ScoreRepositoryImpl(
         else -> DataKey.TERM_3
     }
 
-    private fun saveScores(scores: List<Score>) =
-            scoreDao.saveTermScores(scores)
+    private suspend fun saveScores(scores: List<ScoreWithCourse>) {
+        scoreDao.saveTermScores(scores.map {
+            Score(it.score!!.firstSequenceMark, it.score!!.secondSequenceMark, it.score!!.rank, it.score!!.termRank, it.score!!.termAvg).apply {
+                term = it.score!!.term
+            }
+        })
+    }
 
-    private fun saveAnnualRank(rank: AnnualRank) =
+    private suspend fun saveAnnualRank(rank: AnnualRank) =
             scoreDao.saveYearScore(rank)
 }

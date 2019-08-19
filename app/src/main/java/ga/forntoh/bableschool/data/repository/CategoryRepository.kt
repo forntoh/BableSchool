@@ -1,12 +1,13 @@
 package ga.forntoh.bableschool.data.repository
 
+import androidx.lifecycle.LiveData
 import ga.forntoh.bableschool.data.model.main.Category
 
-interface CategoryRepository {
+abstract class CategoryRepository : BaseRepository() {
 
-    suspend fun retrieveCategories(): MutableList<Category>
+    abstract suspend fun retrieveCategories(): LiveData<MutableList<Category>>
 
-    fun passwordChanged(): Boolean
+    abstract fun passwordChanged(): Boolean
 
-    fun setPasswordChanged()
+    abstract fun setPasswordChanged()
 }

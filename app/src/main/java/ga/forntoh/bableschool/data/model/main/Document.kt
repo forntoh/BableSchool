@@ -1,18 +1,25 @@
 package ga.forntoh.bableschool.data.model.main
 
 import androidx.annotation.DrawableRes
-import com.dbflow5.annotation.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.data.db.AppDatabase
 import ga.forntoh.bableschool.data.model.groupie.ItemDocument
 
-@Table(database = AppDatabase::class)
+@Entity(foreignKeys = [ForeignKey(
+        entity = Course::class,
+        parentColumns = ["code"],
+        childColumns = ["courseCode"],
+        onDelete = ForeignKey.CASCADE
+)])
 data class Document(
-        @ForeignKey(tableClass = Course::class, references = [ForeignKeyReference(columnName = "courseCode", foreignKeyColumnName = "code")]) var courseCode: String? = null,
-        @Column var title: String? = null,
-        @Column var author: String? = null,
-        @Column var size: String? = null,
-        @PrimaryKey var url: String? = null
+        @ColumnInfo(index = true) var courseCode: String? = null,
+        @ColumnInfo var title: String? = null,
+        @ColumnInfo var author: String? = null,
+        @ColumnInfo var size: String? = null,
+        @PrimaryKey var url: String = ""
 ) {
     val type: Int
         @DrawableRes get() {
@@ -25,7 +32,7 @@ data class Document(
 
     val extension: String
         get() {
-            val words = url!!.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val words = url.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             return words[words.size - 1].toLowerCase()
         }
 }

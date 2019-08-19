@@ -1,14 +1,13 @@
 package ga.forntoh.bableschool.data.model.other
 
-import com.dbflow5.annotation.Column
-import com.dbflow5.annotation.PrimaryKey
-import com.dbflow5.annotation.Table
-import ga.forntoh.bableschool.data.db.AppDatabase
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Table(database = AppDatabase::class)
+@Entity
 data class AnnualRank(
         @PrimaryKey var id: Int = 0,
-        @Column var average: String? = null,
-        @Column var position: String? = null
+        @ColumnInfo var average: String? = null,
+        @ColumnInfo var position: String? = null
 )
 

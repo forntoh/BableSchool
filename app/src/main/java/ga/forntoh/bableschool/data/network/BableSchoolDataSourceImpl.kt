@@ -6,10 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import ga.forntoh.bableschool.data.model.main.*
-import ga.forntoh.bableschool.data.model.other.AnnualRank
-import ga.forntoh.bableschool.data.model.other.Likes
-import ga.forntoh.bableschool.data.model.other.TopSchool
-import ga.forntoh.bableschool.data.model.other.TopStudent
+import ga.forntoh.bableschool.data.model.other.*
 import ga.forntoh.bableschool.internal.NoConnectivityException
 import java.net.SocketTimeoutException
 
@@ -24,16 +21,16 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
     override val downloadedTopSchools: LiveData<List<TopSchool>>
         get() = _downloadedTopSchools
 
-    private val _downloadedCourseNotes = MutableLiveData<List<Course>>()
-    override val downloadedCourseNotes: LiveData<List<Course>>
+    private val _downloadedCourseNotes = MutableLiveData<List<CourseResponse>>()
+    override val downloadedCourseNotes: LiveData<List<CourseResponse>>
         get() = _downloadedCourseNotes
 
     private val _downloadedTopStudents = MutableLiveData<List<TopStudent>>()
     override val downloadedTopStudents: LiveData<List<TopStudent>>
         get() = _downloadedTopStudents
 
-    private val _downloadedNews = MutableLiveData<List<News>>()
-    override val downloadedNews: LiveData<List<News>>
+    private val _downloadedNews = MutableLiveData<List<NewsResponse>>()
+    override val downloadedNews: LiveData<List<NewsResponse>>
         get() = _downloadedNews
 
     private val _downloadedTimetable = MutableLiveData<List<Period>>()
@@ -52,8 +49,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
     override val downloadedUserProfile: LiveData<User>
         get() = _downloadedUserProfile
 
-    private val _downloadedTermScores = MutableLiveData<List<Score>>()
-    override val downloadedTermScores: LiveData<List<Score>>
+    private val _downloadedTermScores = MutableLiveData<List<ScoreWithCourse>>()
+    override val downloadedTermScores: LiveData<List<ScoreWithCourse>>
         get() = _downloadedTermScores
 
     private val _downloadedAnnualRank = MutableLiveData<AnnualRank>()
@@ -84,7 +81,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getCourseNotes(uid: String) {
         try {
-            val fetchedCourseNotes = apiService.getCourseNotes(uid).await()
+            val fetchedCourseNotes = apiService.getCourseNotesAsync(uid).await()
             _downloadedCourseNotes.postValue(fetchedCourseNotes)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -95,7 +92,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getTopStudents(uid: String) {
         try {
-            val fetchedTopStudents = apiService.getTopStudents(uid).await()
+            val fetchedTopStudents = apiService.getTopStudentsAsync(uid).await()
             _downloadedTopStudents.postValue(fetchedTopStudents)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -106,7 +103,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getNews(uid: String) {
         try {
-            val fetchedNews = apiService.getNews(uid).await()
+            val fetchedNews = apiService.getNewsAsync(uid).await()
             _downloadedNews.postValue(fetchedNews)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -115,7 +112,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getTimetable(clazz: String?, school: String?) {
         try {
-            val fetchedTimetable = apiService.getTimetable(clazz, school).await()
+            val fetchedTimetable = apiService.getTimetableAsync(clazz, school).await()
             _downloadedTimetable.postValue(fetchedTimetable)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -126,7 +123,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun postComment(comment: Comment) {
         try {
-            val fetchedComment = apiService.postComment(comment.newsId.toString(), Gson().toJson(comment)).await()
+            val fetchedComment = apiService.postCommentAsync(comment.newsId.toString(), Gson().toJson(comment)).await()
             _downloadedComment.postValue(fetchedComment)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -137,7 +134,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun likeNews(uid: String, newsId: Long) {
         try {
-            val fetchedLikes = apiService.likeNews(uid, newsId.toString()).await()
+            val fetchedLikes = apiService.likeNewsAsync(uid, newsId.toString()).await()
             _downloadedLikes.postValue(fetchedLikes)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -148,7 +145,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getUserProfile(uid: String, password: String) {
         try {
-            val fetchedUser = apiService.getUserProfile(uid, password).await()
+            val fetchedUser = apiService.getUserProfileAsync(uid, password).await()
             _downloadedUserProfile.postValue(fetchedUser)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -159,7 +156,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun updatePassword(uid: String, oldPassword: String, newPassword: String) {
         try {
-            val fetchedUser = apiService.updatePassword(uid, oldPassword, newPassword).await()
+            val fetchedUser = apiService.updatePasswordAsync(uid, oldPassword, newPassword).await()
             _downloadedUserProfile.postValue(fetchedUser)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)
@@ -170,9 +167,10 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getTermScores(uid: String, term: Int, year: String) {
         try {
-            val fetchedScores = ArrayList<Score>()
-            apiService.getTermScores(uid, term, year).await().forEach {
-                it.term = term; fetchedScores.add(it)
+            val fetchedScores = ArrayList<ScoreWithCourse>()
+            apiService.getTermScoresAsync(uid, term, year).await().forEach {
+                it.score?.term = term
+                fetchedScores.add(it)
             }
             _downloadedTermScores.postValue(fetchedScores)
         } catch (e: NoConnectivityException) {
@@ -184,7 +182,7 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun annualRank(uid: String, year: String) {
         try {
-            val fetchedRank = apiService.annualRank(uid, year).await()
+            val fetchedRank = apiService.annualRankAsync(uid, year).await()
             _downloadedAnnualRank.postValue(fetchedRank)
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No Internet", e)

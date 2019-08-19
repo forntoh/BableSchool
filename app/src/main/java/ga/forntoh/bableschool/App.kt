@@ -5,9 +5,6 @@ package ga.forntoh.bableschool
 import android.content.Context
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
-import com.dbflow5.config.AppDatabaseAppDatabase_Database
-import com.dbflow5.config.FlowManager
-import com.dbflow5.config.GeneratedDatabaseHolder
 import com.google.firebase.database.FirebaseDatabase
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tripl3dev.prettystates.StatesConfigFactory
@@ -35,10 +32,10 @@ class App : MultiDexApplication(), KodeinAware {
     override val kodein = Kodein.lazy {
         import(androidXModule(this@App))
 
-        bind() from singleton { AppDatabaseAppDatabase_Database(GeneratedDatabaseHolder()) }
-
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
         bind() from singleton { ApiService(instance()) }
+
+        bind() from singleton { AppDatabase(instance()) }
 
         bind<BableSchoolDataSource>() with singleton { BableSchoolDataSourceImpl(instance()) }
 
@@ -47,28 +44,28 @@ class App : MultiDexApplication(), KodeinAware {
         bind<ProfileRepository>() with singleton { ProfileRepositoryImpl(instance(), instance()) }
         bind<ProfileViewModelFactory>() with provider { ProfileViewModelFactory(instance()) }
 
-        bind<CategoryDao>() with singleton { CategoryDaoImpl(instance()) }
+        bind<CategoryDao>() with singleton { instance<AppDatabase>().categoryDao() }
         bind<CategoryRepository>() with singleton { CategoryRepositoryImpl(instance(), instance(), instance()) }
         bind<CategoryViewModelFactory>() with provider { CategoryViewModelFactory(instance()) }
 
-        bind<NewsDao>() with singleton { NewsDaoImpl(instance()) }
+        bind<NewsDao>() with singleton { instance<AppDatabase>().newsDao() }
         bind<NewsRepository>() with singleton { NewsRepositoryImpl(instance(), instance(), instance()) }
         bind<NewsViewModelFactory>() with provider { NewsViewModelFactory(instance()) }
 
-        bind<RankingDao>() with singleton { RankingDaoImpl(instance()) }
+        bind<RankingDao>() with singleton { instance<AppDatabase>().rankingDao() }
         bind<RankingRepository>() with singleton { RankingRepositoryImpl(instance(), instance(), instance()) }
         bind<RankingViewModelFactory>() with provider { RankingViewModelFactory(instance()) }
 
-        bind<CourseNoteDao>() with singleton { CourseNoteDaoImpl(instance()) }
+        bind<CourseNoteDao>() with singleton { instance<AppDatabase>().courseNoteDao() }
         bind<CourseNoteRepository>() with singleton { CourseNoteRepositoryImpl(instance(), instance(), instance()) }
         bind<CourseNotesViewModelFactory>() with provider { CourseNotesViewModelFactory(instance()) }
 
-        bind<PeriodDao>() with singleton { PeriodDaoImpl(instance()) }
+        bind<PeriodDao>() with singleton { instance<AppDatabase>().periodDao() }
         //bind<PeriodRepository>() with singleton { PeriodRepositoryImpl2() }
         bind<PeriodRepository>() with singleton { PeriodRepositoryImpl(instance(), instance(), instance()) }
         bind<TimeTableViewModelFactory>() with provider { TimeTableViewModelFactory(instance()) }
 
-        bind<ScoreDao>() with singleton { ScoreDaoImpl(instance()) }
+        bind<ScoreDao>() with singleton { instance<AppDatabase>().scoreDao() }
         bind<ScoreRepository>() with singleton { ScoreRepositoryImpl(instance(), instance(), instance()) }
         bind<ScoreViewModelFactory>() with provider { ScoreViewModelFactory(instance()) }
     }
@@ -80,16 +77,10 @@ class App : MultiDexApplication(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
-        FlowManager.init(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         AndroidThreeTen.init(this)
         StatesConfigFactory.intialize().initViews()
                 .setDefaultEmptyLayout(R.layout.state_empty)
                 .setDefaultLoadingLayout(R.layout.state_loading)
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        FlowManager.destroy()
     }
 }

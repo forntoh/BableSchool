@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,9 +61,11 @@ class TermScoreFragment : ScopedFragment(), KodeinAware {
             else -> return@launch
         }
 
-        if (scores.isNullOrEmpty()) return@launch
-
-        sectionHeader.add(ItemScoreSummary(scores.first().termAvg, scores.last().termRank))
-        section.update(scores.map { it.toScoreView() })
+        scores.observe(viewLifecycleOwner, Observer { list ->
+            list?.let {
+                sectionHeader.update(listOf(ItemScoreSummary(list.first().score!!.termAvg, list.last().score?.termRank)))
+                section.update(list.map { it.toScoreView() })
+            }
+        })
     }
 }

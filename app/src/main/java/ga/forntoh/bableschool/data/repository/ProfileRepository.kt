@@ -2,13 +2,13 @@ package ga.forntoh.bableschool.data.repository
 
 import ga.forntoh.bableschool.data.model.main.User
 
-interface ProfileRepository {
+abstract class ProfileRepository : BaseRepository() {
 
-    suspend fun login(matriculation: String, password: String)
+    abstract suspend fun login(matriculation: String, password: String)
 
-    suspend fun getUser(): User?
+    abstract suspend fun getUser(): User?
 
-    fun logout()
+    abstract fun logout()
 
-    suspend fun updatePassword(matriculation: String, password: String)
+    abstract suspend fun updatePassword(matriculation: String, password: String)
 }

@@ -1,10 +1,15 @@
 package ga.forntoh.bableschool.ui.category.profile
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import ga.forntoh.bableschool.data.repository.ProfileRepository
 import ga.forntoh.bableschool.internal.lazyDeferred
 
 class ProfileViewModel(private val userRepository: ProfileRepository) : ViewModel() {
+
+    init {
+        userRepository.scope = viewModelScope
+    }
 
     suspend fun login(matriculation: String, password: String) =
             userRepository.login(matriculation, password)

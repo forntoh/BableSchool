@@ -38,6 +38,8 @@ import ga.forntoh.bableschool.ui.category.courseNotes.CourseNotesViewModelFactor
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModel
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModelFactory
 import ga.forntoh.bableschool.utilities.inPx
+import ga.forntoh.bableschool.utilities.invalidateViewState
+import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.exo_controller_ui.view.*
 import kotlinx.android.synthetic.main.fragment_course_note.*
 import kotlinx.android.synthetic.main.item_video.view.*
@@ -118,12 +120,10 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
             addItemDecoration(InsetDecoration(16))
         }
 
-        course.videos?.map { it.toVideoView() }?.let {
-            videosSection.update(it)
-        }
-        course.documents?.map { it.toDocumentView() }?.let {
-            documentsSection.update(it)
-        }
+        rv_videos.invalidateViewState()
+        rv_documents.invalidateViewState()
+        rv_videos.toggleViewState(videosSection.apply { viewModel.videos.await()?.map { it.toVideoView() }?.let { update(it) } })
+        rv_documents.toggleViewState(documentsSection.apply { viewModel.documents.await()?.map { it.toDocumentView() }?.let { update(it) } })
     }
 
     @SuppressLint("InflateParams")

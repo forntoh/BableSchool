@@ -1,20 +1,18 @@
 package ga.forntoh.bableschool.data.model.main
 
 import android.graphics.Color
+import androidx.room.ColumnInfo
+import androidx.room.Entity
 import com.alamkanak.weekview.WeekViewEvent
-import com.dbflow5.annotation.Column
-import com.dbflow5.annotation.PrimaryKey
-import com.dbflow5.annotation.Table
-import ga.forntoh.bableschool.data.db.AppDatabase
 import ga.forntoh.bableschool.utilities.Utils
 
-@Table(database = AppDatabase::class)
+@Entity(primaryKeys = ["start", "end", "course"])
 data class Period(
-        @PrimaryKey var start: String = "",
-        @PrimaryKey var end: String = "",
-        @PrimaryKey var course: String? = "",
-        @Column var dayOfWeek: Int = 0,
-        @Column var color: String = "#000000"
+        @ColumnInfo var start: String = "",
+        @ColumnInfo var end: String = "",
+        @ColumnInfo var course: String = "",
+        @ColumnInfo var dayOfWeek: Int = 0,
+        @ColumnInfo var color: String = "#000000"
 )
 
 fun Period.toWeekViewEvent(newYear: Int, newMonth: Int) = WeekViewEvent(

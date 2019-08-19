@@ -17,7 +17,7 @@ import com.anychart.enums.MarkerType
 import com.anychart.enums.TooltipPositionMode
 import com.anychart.graphics.vector.Stroke
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.data.model.main.Score
+import ga.forntoh.bableschool.data.model.main.ScoreWithCourse
 import ga.forntoh.bableschool.ui.base.ScopedFragment
 import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
@@ -47,23 +47,24 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
 
         override fun doInBackground(vararg params: Void): Wrapper {
             val seriesData = ArrayList<DataEntry>()
-            val allScores = ArrayList<List<Score>>()
+            val allScores = ArrayList<List<ScoreWithCourse>>()
+
             runBlocking {
-                viewModel.firstTermScores.await().apply {
-                    allScores.add(this)
-                    map { it.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 1", this)) }
-                    map { it.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 2", this)) }
-                }
-                viewModel.firstTermScores.await().apply {
-                    allScores.add(this)
-                    map { it.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 3", this)) }
-                    map { it.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 4", this)) }
-                }
-                viewModel.firstTermScores.await().apply {
-                    allScores.add(this)
-                    map { it.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 5", this)) }
-                    map { it.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 6", this)) }
-                }
+                viewModel.firstTermScores.await().observe(this@YearGraphFragment, androidx.lifecycle.Observer { list ->
+                    allScores.add(list)
+                    list.map { it.score!!.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 1", this)) }
+                    list.map { it.score!!.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 2", this)) }
+                })
+                viewModel.secondTermScores.await().observe(this@YearGraphFragment, androidx.lifecycle.Observer { list ->
+                    allScores.add(list)
+                    list.map { it.score!!.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 3", this)) }
+                    list.map { it.score!!.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 4", this)) }
+                })
+                viewModel.thirdTermScores.await().observe(this@YearGraphFragment, androidx.lifecycle.Observer { list ->
+                    allScores.add(list)
+                    list.map { it.score!!.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 5", this)) }
+                    list.map { it.score!!.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 6", this)) }
+                })
             }
             return Wrapper(seriesData, allScores)
         }
@@ -105,5 +106,5 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    inner class Wrapper(var seriesData: List<DataEntry>, var allScores: List<List<Score>>)
+    inner class Wrapper(var seriesData: List<DataEntry>, var allScores: List<List<ScoreWithCourse>>)
 }

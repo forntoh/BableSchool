@@ -3,7 +3,8 @@ package ga.forntoh.bableschool.ui.category.profile.timeTable
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekViewEvent
 import ga.forntoh.bableschool.R
@@ -32,10 +33,15 @@ class TimeTableActivity : BaseActivity(), KodeinAware, MonthLoader.MonthChangeLi
         val events = ArrayList<WeekViewEvent>()
         if (!calledNetwork) {
             runBlocking {
-                viewModel.periods.await().forEach { events.add(it.toWeekViewEvent(newYear, newMonth)) }
-                weekView.notifyDataSetChanged()
+
+                viewModel.periods.await().observe(this@TimeTableActivity, Observer { list ->
+                    list?.forEach { events.add(it.toWeekViewEvent(newYear, newMonth)) }
+                    weekView.notifyDataSetChanged()
+                })
+
                 events.sortBy { weekViewEvent -> weekViewEvent.startTime }
-                weekView.goToHour((events[0].startTime.get(Calendar.HOUR_OF_DAY) + events[0].startTime.get(Calendar.MINUTE) / 60f).toDouble())
+                if (events.isNotEmpty())
+                    weekView.goToHour((events[0].startTime.get(Calendar.HOUR_OF_DAY) + events[0].startTime.get(Calendar.MINUTE) / 60f).toDouble())
             }
             calledNetwork = true
         }
@@ -45,7 +51,7 @@ class TimeTableActivity : BaseActivity(), KodeinAware, MonthLoader.MonthChangeLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_table)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TimeTableViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(TimeTableViewModel::class.java)
         buildUI()
     }
 

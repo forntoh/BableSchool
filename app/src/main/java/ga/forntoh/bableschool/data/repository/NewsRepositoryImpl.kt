@@ -5,11 +5,13 @@ import ga.forntoh.bableschool.data.AppStorage
 import ga.forntoh.bableschool.data.db.NewsDao
 import ga.forntoh.bableschool.data.model.main.Comment
 import ga.forntoh.bableschool.data.model.main.News
+import ga.forntoh.bableschool.data.model.other.toNewsData
 import ga.forntoh.bableschool.data.network.BableSchoolDataSource
 import ga.forntoh.bableschool.internal.DataKey
 import ga.forntoh.bableschool.utilities.isFetchNeeded
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
 
@@ -17,19 +19,24 @@ class NewsRepositoryImpl(
         private val newsDao: NewsDao,
         private val bableSchoolDataSource: BableSchoolDataSource,
         private val appStorage: AppStorage
-) : NewsRepository {
+) : NewsRepository() {
 
     init {
         bableSchoolDataSource.downloadedNews.observeForever {
-            saveNews(it)
+            scope.launch {
+                for (item in it) {
+                    saveNews(item.toNewsData())
+                    newsDao.saveComments(*item.cmts.map { cmt -> cmt.apply { newsId = item.id } }.toTypedArray())
+                }
+            }
         }
         bableSchoolDataSource.downloadedComment.observeForever {
-            newsDao.saveComment(it)
+            scope.launch { newsDao.saveComments(it) }
         }
     }
 
     // Main
-    override suspend fun retrieveAllNews(): MutableList<News> {
+    override suspend fun retrieveAllNews(): LiveData<MutableList<News>> {
         return withContext(Dispatchers.IO) {
             initNewsData()
             return@withContext newsDao.retrieveAllNews()
@@ -62,7 +69,7 @@ class NewsRepositoryImpl(
     override fun observableLikes() = bableSchoolDataSource.downloadedLikes
 
     private suspend fun initNewsData() {
-        if (isFetchNeeded(appStorage.getLastSaved(DataKey.NEWS))) {
+        if (isFetchNeeded(appStorage.getLastSaved(DataKey.NEWS)) || newsDao.numberOfItems() <= 0) {
             bableSchoolDataSource.getNews(appStorage.loadUser()?.profileData?.matriculation
                     ?: return)
             appStorage.setLastSaved(DataKey.NEWS, ZonedDateTime.now())
@@ -70,5 +77,5 @@ class NewsRepositoryImpl(
         }
     }
 
-    private fun saveNews(news: List<News>) = newsDao.saveNews(news)
+    private suspend fun saveNews(vararg news: News) = newsDao.saveNews(*news)
 }

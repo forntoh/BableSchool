@@ -73,11 +73,11 @@ class NewsDetailFragment : ScopedFragment(), KodeinAware {
             addItemDecoration(InsetDecoration(16))
         }
 
-        viewModel.comments.await().observe(this@NewsDetailFragment, Observer { comments ->
+        viewModel.comments.await().observe(viewLifecycleOwner, Observer { comments ->
             comment_count.text = getString(R.string.comment_counter, comments?.size)
             section.update(comments.map { it.toCommentView() })
         })
-        viewModel.likes.observe(this@NewsDetailFragment, Observer { likes ->
+        viewModel.likes.observe(viewLifecycleOwner, Observer { likes ->
             like_count.text = getString(R.string.like_counter, likes.likes)
             if (news.isLiked) Picasso.get().load(R.drawable.ic_heart).into(btn_like)
             else btn_like.setImageResource(R.drawable.ic_heart_outline)

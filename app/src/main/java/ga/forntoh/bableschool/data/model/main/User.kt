@@ -12,7 +12,7 @@ data class User(
         var profileData: ProfileData
 ) {
 
-    fun profileDataMap(): LinkedHashMap<String, String> = ObjectMapper().readValue<LinkedHashMap<String, String>>(
+    fun profileDataMap(): LinkedHashMap<String, String> = ObjectMapper().readValue(
             Gson().toJson(profileData),
             object : TypeReference<Map<String, String>>() {}
     )

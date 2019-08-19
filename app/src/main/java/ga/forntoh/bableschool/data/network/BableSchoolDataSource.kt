@@ -2,23 +2,20 @@ package ga.forntoh.bableschool.data.network
 
 import androidx.lifecycle.LiveData
 import ga.forntoh.bableschool.data.model.main.*
-import ga.forntoh.bableschool.data.model.other.AnnualRank
-import ga.forntoh.bableschool.data.model.other.Likes
-import ga.forntoh.bableschool.data.model.other.TopSchool
-import ga.forntoh.bableschool.data.model.other.TopStudent
+import ga.forntoh.bableschool.data.model.other.*
 
 interface BableSchoolDataSource {
 
     val downloadedCategories: LiveData<List<Category>>
     val downloadedTopSchools: LiveData<List<TopSchool>>
-    val downloadedCourseNotes: LiveData<List<Course>>
+    val downloadedCourseNotes: LiveData<List<CourseResponse>>
     val downloadedTopStudents: LiveData<List<TopStudent>>
-    val downloadedNews: LiveData<List<News>>
+    val downloadedNews: LiveData<List<NewsResponse>>
     val downloadedTimetable: LiveData<List<Period>>
     val downloadedComment: LiveData<Comment>
     val downloadedLikes: LiveData<Likes>
     val downloadedUserProfile: LiveData<User>
-    val downloadedTermScores: LiveData<List<Score>>
+    val downloadedTermScores: LiveData<List<ScoreWithCourse>>
     val downloadedAnnualRank: LiveData<AnnualRank>
 
     suspend fun categories()

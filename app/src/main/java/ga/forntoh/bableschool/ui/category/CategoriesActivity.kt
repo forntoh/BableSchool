@@ -2,9 +2,11 @@ package ga.forntoh.bableschool.ui.category
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.Section
@@ -15,6 +17,8 @@ import ga.forntoh.bableschool.data.model.main.toCategoryView
 import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.BaseActivity
 import ga.forntoh.bableschool.utilities.enableWhiteStatusBar
+import ga.forntoh.bableschool.utilities.invalidateViewState
+import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -34,7 +38,7 @@ class CategoriesActivity : BaseActivity(), KodeinAware {
         disableFlags(true)
         enableWhiteStatusBar()
         setSupportActionBar(findViewById(R.id.toolbar))
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CategoryViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
         buildUI()
     }
 
@@ -55,7 +59,10 @@ class CategoriesActivity : BaseActivity(), KodeinAware {
 
         categoriesAdapter.add(categoriesSection)
 
-        categoriesSection.update(viewModel.categories.await().map { it.toCategoryView() })
+        rv_categories.invalidateViewState()
+        viewModel.categories.await().observe(this@CategoriesActivity, Observer { list ->
+            rv_categories.toggleViewState(categoriesSection.apply { update(list.map { it.toCategoryView() }) })
+        })
 
         if (!viewModel.isPasswordChanged) {
             MaterialDialog(this@CategoriesActivity).show {
@@ -70,6 +77,7 @@ class CategoriesActivity : BaseActivity(), KodeinAware {
                 }
                 negativeButton { dismiss() }
                 cornerRadius(8f)
+                lifecycleOwner(this@CategoriesActivity)
             }
         }
     }

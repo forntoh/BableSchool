@@ -5,17 +5,17 @@ import ga.forntoh.bableschool.data.model.main.Comment
 import ga.forntoh.bableschool.data.model.main.News
 import ga.forntoh.bableschool.data.model.other.Likes
 
-interface NewsRepository {
+abstract class NewsRepository : BaseRepository() {
 
-    suspend fun retrieveAllNews(): MutableList<News>
+    abstract suspend fun retrieveAllNews(): LiveData<MutableList<News>>
 
-    suspend fun retrieveSingleNews(id: Long): News?
+    abstract suspend fun retrieveSingleNews(id: Long): News?
 
-    suspend fun retrieveComments(id: Long): LiveData<MutableList<Comment>>
+    abstract suspend fun retrieveComments(id: Long): LiveData<MutableList<Comment>>
 
-    suspend fun postComment(comment: Comment)
+    abstract suspend fun postComment(comment: Comment)
 
-    suspend fun likeNews(id: Long, liked: Boolean)
+    abstract suspend fun likeNews(id: Long, liked: Boolean)
 
-    fun observableLikes(): LiveData<Likes>
+    abstract fun observableLikes(): LiveData<Likes>
 }
