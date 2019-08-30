@@ -8,6 +8,4 @@ abstract class CategoryRepository : BaseRepository() {
     abstract suspend fun retrieveCategories(): LiveData<MutableList<Category>>
 
     abstract fun passwordChanged(): Boolean
-
-    abstract fun setPasswordChanged()
 }

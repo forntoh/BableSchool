@@ -9,7 +9,7 @@ import ga.forntoh.bableschool.data.model.other.AnnualRank
 import ga.forntoh.bableschool.data.model.other.TopSchool
 import ga.forntoh.bableschool.data.model.other.TopStudent
 
-@Database(entities = [Category::class, Comment::class, Course::class, Document::class, News::class, Period::class, Score::class, Video::class, AnnualRank::class, TopSchool::class, TopStudent::class], version = 2)
+@Database(entities = [Category::class, Comment::class, Course::class, Document::class, News::class, Period::class, Score::class, Video::class, AnnualRank::class, TopSchool::class, TopStudent::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun categoryDao(): CategoryDao

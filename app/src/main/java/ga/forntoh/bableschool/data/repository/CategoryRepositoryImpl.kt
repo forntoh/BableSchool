@@ -44,8 +44,4 @@ class CategoryRepositoryImpl(
     private suspend fun saveCategories(vararg categories: Category) = categoryDao.saveCategories(*categories)
 
     override fun passwordChanged() = appStorage.getChangedPassword()
-
-    override fun setPasswordChanged() {
-        appStorage.setChangedPassword(true)
-    }
 }

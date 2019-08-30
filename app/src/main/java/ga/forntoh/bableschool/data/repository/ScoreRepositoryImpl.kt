@@ -1,10 +1,9 @@
 package ga.forntoh.bableschool.data.repository
 
-import androidx.lifecycle.LiveData
+import android.database.sqlite.SQLiteConstraintException
 import ga.forntoh.bableschool.data.AppStorage
 import ga.forntoh.bableschool.data.db.ScoreDao
 import ga.forntoh.bableschool.data.model.main.Score
-import ga.forntoh.bableschool.data.model.main.ScoreWithCourse
 import ga.forntoh.bableschool.data.model.other.AnnualRank
 import ga.forntoh.bableschool.data.network.BableSchoolDataSource
 import ga.forntoh.bableschool.internal.DataKey
@@ -31,16 +30,14 @@ class ScoreRepositoryImpl(
         }
     }
 
-    override suspend fun retrieveTermScores(term: Int): LiveData<MutableList<ScoreWithCourse>> =
-            withContext(Dispatchers.IO) {
-                initTermScores(term)
-                val data = scoreDao.retrieveTermScores(term)
-                if (data.value.isNullOrEmpty()) {
-                    appStorage.clearLastSaved(getKey(term))
-                    initTermScores(term)
-                }
-                return@withContext data
-            }
+    override suspend fun retrieveTermScores(term: Int) = withContext(Dispatchers.IO) {
+        initTermScores(term)
+        return@withContext scoreDao.retrieveTermScores(term)
+    }
+
+    override suspend fun retrieveTermScoresAsync(term: Int) = withContext(Dispatchers.IO) {
+        return@withContext scoreDao.retrieveTermScoresAsync(term)
+    }
 
     override suspend fun retrieveYearScore(): AnnualRank? = withContext(Dispatchers.IO) {
         initYearScore()
@@ -70,12 +67,16 @@ class ScoreRepositoryImpl(
         else -> DataKey.TERM_3
     }
 
-    private suspend fun saveScores(scores: List<ScoreWithCourse>) {
-        scoreDao.saveTermScores(scores.map {
-            Score(it.score!!.firstSequenceMark, it.score!!.secondSequenceMark, it.score!!.rank, it.score!!.termRank, it.score!!.termAvg).apply {
-                term = it.score!!.term
-            }
-        })
+    private suspend fun saveScores(scores: List<Score>) {
+        try {
+            scoreDao.saveTermScores(scores.map {
+                Score(it.firstSequenceMark, it.secondSequenceMark, it.rank, it.termRank, it.termAvg).apply {
+                    course_code = it.course!!.code
+                    term = it.term
+                }
+            })
+        } catch (e: SQLiteConstraintException) {
+        }
     }
 
     private suspend fun saveAnnualRank(rank: AnnualRank) =

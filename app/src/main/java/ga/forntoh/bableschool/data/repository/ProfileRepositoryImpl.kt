@@ -18,7 +18,7 @@ class ProfileRepositoryImpl(
     }
 
     private fun saveUser(user: User?) {
-        user?.let { appStorage.saveUser(it) }
+        user?.let { if (user.profileData != null) appStorage.saveUser(it) }
     }
 
     override suspend fun login(matriculation: String, password: String) =
@@ -26,7 +26,6 @@ class ProfileRepositoryImpl(
 
     override fun logout() {
         appStorage.clearUser()
-        appStorage.setChangedPassword(false)
     }
 
     override suspend fun getUser(): User? = withContext(Dispatchers.IO) {

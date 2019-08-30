@@ -15,11 +15,11 @@ data class Period(
         @ColumnInfo var color: String = "#000000"
 )
 
-fun Period.toWeekViewEvent(newYear: Int, newMonth: Int) = WeekViewEvent(
+fun Period.toWeekViewEvent() = WeekViewEvent(
         course,
         course,
-        Utils.getTime(start, newMonth, newYear, dayOfWeek),
-        Utils.getTime(end, newMonth, newYear, dayOfWeek)
+        Utils.getTime(start, dayOfWeek),
+        Utils.getTime(end, dayOfWeek)
 ).apply {
     location = String.format("- %s to %s", start, end)
     color = Color.parseColor(this@toWeekViewEvent.color)

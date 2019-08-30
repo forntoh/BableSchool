@@ -69,7 +69,6 @@ class CategoriesActivity : BaseActivity(), KodeinAware {
                 title(R.string.change_pass_title)
                 message(R.string.change_pass_message)
                 positiveButton {
-                    viewModel.setPasswordChanged()
                     startActivity(Intent(this@CategoriesActivity, CategoryActivity::class.java).apply {
                         putExtra("id", 4)
                         putExtra("title", "My Profile")

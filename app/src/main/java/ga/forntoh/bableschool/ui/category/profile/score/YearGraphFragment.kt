@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
 import com.anychart.chart.common.dataentry.DataEntry
@@ -17,9 +17,9 @@ import com.anychart.enums.MarkerType
 import com.anychart.enums.TooltipPositionMode
 import com.anychart.graphics.vector.Stroke
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.data.model.main.ScoreWithCourse
+import ga.forntoh.bableschool.data.model.main.ScoreCoursePair
 import ga.forntoh.bableschool.ui.base.ScopedFragment
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -37,37 +37,44 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
             savedInstanceState: Bundle?
     ): View? {
         val v = inflater.inflate(R.layout.fragment_year_graph, container, false)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ScoreViewModel::class.java)
-        LongOperation(v.findViewById<AnyChartView>(R.id.any_chart_view).apply { setProgressBar(v.findViewById(R.id.chart_progressBar)) }).execute()
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ScoreViewModel::class.java)
+
+        val seriesData = ArrayList<DataEntry>()
+        val allScores = ArrayList<List<ScoreCoursePair>>()
+
+        launch {
+            v.findViewById<AnyChartView>(R.id.any_chart_view).setProgressBar(v.findViewById(R.id.chart_progressBar))
+
+            val firstTermScores = viewModel.firstTermScoresAsync.await()
+            val secondTermScores = viewModel.secondTermScoresAsync.await()
+            val thirdTermScores = viewModel.thirdTermScoresAsync.await()
+
+            allScores.add(firstTermScores)
+            allScores.add(secondTermScores)
+            allScores.add(thirdTermScores)
+
+            firstTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 1", this)) }
+            firstTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 2", this)) }
+
+            secondTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 3", this)) }
+            secondTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 4", this)) }
+
+            thirdTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 5", this)) }
+            thirdTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 6", this)) }
+
+            LongOperation(v.findViewById(R.id.any_chart_view), seriesData, allScores).execute()
+        }
         return v
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class LongOperation internal constructor(private val anyChartView: AnyChartView) : AsyncTask<Void, Void, Wrapper>() {
+    private inner class LongOperation internal constructor(
+            private val anyChartView: AnyChartView,
+            val seriesData: ArrayList<DataEntry>,
+            val allScores: ArrayList<List<ScoreCoursePair>>
+    ) : AsyncTask<Void, Void, Wrapper>() {
 
-        override fun doInBackground(vararg params: Void): Wrapper {
-            val seriesData = ArrayList<DataEntry>()
-            val allScores = ArrayList<List<ScoreWithCourse>>()
-
-            runBlocking {
-                viewModel.firstTermScores.await().observe(this@YearGraphFragment, androidx.lifecycle.Observer { list ->
-                    allScores.add(list)
-                    list.map { it.score!!.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 1", this)) }
-                    list.map { it.score!!.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 2", this)) }
-                })
-                viewModel.secondTermScores.await().observe(this@YearGraphFragment, androidx.lifecycle.Observer { list ->
-                    allScores.add(list)
-                    list.map { it.score!!.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 3", this)) }
-                    list.map { it.score!!.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 4", this)) }
-                })
-                viewModel.thirdTermScores.await().observe(this@YearGraphFragment, androidx.lifecycle.Observer { list ->
-                    allScores.add(list)
-                    list.map { it.score!!.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 5", this)) }
-                    list.map { it.score!!.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 6", this)) }
-                })
-            }
-            return Wrapper(seriesData, allScores)
-        }
+        override fun doInBackground(vararg params: Void): Wrapper = Wrapper(seriesData, allScores)
 
         override fun onPostExecute(wrapper: Wrapper) {
             val allScores = wrapper.allScores
@@ -85,7 +92,7 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
             for (i in 0 until allScores[0].size) {
                 val mapping = with(Set.instantiate()) { data(wrapper.seriesData); mapAs("{ x: 'x', value: 'value${if (i == 0) "" else i}' }") }
                 cartesian.line(mapping).apply {
-                    name(allScores[0][i].course!!.abbr)
+                    name(allScores[0][i].course.abbr)
                     hovered().markers().enabled(true)
                     hovered().markers().type(MarkerType.CIRCLE).size(4.0)
                     tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5.0).offsetY(5.0)
@@ -106,5 +113,5 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    inner class Wrapper(var seriesData: List<DataEntry>, var allScores: List<List<ScoreWithCourse>>)
+    inner class Wrapper(var seriesData: List<DataEntry>, var allScores: List<List<ScoreCoursePair>>)
 }

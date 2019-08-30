@@ -17,13 +17,11 @@ import com.tripl3dev.prettystates.StatesConstants
 import com.tripl3dev.prettystates.setState
 import com.xwray.groupie.Section
 import ga.forntoh.bableschool.R
-import ga.forntoh.bableschool.data.model.main.Period
 import org.threeten.bp.ZonedDateTime
 import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 object Utils {
 
@@ -72,47 +70,13 @@ object Utils {
         }
     }
 
-    fun getTime(value: String, newMonth: Int, newYear: Int, dayOfWeek: Int): Calendar {
+    fun getTime(value: String, dayOfWeek: Int): Calendar {
         return Calendar.getInstance().apply {
             val hour = value.substring(0, 2).toInt()
             val minute = value.substring(3, 5).toInt()
-            set(Calendar.HOUR_OF_DAY, hour);set(Calendar.MINUTE, minute);set(Calendar.MONTH, newMonth - 1);set(Calendar.YEAR, newYear);set(Calendar.DAY_OF_WEEK, dayOfWeek)
+            set(Calendar.HOUR_OF_DAY, hour);set(Calendar.MINUTE, minute);set(Calendar.DAY_OF_WEEK, dayOfWeek + 1)
         }
     }
-
-    val dummyPeriods: List<Period>
-        get() {
-            val periods = ArrayList<Period>()
-
-            periods.add(Period("08:00", "10:00", "Electrocinétique", Calendar.MONDAY, "#59dbe0"))
-            periods.add(Period("12:00", "12:30", "Break", Calendar.MONDAY, "#3c3c3c"))
-            periods.add(Period("12:30", "14:30", "Algo et structure données", Calendar.MONDAY, "#f57f68"))
-            periods.add(Period("14:30", "16:30", "Electrostatique & Electromag", Calendar.MONDAY, "#87d288"))
-
-            periods.add(Period("08:00", "10:00", "Electrocinétique", Calendar.TUESDAY, "#59dbe0"))
-            periods.add(Period("10:00", "12:00", "Algèbre linéaire I", Calendar.TUESDAY, "#f8b552"))
-            periods.add(Period("12:00", "12:30", "Break", Calendar.TUESDAY, "#3c3c3c"))
-            periods.add(Period("12:30", "14:30", "Architecture ordinateurs et SE", Calendar.TUESDAY, "#FF4081"))
-            periods.add(Period("14:30", "16:30", "Electrostatique & Electromag", Calendar.TUESDAY, "#87d288"))
-
-            periods.add(Period("08:00", "10:00", "Analyse I", Calendar.WEDNESDAY, "#66A6FF"))
-            periods.add(Period("10:00", "12:00", "Optique", Calendar.WEDNESDAY, "#078B75"))
-            periods.add(Period("12:00", "12:30", "Break", Calendar.WEDNESDAY, "#3c3c3c"))
-            periods.add(Period("12:30", "16:30", "SEMINAIRE-ATELIER (HUAWEI) : Formation des talents aux TICS ", Calendar.WEDNESDAY, "#9C27B0"))
-
-            periods.add(Period("08:00", "10:00", "Architecture ordinateurs et SE", Calendar.THURSDAY, "#FF4081"))
-            periods.add(Period("10:00", "12:00", "Algèbre linéaire I", Calendar.THURSDAY, "#f8b552"))
-            periods.add(Period("12:00", "12:30", "Break", Calendar.THURSDAY, "#3c3c3c"))
-            periods.add(Period("12:30", "14:30", "Langues", Calendar.THURSDAY, "#f57f68"))
-
-            periods.add(Period("08:00", "10:00", "Optique", Calendar.FRIDAY, "#078B75"))
-            periods.add(Period("10:00", "12:00", "Algo et structure données", Calendar.FRIDAY, "#f57f68"))
-            periods.add(Period("12:00", "12:30", "Break", Calendar.FRIDAY, "#3c3c3c"))
-            periods.add(Period("12:30", "14:30", "Algo et structure données", Calendar.FRIDAY, "#f57f68"))
-            periods.add(Period("14:30", "16:30", "Sport", Calendar.FRIDAY, "#FF4081"))
-
-            return periods
-        }
 }
 
 val Double.in2Dp: String get() = if (this < 0) "N/A" else DecimalFormat("##.##").format(this)

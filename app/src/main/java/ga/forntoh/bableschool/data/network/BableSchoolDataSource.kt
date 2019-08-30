@@ -15,7 +15,7 @@ interface BableSchoolDataSource {
     val downloadedComment: LiveData<Comment>
     val downloadedLikes: LiveData<Likes>
     val downloadedUserProfile: LiveData<User>
-    val downloadedTermScores: LiveData<List<ScoreWithCourse>>
+    val downloadedTermScores: LiveData<List<Score>>
     val downloadedAnnualRank: LiveData<AnnualRank>
 
     suspend fun categories()

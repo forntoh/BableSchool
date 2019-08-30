@@ -9,7 +9,7 @@ data class User(
         var username: String? = null,
         var classe: String? = null,
         var picture: String? = null,
-        var profileData: ProfileData
+        var profileData: ProfileData? = null
 ) {
 
     fun profileDataMap(): LinkedHashMap<String, String> = ObjectMapper().readValue(

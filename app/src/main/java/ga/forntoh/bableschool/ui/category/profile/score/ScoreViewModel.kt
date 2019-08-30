@@ -23,4 +23,13 @@ class ScoreViewModel(private val scoreRepository: ScoreRepository) : ViewModel()
     val thirdTermScores by lazyDeferred {
         scoreRepository.retrieveTermScores(3)
     }
+    val firstTermScoresAsync by lazyDeferred {
+        scoreRepository.retrieveTermScoresAsync(1)
+    }
+    val secondTermScoresAsync by lazyDeferred {
+        scoreRepository.retrieveTermScoresAsync(2)
+    }
+    val thirdTermScoresAsync by lazyDeferred {
+        scoreRepository.retrieveTermScoresAsync(3)
+    }
 }

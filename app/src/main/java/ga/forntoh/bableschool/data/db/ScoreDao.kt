@@ -1,17 +1,19 @@
 package ga.forntoh.bableschool.data.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import ga.forntoh.bableschool.data.model.main.Score
-import ga.forntoh.bableschool.data.model.main.ScoreWithCourse
+import ga.forntoh.bableschool.data.model.main.ScoreCoursePair
 import ga.forntoh.bableschool.data.model.other.AnnualRank
 
 @Dao
 interface ScoreDao {
 
-    @Transaction
-    @Query("SELECT * FROM Score WHERE Score.term LIKE :term")
-    fun retrieveTermScores(term: Int): LiveData<MutableList<ScoreWithCourse>>
+    @Query("SELECT Course.code as Course_code, Course.title as Course_title, Score.* FROM Course LEFT OUTER JOIN Score ON Score.course_code = Course.code WHERE term like :term")
+    fun retrieveTermScores(term: Int): LiveData<MutableList<ScoreCoursePair>>
 
     @Query("SELECT * FROM AnnualRank LIMIT 1")
     fun retrieveYearScore(): AnnualRank?
@@ -27,4 +29,7 @@ interface ScoreDao {
 
     @Query("SELECT COUNT(id) FROM AnnualRank")
     fun numberOfItemsYearScore(): Int
+
+    @Query("SELECT Course.code as Course_code, Course.title as Course_title, Score.* FROM Course LEFT OUTER JOIN Score ON Score.course_code = Course.code WHERE term like :term")
+    fun retrieveTermScoresAsync(term: Int): MutableList<ScoreCoursePair>
 }

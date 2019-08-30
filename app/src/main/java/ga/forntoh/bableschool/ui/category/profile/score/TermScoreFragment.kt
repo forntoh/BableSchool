@@ -16,6 +16,8 @@ import ga.forntoh.bableschool.data.model.groupie.ItemScoreSummary
 import ga.forntoh.bableschool.data.model.main.toScoreView
 import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
+import ga.forntoh.bableschool.utilities.invalidateViewState
+import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.fragment_term_score.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -54,6 +56,7 @@ class TermScoreFragment : ScopedFragment(), KodeinAware {
         val sectionHeader = Section().apply { groupAdapter.add(this) }
         val section = Section().apply { groupAdapter.add(this) }
 
+        rv_term_scores.invalidateViewState()
         val scores = when (term) {
             1 -> viewModel.firstTermScores.await()
             2 -> viewModel.secondTermScores.await()
@@ -63,8 +66,9 @@ class TermScoreFragment : ScopedFragment(), KodeinAware {
 
         scores.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
-                sectionHeader.update(listOf(ItemScoreSummary(list.first().score!!.termAvg, list.last().score?.termRank)))
-                section.update(list.map { it.toScoreView() })
+                if (list.isNotEmpty())
+                    sectionHeader.update(listOf(ItemScoreSummary(list.first().score.termAvg, list.last().score.termRank)))
+                rv_term_scores.toggleViewState(section.apply { update(list.map { it.toScoreView() }) })
             }
         })
     }

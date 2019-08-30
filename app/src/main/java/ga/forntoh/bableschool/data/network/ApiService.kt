@@ -57,7 +57,7 @@ interface ApiService {
     ): Deferred<User>
 
     @FormUrlEncoded
-    @POST("profile/setpassword")
+    @POST("setpassword")
     fun updatePasswordAsync(
             @Field("matricule") uid: String,
             @Field("oldpassword") oldPassword: String,
@@ -70,7 +70,7 @@ interface ApiService {
             @Path("uid") uid: String,
             @Field("term") term: Int,
             @Field("year") year: String
-    ): Deferred<MutableList<ScoreWithCourse>>
+    ): Deferred<MutableList<Score>>
 
     @FormUrlEncoded
     @POST("rank/{uid}")

@@ -49,8 +49,8 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
     override val downloadedUserProfile: LiveData<User>
         get() = _downloadedUserProfile
 
-    private val _downloadedTermScores = MutableLiveData<List<ScoreWithCourse>>()
-    override val downloadedTermScores: LiveData<List<ScoreWithCourse>>
+    private val _downloadedTermScores = MutableLiveData<List<Score>>()
+    override val downloadedTermScores: LiveData<List<Score>>
         get() = _downloadedTermScores
 
     private val _downloadedAnnualRank = MutableLiveData<AnnualRank>()
@@ -167,9 +167,9 @@ class BableSchoolDataSourceImpl(private val apiService: ApiService) : BableSchoo
 
     override suspend fun getTermScores(uid: String, term: Int, year: String) {
         try {
-            val fetchedScores = ArrayList<ScoreWithCourse>()
+            val fetchedScores = ArrayList<Score>()
             apiService.getTermScoresAsync(uid, term, year).await().forEach {
-                it.score?.term = term
+                it.term = term
                 fetchedScores.add(it)
             }
             _downloadedTermScores.postValue(fetchedScores)
