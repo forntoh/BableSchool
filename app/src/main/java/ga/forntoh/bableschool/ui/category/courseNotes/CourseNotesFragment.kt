@@ -18,6 +18,7 @@ import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.courseNotes.detail.CourseNoteFragment
 import ga.forntoh.bableschool.utilities.invalidateViewState
 import ga.forntoh.bableschool.utilities.toggleViewState
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_course_notes.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -42,7 +43,6 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory).get(CourseNotesViewModel::class.java)
         init()
-        buildUI()
     }
 
     private fun init() {
@@ -54,11 +54,16 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
             addItemDecoration(InsetDecoration(16))
         }
         groupAdapter.add(section)
+
+        loadData()
+        (activity as CategoryActivity).srl.setOnRefreshListener {
+            viewModel.resetState()
+            loadData()
+        }
     }
 
-    private fun buildUI() = launch {
+    private fun loadData() = launch {
         rv_course_notes.invalidateViewState()
-
         viewModel.allCourseNotes.await().observe(viewLifecycleOwner, Observer { courses ->
             if (!courses.isNullOrEmpty()) {
                 rv_course_notes.toggleViewState(section.apply {
@@ -68,6 +73,7 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
                     })
                 })
             }
+            (activity as CategoryActivity).srl.isRefreshing = false
         })
     }
 

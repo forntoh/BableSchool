@@ -28,6 +28,8 @@ class TermScoreFragment : ScopedFragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
+    val sectionHeader = Section()
+    val section = Section()
     private val viewModelFactory: ScoreViewModelFactory by instance()
     private lateinit var viewModel: ScoreViewModel
 
@@ -42,9 +44,7 @@ class TermScoreFragment : ScopedFragment(), KodeinAware {
         buildUI()
     }
 
-    private fun buildUI() = launch {
-        val term = arguments?.getInt("term") ?: return@launch
-
+    private fun buildUI() {
         val groupAdapter = GroupAdapter<ViewHolder>()
 
         rv_term_scores.apply {
@@ -53,11 +53,19 @@ class TermScoreFragment : ScopedFragment(), KodeinAware {
             addItemDecoration(InsetDecoration(16))
         }
 
-        val sectionHeader = Section().apply { groupAdapter.add(this) }
-        val section = Section().apply { groupAdapter.add(this) }
+        groupAdapter.add(sectionHeader)
+        groupAdapter.add(section)
 
+        loadScores()
+        srl.setOnRefreshListener {
+            viewModel.resetState(arguments?.getInt("term")!!)
+            loadScores()
+        }
+    }
+
+    private fun loadScores() = launch {
         rv_term_scores.invalidateViewState()
-        val scores = when (term) {
+        val scores = when (arguments?.getInt("term")) {
             1 -> viewModel.firstTermScores.await()
             2 -> viewModel.secondTermScores.await()
             3 -> viewModel.thirdTermScores.await()
@@ -70,6 +78,7 @@ class TermScoreFragment : ScopedFragment(), KodeinAware {
                     sectionHeader.update(listOf(ItemScoreSummary(list.first().score.termAvg, list.last().score.termRank)))
                 rv_term_scores.toggleViewState(section.apply { update(list.map { it.toScoreView() }) })
             }
+            srl.isRefreshing = false
         })
     }
 }

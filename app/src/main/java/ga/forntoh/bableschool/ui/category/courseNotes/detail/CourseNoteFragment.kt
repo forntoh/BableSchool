@@ -1,16 +1,23 @@
 package ga.forntoh.bableschool.ui.category.courseNotes.detail
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -128,10 +135,13 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
 
     @SuppressLint("InflateParams")
     private val onDocumentClickListener = OnItemClickListener { item, _ ->
-        if (item is ItemDocument) {
+        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
+        } else if (item is ItemDocument) {
+            Toast.makeText(context!!, "Loading document...", Toast.LENGTH_SHORT).show()
             FileLoader.with(context)
                     .load(item.url, false)
-                    .fromDirectory(context?.getString(R.string.app_name), FileLoader.DIR_INTERNAL)
+                    .fromDirectory(context?.getString(R.string.app_name), FileLoader.DIR_EXTERNAL_PRIVATE)
                     .asFile(object : FileRequestListener<File> {
                         override fun onLoad(request: FileLoadRequest, response: FileResponse<File>) {
                             val loadedFile = response.body
@@ -142,9 +152,25 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
                                     setDataAndType(Uri.fromFile(loadedFile), MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(item.url)))
                                 })
                             } else {
-                                startActivity(Intent(Intent.ACTION_VIEW).apply {
-                                    setDataAndType(Uri.fromFile(loadedFile), "application/pdf")
-                                })
+                                val intent: Intent
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    val uri = FileProvider.getUriForFile(context!!, activity!!.packageName + ".provider", loadedFile)
+                                    intent = Intent.createChooser(Intent(Intent.ACTION_VIEW).apply {
+                                        flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                                        flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                                        setDataAndType(uri, "application/pdf")
+                                    }, "Open document with...").apply {
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                } else {
+                                    intent = Intent.createChooser(Intent(Intent.ACTION_VIEW).apply {
+                                        setDataAndType(Uri.fromFile(loadedFile), "application/pdf")
+                                    }, "Open document with...").apply {
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                }
+                                startActivity(intent)
+
                             }
 
                         }

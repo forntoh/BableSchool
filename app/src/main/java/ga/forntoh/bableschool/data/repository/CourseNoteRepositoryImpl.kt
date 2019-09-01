@@ -32,6 +32,8 @@ class CourseNoteRepositoryImpl(
         }
     }
 
+    override fun resetState() = appStorage.clearLastSaved(DataKey.COURSES)
+
     // Main
     override suspend fun retrieveCourses() = withContext(Dispatchers.IO) {
         initCourseNotesData()

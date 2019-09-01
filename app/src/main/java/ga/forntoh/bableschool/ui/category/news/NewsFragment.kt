@@ -21,6 +21,7 @@ import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.news.detail.NewsDetailFragment
 import ga.forntoh.bableschool.utilities.invalidateViewState
 import ga.forntoh.bableschool.utilities.toggleViewState
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -46,7 +47,6 @@ class NewsFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NewsViewModel::class.java)
         init()
-        buildUI()
     }
 
     private fun init() {
@@ -69,9 +69,15 @@ class NewsFragment : ScopedFragment(), KodeinAware {
             adapter = allNewsAdapter
             addItemDecoration(InsetDecoration(16))
         }
+
+        loadData()
+        (activity as CategoryActivity).srl.setOnRefreshListener {
+            viewModel.resetState()
+            loadData()
+        }
     }
 
-    private fun buildUI() = launch {
+    private fun loadData() = launch {
         rv_top_news.invalidateViewState()
         rv_all_news.invalidateViewState()
 
@@ -82,8 +88,9 @@ class NewsFragment : ScopedFragment(), KodeinAware {
                     it.toNewsView()
                 }
                 rv_top_news.toggleViewState(topNewsSection.apply { update(mappedNews.filter { it.isTop }) })
-                rv_all_news.toggleViewState(allNewsSection.apply { update(mappedNews.filterNot { it.isTop }) })
+                rv_all_news.toggleViewState(allNewsSection.apply { update(mappedNews.filterNot { it.isTop }.asReversed()) })
             }
+            (activity as CategoryActivity).srl.isRefreshing = false
         })
     }
 

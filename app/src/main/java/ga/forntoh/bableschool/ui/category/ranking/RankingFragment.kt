@@ -16,8 +16,10 @@ import ga.forntoh.bableschool.data.model.groupie.ItemTopSchool
 import ga.forntoh.bableschool.data.model.groupie.ItemTopStudent
 import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
+import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.utilities.invalidateViewState
 import ga.forntoh.bableschool.utilities.toggleViewState
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_ranking.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -31,6 +33,9 @@ class RankingFragment : ScopedFragment(), KodeinAware {
     private val viewModelFactory: RankingViewModelFactory by instance()
     private lateinit var viewModel: RankingViewModel
 
+    private val topStudentSection = Section()
+    private val topSchoolSection = Section()
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -42,7 +47,7 @@ class RankingFragment : ScopedFragment(), KodeinAware {
         buildUI()
     }
 
-    private fun buildUI() = launch {
+    private fun buildUI() {
         val topStudentsAdapter = GroupAdapter<ViewHolder>()
         val topSchoolAdapter = GroupAdapter<ViewHolder>()
 
@@ -57,17 +62,27 @@ class RankingFragment : ScopedFragment(), KodeinAware {
             addItemDecoration(InsetDecoration(16))
         }
 
-        val topStudentSection = Section().apply { topStudentsAdapter.add(this) }
-        val topSchoolSection = Section().apply { topSchoolAdapter.add(this) }
+        topStudentsAdapter.add(topStudentSection)
+        topSchoolAdapter.add(topSchoolSection)
 
+        loadData()
+        (activity as CategoryActivity).srl.setOnRefreshListener {
+            viewModel.resetState()
+            loadData()
+        }
+    }
+
+    private fun loadData() = launch {
         rv_top_students.invalidateViewState()
         rv_school_ranking.invalidateViewState()
 
         viewModel.topStudent.await().observe(viewLifecycleOwner, Observer { list ->
             rv_top_students.toggleViewState(topStudentSection.apply { update(list.map { ItemTopStudent(it.name, it.surname, it.image, it.school, it.average) }) })
+            (activity as CategoryActivity).srl.isRefreshing = false
         })
         viewModel.topSchool.await().observe(viewLifecycleOwner, Observer { list ->
             rv_school_ranking.toggleViewState(topSchoolSection.apply { update(list.map { ItemTopSchool(it.schoolName, it.image, it.topStudentName, it.average) }) })
+            (activity as CategoryActivity).srl.isRefreshing = false
         })
     }
 }

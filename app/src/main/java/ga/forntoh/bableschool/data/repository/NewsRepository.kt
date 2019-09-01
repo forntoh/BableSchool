@@ -18,4 +18,5 @@ abstract class NewsRepository : BaseRepository() {
     abstract suspend fun likeNews(id: Long, liked: Boolean)
 
     abstract fun observableLikes(): LiveData<Likes>
+    abstract fun resetState()
 }

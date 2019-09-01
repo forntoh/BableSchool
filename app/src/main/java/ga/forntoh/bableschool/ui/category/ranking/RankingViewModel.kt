@@ -18,4 +18,6 @@ class RankingViewModel(private val rankingRepository: RankingRepository) : ViewM
     val topSchool by lazyDeferred {
         rankingRepository.retrieveTopSchools()
     }
+
+    fun resetState() = rankingRepository.resetState()
 }

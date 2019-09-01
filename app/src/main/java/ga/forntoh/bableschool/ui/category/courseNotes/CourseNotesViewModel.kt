@@ -25,4 +25,6 @@ class CourseNotesViewModel(private val courseNoteRepository: CourseNoteRepositor
 
     val numberOfDocuments by lazyDeferred { courseNoteRepository.numberOfDocuments(code) }
 
+    fun resetState() = courseNoteRepository.resetState()
+
 }

@@ -35,6 +35,8 @@ class NewsRepositoryImpl(
         }
     }
 
+    override fun resetState() = appStorage.clearLastSaved(DataKey.NEWS)
+
     // Main
     override suspend fun retrieveAllNews(): LiveData<MutableList<News>> {
         return withContext(Dispatchers.IO) {

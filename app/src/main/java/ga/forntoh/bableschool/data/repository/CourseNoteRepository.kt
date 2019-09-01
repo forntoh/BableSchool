@@ -18,4 +18,5 @@ abstract class CourseNoteRepository : BaseRepository() {
     abstract suspend fun numberOfVideos(code: String): Int
 
     abstract suspend fun numberOfDocuments(code: String): Int
+    abstract fun resetState()
 }

@@ -38,12 +38,12 @@ class AppStorage {
     fun clearUser() = clear("user")
 
     fun getLastSaved(key: DataKey): ZonedDateTime = ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(preferences.getLong(key.name, 0)),
+            Instant.ofEpochMilli(preferences.getLong(key.name + "_" + loadUser()?.profileData?.matriculation, 0)),
             ZoneId.systemDefault()
     )
 
     fun setLastSaved(key: DataKey, time: ZonedDateTime) {
-        preferences.edit().apply { putLong(key.name, time.toInstant().toEpochMilli()); apply() }
+        preferences.edit().apply { putLong(key.name + "_" + loadUser()?.profileData?.matriculation, time.toInstant().toEpochMilli()); apply() }
     }
 
     fun getChangedPassword(): Boolean {
@@ -53,7 +53,7 @@ class AppStorage {
         } else false
     }
 
-    fun clearLastSaved(key: DataKey) = clear(key.name)
+    fun clearLastSaved(key: DataKey) = clear(key.name + "_" + loadUser()?.profileData?.matriculation)
 
     private fun save(key: String, value: String?) {
         if (value.isNullOrEmpty()) return

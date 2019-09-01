@@ -21,6 +21,8 @@ class ScoreRepositoryImpl(
         private val appStorage: AppStorage
 ) : ScoreRepository() {
 
+    override fun resetState(term: Int) = appStorage.clearLastSaved(getKey(term))
+
     init {
         bableSchoolDataSource.downloadedTermScores.observeForever {
             scope.launch { saveScores(it) }
@@ -41,7 +43,12 @@ class ScoreRepositoryImpl(
 
     override suspend fun retrieveYearScore(): AnnualRank? = withContext(Dispatchers.IO) {
         initYearScore()
-        return@withContext scoreDao.retrieveYearScore()
+        val data = scoreDao.retrieveYearScore()
+        if (data == null) {
+            appStorage.clearLastSaved(DataKey.TOP_SCHOOLS)
+            initYearScore()
+        }
+        return@withContext data
     }
 
     private suspend fun initTermScores(term: Int) {
@@ -67,16 +74,14 @@ class ScoreRepositoryImpl(
         else -> DataKey.TERM_3
     }
 
-    private suspend fun saveScores(scores: List<Score>) {
-        try {
-            scoreDao.saveTermScores(scores.map {
-                Score(it.firstSequenceMark, it.secondSequenceMark, it.rank, it.termRank, it.termAvg).apply {
-                    course_code = it.course!!.code
-                    term = it.term
-                }
-            })
-        } catch (e: SQLiteConstraintException) {
-        }
+    private suspend fun saveScores(scores: List<Score>) = try {
+        scoreDao.saveTermScores(scores.map {
+            Score(it.firstSequenceMark, it.secondSequenceMark, it.rank, it.termRank, it.termAvg).apply {
+                course_code = it.course!!.code
+                term = it.term
+            }
+        })
+    } catch (e: SQLiteConstraintException) {
     }
 
     private suspend fun saveAnnualRank(rank: AnnualRank) =

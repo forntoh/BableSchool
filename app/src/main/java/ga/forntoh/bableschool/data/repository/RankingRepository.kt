@@ -9,4 +9,5 @@ abstract class RankingRepository : BaseRepository() {
     abstract suspend fun retrieveTopSchools(): LiveData<MutableList<TopSchool>>
 
     abstract suspend fun retrieveTopStudents(): LiveData<MutableList<TopStudent>>
+    abstract fun resetState()
 }

@@ -11,4 +11,6 @@ abstract class ScoreRepository : BaseRepository() {
     abstract suspend fun retrieveTermScoresAsync(term: Int): MutableList<ScoreCoursePair>
 
     abstract suspend fun retrieveYearScore(): AnnualRank?
+
+    abstract fun resetState(term: Int)
 }

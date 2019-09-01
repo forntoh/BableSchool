@@ -29,28 +29,23 @@ class RankingRepositoryImpl(
         }
     }
 
+    override fun resetState() {
+        appStorage.clearLastSaved(DataKey.TOP_SCHOOLS)
+        appStorage.clearLastSaved(DataKey.TOP_STUDENTS)
+    }
+
     // Main
     override suspend fun retrieveTopSchools(): LiveData<MutableList<TopSchool>> =
             withContext(Dispatchers.IO) {
                 initTopSchoolsData()
-                val data = rankingDao.retrieveTopSchools()
-                if (data.value.isNullOrEmpty()) {
-                    appStorage.clearLastSaved(DataKey.TOP_SCHOOLS)
-                    initTopSchoolsData()
-                }
-                return@withContext data
+                return@withContext rankingDao.retrieveTopSchools()
             }
 
     // Main
     override suspend fun retrieveTopStudents(): LiveData<MutableList<TopStudent>> =
             withContext(Dispatchers.IO) {
                 initTopStudentsData()
-                val data = rankingDao.retrieveTopStudents()
-                if (data.value.isNullOrEmpty()) {
-                    appStorage.clearLastSaved(DataKey.TOP_STUDENTS)
-                    initTopStudentsData()
-                }
-                return@withContext data
+                return@withContext rankingDao.retrieveTopStudents()
             }
 
     private suspend fun initTopSchoolsData() {

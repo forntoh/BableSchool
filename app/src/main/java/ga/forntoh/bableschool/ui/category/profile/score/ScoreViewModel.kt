@@ -32,4 +32,6 @@ class ScoreViewModel(private val scoreRepository: ScoreRepository) : ViewModel()
     val thirdTermScoresAsync by lazyDeferred {
         scoreRepository.retrieveTermScoresAsync(3)
     }
+
+    fun resetState(term: Int) = scoreRepository.resetState(term)
 }

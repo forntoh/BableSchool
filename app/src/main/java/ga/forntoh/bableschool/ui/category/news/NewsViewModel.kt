@@ -35,4 +35,6 @@ class NewsViewModel(private val newsRepository: NewsRepository) : ViewModel() {
 
     suspend fun likeNews(id: Long, liked: Boolean) =
             newsRepository.likeNews(id, liked)
+
+    fun resetState() = newsRepository.resetState()
 }

@@ -53,14 +53,18 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
             allScores.add(secondTermScores)
             allScores.add(thirdTermScores)
 
-            firstTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 1", this)) }
-            firstTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 2", this)) }
-
-            secondTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 3", this)) }
-            secondTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 4", this)) }
-
-            thirdTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 5", this)) }
-            thirdTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 6", this)) }
+            if (firstTermScores.isNotEmpty()) {
+                firstTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 1", this)) }
+                firstTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 2", this)) }
+            }
+            if (secondTermScores.isNotEmpty()) {
+                secondTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 3", this)) }
+                secondTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 4", this)) }
+            }
+            if (thirdTermScores.isNotEmpty()) {
+                thirdTermScores.map { it.score.firstSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 5", this)) }
+                thirdTermScores.map { it.score.secondSequenceMark }.apply { seriesData.add(CustomDataEntry("Seq 6", this)) }
+            }
 
             LongOperation(v.findViewById(R.id.any_chart_view), seriesData, allScores).execute()
         }

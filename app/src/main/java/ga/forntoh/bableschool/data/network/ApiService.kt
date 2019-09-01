@@ -4,80 +4,79 @@ import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import ga.forntoh.bableschool.data.model.main.*
 import ga.forntoh.bableschool.data.model.other.*
-import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-//import tech.linjiang.pandora.Pandora
 import java.util.concurrent.TimeUnit
 
 interface ApiService {
 
-    @get:GET("categories")
-    val functions: Deferred<List<Category>>
+    @GET("categories")
+    suspend fun functions(): Response<List<Category>>
 
-    @get:GET("top_schools")
-    val topSchools: Deferred<List<TopSchool>>
+    @GET("top_schools")
+    suspend fun topSchools(): Response<List<TopSchool>>
 
     @GET("course_notes/{uid}")
-    fun getCourseNotesAsync(@Path("uid") uid: String): Deferred<List<CourseResponse>>
+    suspend fun getCourseNotesAsync(@Path("uid") uid: String): Response<List<CourseResponse>>
 
     @GET("top_students/{uid}")
-    fun getTopStudentsAsync(@Path("uid") uid: String): Deferred<List<TopStudent>>
+    suspend fun getTopStudentsAsync(@Path("uid") uid: String): Response<List<TopStudent>>
 
     @FormUrlEncoded
     @POST("news")
-    fun getNewsAsync(@Field("uid") uid: String): Deferred<MutableList<NewsResponse>>
+    suspend fun getNewsAsync(@Field("uid") uid: String): Response<MutableList<NewsResponse>>
 
     @FormUrlEncoded
     @POST("time_table")
-    fun getTimetableAsync(@Field("class_code") clazz: String?, @Field("school") school: String?): Deferred<List<Period>>
+    suspend fun getTimetableAsync(@Field("class_code") clazz: String?, @Field("school") school: String?): Response<List<Period>>
 
     @FormUrlEncoded
     @POST("postComment")
-    fun postCommentAsync(
+    suspend fun postCommentAsync(
             @Field("subject") subject: String,
             @Field("data") comment: String
-    ): Deferred<Comment>
+    ): Response<Comment>
 
     @FormUrlEncoded
     @POST("like")
-    fun likeNewsAsync(
+    suspend fun likeNewsAsync(
             @Field("uid") uid: String,
             @Field("subject") subject: String
-    ): Deferred<Likes>
+    ): Response<Likes>
 
     @FormUrlEncoded
     @POST("profile/{uid}")
-    fun getUserProfileAsync(
+    suspend fun getUserProfileAsync(
             @Path("uid") uid: String,
             @Field("password") password: String
-    ): Deferred<User>
+    ): Response<User>
 
     @FormUrlEncoded
     @POST("setpassword")
-    fun updatePasswordAsync(
+    suspend fun updatePasswordAsync(
             @Field("matricule") uid: String,
             @Field("oldpassword") oldPassword: String,
             @Field("newpassword") newPassword: String
-    ): Deferred<User>
+    ): Response<User>
 
     @FormUrlEncoded
     @POST("scores/{uid}")
-    fun getTermScoresAsync(
+    suspend fun getTermScoresAsync(
             @Path("uid") uid: String,
             @Field("term") term: Int,
             @Field("year") year: String
-    ): Deferred<MutableList<Score>>
+    ): Response<MutableList<Score>>
 
     @FormUrlEncoded
     @POST("rank/{uid}")
-    fun annualRankAsync(
+    suspend fun annualRankAsync(
             @Path("uid") uid: String,
             @Field("year") year: String
-    ): Deferred<AnnualRank>
+    ): Response<AnnualRank>
 
     companion object {
 
