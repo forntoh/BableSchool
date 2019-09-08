@@ -1,7 +1,6 @@
 package ga.forntoh.bableschool.ui.category.forum
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -17,6 +16,8 @@ import ga.forntoh.bableschool.data.AppStorage
 import ga.forntoh.bableschool.data.model.forum.DefaultDialog
 import ga.forntoh.bableschool.data.model.forum.FUser
 import ga.forntoh.bableschool.data.model.forum.Message
+import ga.forntoh.bableschool.ui.category.CategoryActivity
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_forum.*
 
 class ForumFragment : androidx.fragment.app.Fragment() {
@@ -97,6 +98,9 @@ class ForumFragment : androidx.fragment.app.Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as CategoryActivity).srl.isEnabled = false
+
+
         with(dialogsListAdapter) {
             setDatesFormatter { date ->
                 return@setDatesFormatter when {
