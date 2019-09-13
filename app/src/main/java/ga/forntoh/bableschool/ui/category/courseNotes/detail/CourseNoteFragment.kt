@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -18,7 +17,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -35,21 +34,17 @@ import ga.forntoh.bableschool.data.model.groupie.ItemDocument
 import ga.forntoh.bableschool.data.model.groupie.ItemVideo
 import ga.forntoh.bableschool.data.model.main.Course
 import ga.forntoh.bableschool.data.model.main.toDocumentView
+import ga.forntoh.bableschool.data.model.main.toVideo
 import ga.forntoh.bableschool.data.model.main.toVideoView
 import ga.forntoh.bableschool.internal.InsetDecoration
-import ga.forntoh.bableschool.internal.exo.PlayerHolder
-import ga.forntoh.bableschool.internal.exo.PlayerState
 import ga.forntoh.bableschool.ui.base.ScopedFragment
 import ga.forntoh.bableschool.ui.category.courseNotes.CourseNotesViewModel
 import ga.forntoh.bableschool.ui.category.courseNotes.CourseNotesViewModelFactory
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModel
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModelFactory
-import ga.forntoh.bableschool.utilities.inPx
 import ga.forntoh.bableschool.utilities.invalidateViewState
 import ga.forntoh.bableschool.utilities.toggleViewState
-import kotlinx.android.synthetic.main.exo_controller_ui.view.*
 import kotlinx.android.synthetic.main.fragment_course_note.*
-import kotlinx.android.synthetic.main.item_video.view.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -77,17 +72,9 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CourseNotesViewModel::class.java)
-        profileViewModel = ViewModelProviders.of(this, profileViewModelFactory).get(ProfileViewModel::class.java)
-
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CourseNotesViewModel::class.java)
+        profileViewModel = ViewModelProvider(this, profileViewModelFactory).get(ProfileViewModel::class.java)
         buildUI()
-
-        val savedState = Gson().fromJson(savedInstanceState?.getString("state"), PlayerState::class.java)
-                ?: return
-        state.whenReady = savedState.whenReady
-        state.window = savedState.window
-        state.position = savedState.position
-        state.source = savedState.source
     }
 
     private fun buildUI() = launch {
@@ -180,60 +167,23 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private var playerHolder: PlayerHolder? = null
-    private val state = PlayerState()
+    private val onVideoClickListener = OnItemClickListener { item, _ ->
+        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
+        } else if (item is ItemVideo) {
+            Toast.makeText(context!!, "Loading video...", Toast.LENGTH_SHORT).show()
+            FileLoader.with(context)
+                    .load(item.url, false)
+                    .fromDirectory(context?.getString(R.string.app_name), FileLoader.DIR_EXTERNAL_PRIVATE)
+                    .asFile(object : FileRequestListener<File> {
+                        override fun onLoad(request: FileLoadRequest, response: FileResponse<File>) {
+                            val loadedFile = response.body
+                            startActivity(Intent(context, VideoPlayerActivity::class.java).apply { putExtra("video", Gson().toJson(item.toVideo().apply { url = loadedFile.path })) })
+                        }
 
-    private val onVideoClickListener = OnItemClickListener { item, view ->
-        if (item is ItemVideo) {
-            //state.source = item.url ?: return@OnItemClickListener
-            view.exo_close.setOnClickListener { doStuffWithView(view, true); it.setOnClickListener(null) }
-            doStuffWithView(view, false)
+                        override fun onError(request: FileLoadRequest, t: Throwable) = Unit
+                    })
         }
     }
 
-    private fun doStuffWithView(view: View, toClose: Boolean) {
-        view.card_parent.apply {
-            radius = if (!toClose) 0.inPx.toFloat() else 5.inPx.toFloat()
-            layoutParams.width = if (!toClose) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-        view.exo_player_view.apply {
-            visibility = if (!toClose) View.VISIBLE else View.GONE
-            layoutParams.height = if (!toClose) 200.inPx else 0.inPx
-        }
-        view.root.layoutParams.apply {
-            width = if (!toClose) ViewGroup.LayoutParams.MATCH_PARENT else 150.inPx
-            height = if (!toClose) ViewGroup.LayoutParams.MATCH_PARENT else 80.inPx
-        }
-        if (!toClose) {
-            playerHolder = PlayerHolder(context!!, view.exo_player_view, state, view.progressBarExo)
-        } else playerHolder?.stop()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        when (newConfig.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> playerHolder?.openFullScreenDialog()
-            Configuration.ORIENTATION_PORTRAIT -> playerHolder?.closeFullScreenDialog()
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        playerHolder?.start()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        playerHolder?.stop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        playerHolder?.release()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString("state", Gson().toJson(state))
-    }
 }

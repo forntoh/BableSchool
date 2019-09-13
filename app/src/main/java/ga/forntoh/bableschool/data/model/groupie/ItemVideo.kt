@@ -6,7 +6,7 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import ga.forntoh.bableschool.R
 import kotlinx.android.synthetic.main.item_video.view.*
 
-data class ItemVideo(var courseCode: String?, var title: String?, var author: String?, var duration: String?, var url: String?, var thumbnail: String?) : Item() {
+data class ItemVideo(var courseCode: String?, var title: String?, var author: String?, var duration: String?, var url: String, var thumbnail: String?) : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.video_title.text = title

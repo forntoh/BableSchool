@@ -23,3 +23,5 @@ data class Video(
 )
 
 fun Video.toVideoView() = ItemVideo(courseCode, title, author, duration, url, thumbnail)
+
+fun ItemVideo.toVideo() = Video(courseCode, title, author, duration, url, thumbnail)
