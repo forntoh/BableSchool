@@ -23,8 +23,10 @@ import ga.forntoh.bableschool.data.model.groupie.ItemProfileData
 import ga.forntoh.bableschool.data.model.main.User
 import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
+import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.profile.score.ScoreSheetActivity
 import ga.forntoh.bableschool.ui.category.profile.timeTable.TimeTableActivity
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_my_profile.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -53,6 +55,8 @@ class MyProfileFragment : ScopedFragment(), KodeinAware {
 
     @SuppressLint("SetTextI18n")
     private fun buildUI() = launch {
+        (activity as CategoryActivity).srl.isEnabled = false
+
         btn_score_sheet.setOnClickListener { activity!!.startActivity(Intent(activity, ScoreSheetActivity::class.java)) }
         btn_time_table.setOnClickListener { activity!!.startActivity(Intent(context, TimeTableActivity::class.java)) }
 
