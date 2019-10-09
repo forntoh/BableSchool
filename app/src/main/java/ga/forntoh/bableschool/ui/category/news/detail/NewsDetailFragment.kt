@@ -19,9 +19,11 @@ import ga.forntoh.bableschool.data.model.main.News
 import ga.forntoh.bableschool.data.model.main.toCommentView
 import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
+import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.news.NewsViewModel
 import ga.forntoh.bableschool.ui.category.news.NewsViewModelFactory
 import ga.forntoh.bableschool.utilities.Utils
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_single_news.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -48,6 +50,7 @@ class NewsDetailFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun bindUI() = launch {
+        (activity as CategoryActivity).srl.isEnabled = false
         viewModel.id = arguments?.getLong("news") ?: 0
 
         news = viewModel.singleNews.await() ?: return@launch

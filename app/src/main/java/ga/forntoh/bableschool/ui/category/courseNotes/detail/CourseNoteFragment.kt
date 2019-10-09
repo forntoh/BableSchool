@@ -38,12 +38,14 @@ import ga.forntoh.bableschool.data.model.main.toVideo
 import ga.forntoh.bableschool.data.model.main.toVideoView
 import ga.forntoh.bableschool.internal.InsetDecoration
 import ga.forntoh.bableschool.ui.base.ScopedFragment
+import ga.forntoh.bableschool.ui.category.CategoryActivity
 import ga.forntoh.bableschool.ui.category.courseNotes.CourseNotesViewModel
 import ga.forntoh.bableschool.ui.category.courseNotes.CourseNotesViewModelFactory
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModel
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModelFactory
 import ga.forntoh.bableschool.utilities.invalidateViewState
 import ga.forntoh.bableschool.utilities.toggleViewState
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_course_note.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -78,6 +80,7 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun buildUI() = launch {
+        (activity as CategoryActivity).srl.isEnabled = false
         val startColors = activity!!.resources.getStringArray(R.array.start_colors)
         val endColors = activity!!.resources.getStringArray(R.array.end_colors)
 

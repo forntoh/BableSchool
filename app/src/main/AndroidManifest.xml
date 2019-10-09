@@ -37,7 +37,9 @@
         <activity android:name=".ui.category.profile.timeTable.TimeTableActivity" />
         <activity android:name=".ui.base.BaseActivity" />
         <activity android:name=".ui.category.forum.ChatActivity"></activity>
-        <activity android:name=".ui.category.courseNotes.detail.VideoPlayerActivity" />
+        <activity
+            android:name=".ui.category.courseNotes.detail.VideoPlayerActivity"
+            android:screenOrientation="sensorLandscape" />
     </application>
 
 </manifest>

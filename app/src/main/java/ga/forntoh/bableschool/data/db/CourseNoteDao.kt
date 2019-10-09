@@ -36,7 +36,7 @@ interface CourseNoteDao {
     @Query("SELECT COUNT(courseCode) FROM Video WHERE courseCode LIKE :code")
     suspend fun numberOfVideos(code: String): Int
 
-    @Query("SELECT COUNT(courseCode) FROM Video WHERE courseCode LIKE :code")
+    @Query("SELECT COUNT(courseCode) FROM Document WHERE courseCode LIKE :code")
     suspend fun numberOfDocuments(code: String): Int
 
     @Query("SELECT COUNT(code) FROM Course")

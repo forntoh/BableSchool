@@ -21,6 +21,7 @@ import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_course_notes.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -68,8 +69,9 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
             if (!courses.isNullOrEmpty()) {
                 rv_course_notes.toggleViewState(section.apply {
                     update(courses.map {
-                        viewModel.code = it.code
-                        it.toCourseView(/*viewModel.numberOfVideos*/ 0, /*viewModel.numberOfDocuments.await()*/ 0)
+                        runBlocking {
+                            it.toCourseView(viewModel.numberOfVideos(it.code), viewModel.numberOfDocuments(it.code))
+                        }
                     })
                 })
             }

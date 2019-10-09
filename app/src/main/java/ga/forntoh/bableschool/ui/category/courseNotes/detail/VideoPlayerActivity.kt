@@ -23,11 +23,7 @@ class VideoPlayerActivity : BaseActivity() {
 
         val video = Gson().fromJson(intent.getStringExtra("video"), Video::class.java)
 
-        if (video != null) {
-            tv_video_title.text = video.title
-            tv_video_time.text = "${video.duration} - ${video.author}"
-            state.source = video.url
-        }
+        if (video != null) state.source = video.url
         playerHolder = PlayerHolder(this, exo_player_view, state, progressBar)
     }
 

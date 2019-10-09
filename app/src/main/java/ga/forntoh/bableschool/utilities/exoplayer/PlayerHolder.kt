@@ -30,6 +30,7 @@ class PlayerHolder(private val context: Context, private val playerView: PlayerV
     private var inFullscreen: Boolean = false
     private val player: ExoPlayer
     private var fullscreenIcon: ImageView? = null
+    private var closeIcon: ImageView? = null
     private var fullScreenDialog: Dialog? = null
     private val parent: ViewGroup
     private val exo_progress: MyTimeBar
@@ -80,6 +81,7 @@ class PlayerHolder(private val context: Context, private val playerView: PlayerV
 
         initFullScreenDialog()
         initFullScreenButton()
+        initCloseButton()
     }
 
     fun start() {
@@ -134,6 +136,11 @@ class PlayerHolder(private val context: Context, private val playerView: PlayerV
                 (context as Activity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         }
+    }
+
+    private fun initCloseButton() {
+        this.closeIcon = playerView.findViewById(R.id.exo_close)
+        this.closeIcon!!.setOnClickListener { (context as Activity).onBackPressed() }
     }
 
     private fun initFullScreenDialog() {

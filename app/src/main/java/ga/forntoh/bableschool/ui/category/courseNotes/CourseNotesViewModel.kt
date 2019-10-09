@@ -21,9 +21,9 @@ class CourseNotesViewModel(private val courseNoteRepository: CourseNoteRepositor
 
     val documents by lazyDeferred { courseNoteRepository.documentsOfCourse(code) }
 
-    val numberOfVideos by lazyDeferred { courseNoteRepository.numberOfVideos(code) }
+    suspend fun numberOfVideos(code: String) = courseNoteRepository.numberOfVideos(code)
 
-    val numberOfDocuments by lazyDeferred { courseNoteRepository.numberOfDocuments(code) }
+    suspend fun numberOfDocuments(code: String) = courseNoteRepository.numberOfDocuments(code)
 
     fun resetState() = courseNoteRepository.resetState()
 
