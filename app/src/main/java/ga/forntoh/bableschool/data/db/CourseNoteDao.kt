@@ -40,5 +40,5 @@ interface CourseNoteDao {
     suspend fun numberOfDocuments(code: String): Int
 
     @Query("SELECT COUNT(code) FROM Course")
-    fun numberOfItems(): Int
+    suspend fun numberOfItems(): Int
 }

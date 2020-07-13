@@ -22,9 +22,10 @@ class NewsRepositoryImpl(
 ) : NewsRepository() {
 
     init {
-        bableSchoolDataSource.downloadedNews.observeForever {
+        bableSchoolDataSource.downloadedNews.observeForever { response ->
             scope.launch {
-                for (item in it) {
+                newsDao.deleteAllNews()
+                for (item in response) {
                     saveNews(item.toNewsData())
                     newsDao.saveComments(*item.cmts.map { cmt -> cmt.apply { newsId = item.id } }.toTypedArray())
                 }
@@ -71,7 +72,7 @@ class NewsRepositoryImpl(
     override fun observableLikes() = bableSchoolDataSource.downloadedLikes
 
     private suspend fun initNewsData() {
-        if (isFetchNeeded(appStorage.getLastSaved(DataKey.NEWS)) || newsDao.numberOfItems() <= 0) {
+        if (isFetchNeeded(appStorage.getLastSaved(DataKey.NEWS), 1) || newsDao.numberOfItems() <= 0) {
             bableSchoolDataSource.getNews(appStorage.loadUser()?.profileData?.matriculation
                     ?: return)
             appStorage.setLastSaved(DataKey.NEWS, ZonedDateTime.now())

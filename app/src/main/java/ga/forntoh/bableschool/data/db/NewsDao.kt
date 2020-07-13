@@ -11,7 +11,7 @@ import ga.forntoh.bableschool.data.model.main.News
 @Dao
 interface NewsDao {
 
-    @Query("SELECT * FROM News")
+    @Query("SELECT * FROM News ORDER BY date")
     fun retrieveAllNews(): LiveData<MutableList<News>>
 
     @Query("SELECT * FROM News WHERE News.id LIKE :id LIMIT 1")
@@ -22,6 +22,9 @@ interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveNews(vararg news: News)
+
+    @Query("DELETE FROM News")
+    suspend fun deleteAllNews()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveComments(vararg comment: Comment)

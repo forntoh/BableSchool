@@ -45,4 +45,6 @@
     <string name="pl_ad_short_desc">Just a very short description that seems long, but it\'s short and very straight to the point, so don\'t think twice my brother, just take it as it is.</string>
     <string name="pl_ad_title">Dummy title for prototype</string>
     <string name="pl_ad_time">11/11/11 – 12:25</string>
+    <string name="channel_name">Bable Channel</string>
+    <string name="channel_description">Bable Description</string>
 </resources>

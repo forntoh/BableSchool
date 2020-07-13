@@ -15,7 +15,7 @@ data class User(
     fun profileDataMap(): LinkedHashMap<String, String> = ObjectMapper().readValue(
             Gson().toJson(profileData),
             object : TypeReference<Map<String, String>>() {}
-    )
+    ) as LinkedHashMap<String, String>
 
     data class ProfileData(
             @SerializedName("Class")

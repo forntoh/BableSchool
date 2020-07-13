@@ -21,13 +21,9 @@ import ga.forntoh.bableschool.utilities.invalidateViewState
 import ga.forntoh.bableschool.utilities.toggleViewState
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
-class CategoriesActivity : BaseActivity(), KodeinAware {
-
-    override val kodein by closestKodein()
+class CategoriesActivity : BaseActivity() {
 
     private val viewModelFactory: CategoryViewModelFactory by instance()
     private lateinit var viewModel: CategoryViewModel
@@ -87,5 +83,10 @@ class CategoriesActivity : BaseActivity(), KodeinAware {
                 putExtra("id", item.identity)
                 putExtra("title", item.title)
             })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        launch { viewModel.initCourseNotes() }
     }
 }

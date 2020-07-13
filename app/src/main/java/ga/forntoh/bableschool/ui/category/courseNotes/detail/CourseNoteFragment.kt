@@ -9,6 +9,7 @@ import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -147,7 +148,7 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
                                     val uri = FileProvider.getUriForFile(context!!, activity!!.packageName + ".provider", loadedFile)
                                     intent = Intent.createChooser(Intent(Intent.ACTION_VIEW).apply {
                                         flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-                                        flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                                         setDataAndType(uri, "application/pdf")
                                     }, "Open document with...").apply {
                                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -165,7 +166,9 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
 
                         }
 
-                        override fun onError(request: FileLoadRequest, t: Throwable) = Unit
+                        override fun onError(request: FileLoadRequest, t: Throwable) {
+                            Log.e("FileLoadError", null, t)
+                        }
                     })
         }
     }

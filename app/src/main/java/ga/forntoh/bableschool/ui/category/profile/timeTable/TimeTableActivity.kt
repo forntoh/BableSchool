@@ -16,15 +16,11 @@ import ga.forntoh.bableschool.utilities.enableWhiteStatusBar
 import ga.forntoh.bableschool.utilities.inPx
 import kotlinx.android.synthetic.main.activity_time_table.*
 import kotlinx.coroutines.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TimeTableActivity : BaseActivity(), KodeinAware, MonthLoader.MonthChangeListener {
-
-    override val kodein by closestKodein()
+class TimeTableActivity : BaseActivity(), MonthLoader.MonthChangeListener {
 
     private val viewModelFactory: TimeTableViewModelFactory by instance()
     private lateinit var viewModel: TimeTableViewModel

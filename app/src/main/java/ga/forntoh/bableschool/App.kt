@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tripl3dev.prettystates.StatesConfigFactory
 import ga.forntoh.bableschool.data.AppStorage
@@ -29,7 +30,7 @@ import org.kodein.di.generic.singleton
 
 class App : MultiDexApplication(), KodeinAware {
 
-    override val kodein = Kodein.lazy {
+    override val kodein by Kodein.lazy {
         import(androidXModule(this@App))
 
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
@@ -46,7 +47,7 @@ class App : MultiDexApplication(), KodeinAware {
 
         bind<CategoryDao>() with singleton { instance<AppDatabase>().categoryDao() }
         bind<CategoryRepository>() with singleton { CategoryRepositoryImpl(instance(), instance(), instance()) }
-        bind<CategoryViewModelFactory>() with provider { CategoryViewModelFactory(instance()) }
+        bind<CategoryViewModelFactory>() with provider { CategoryViewModelFactory(instance(), instance()) }
 
         bind<NewsDao>() with singleton { instance<AppDatabase>().newsDao() }
         bind<NewsRepository>() with singleton { NewsRepositoryImpl(instance(), instance(), instance()) }
@@ -78,6 +79,7 @@ class App : MultiDexApplication(), KodeinAware {
     override fun onCreate() {
         super.onCreate()
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        FirebaseMessaging.getInstance().subscribeToTopic("global")
         AndroidThreeTen.init(this)
         StatesConfigFactory.intialize().initViews()
                 .setDefaultEmptyLayout(R.layout.state_empty)

@@ -53,7 +53,7 @@ class CourseNoteRepositoryImpl(
 
     override suspend fun numberOfDocuments(code: String) = courseNoteDao.numberOfDocuments(code)
 
-    private suspend fun initCourseNotesData() {
+    override suspend fun initCourseNotesData() {
         if (isFetchNeeded(appStorage.getLastSaved(DataKey.COURSES), 60) || courseNoteDao.numberOfItems() <= 0) {
             bableSchoolDataSource.getCourseNotes(appStorage.loadUser()?.profileData?.matriculation
                     ?: return)
