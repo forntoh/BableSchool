@@ -25,7 +25,7 @@ import org.kodein.di.generic.instance
 
 class CategoriesActivity : BaseActivity() {
 
-    private val viewModelFactory: CategoryViewModelFactory by instance()
+    private val viewModelFactory: CategoryViewModelFactory by instance<CategoryViewModelFactory>()
     private lateinit var viewModel: CategoryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

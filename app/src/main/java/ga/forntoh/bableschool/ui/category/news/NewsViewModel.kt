@@ -16,9 +16,7 @@ class NewsViewModel(private val newsRepository: NewsRepository) : ViewModel() {
 
     var id: Long = 0
 
-    val allNews by lazyDeferred {
-        newsRepository.retrieveAllNews()
-    }
+    suspend fun getAllNews() = newsRepository.retrieveAllNews()
 
     val singleNews by lazyDeferred {
         newsRepository.retrieveSingleNews(id)

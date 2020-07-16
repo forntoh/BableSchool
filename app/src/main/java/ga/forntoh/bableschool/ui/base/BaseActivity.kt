@@ -30,7 +30,7 @@ open class BaseActivity : ScopedActivity(), KodeinAware {
 
     override val kodein by lazy { (applicationContext as App).kodein }
 
-    private val viewModelFactory: ProfileViewModelFactory by instance()
+    private val viewModelFactory: ProfileViewModelFactory by instance<ProfileViewModelFactory>()
     private lateinit var viewModel: ProfileViewModel
 
     private var currentApiVersion: Int = 0

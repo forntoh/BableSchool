@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.GroupAdapter
@@ -32,7 +32,7 @@ class NewsFragment : ScopedFragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
-    private val viewModelFactory: NewsViewModelFactory by instance()
+    private val viewModelFactory: NewsViewModelFactory by instance<NewsViewModelFactory>()
     private lateinit var viewModel: NewsViewModel
 
     private val topNewsSection = Section()
@@ -45,7 +45,7 @@ class NewsFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(NewsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(NewsViewModel::class.java)
         init()
     }
 
@@ -81,7 +81,7 @@ class NewsFragment : ScopedFragment(), KodeinAware {
         rv_top_news.invalidateViewState()
         rv_all_news.invalidateViewState()
 
-        viewModel.allNews.await().observe(viewLifecycleOwner, Observer { news ->
+        viewModel.getAllNews().observe(viewLifecycleOwner, Observer { news ->
             if (!news.isNullOrEmpty()) {
                 val mappedNews = news.map {
                     viewModel.id = it.id
@@ -89,8 +89,12 @@ class NewsFragment : ScopedFragment(), KodeinAware {
                 }
                 rv_top_news.toggleViewState(topNewsSection.apply { update(mappedNews.filter { it.isTop }) })
                 rv_all_news.toggleViewState(allNewsSection.apply { update(mappedNews.filterNot { it.isTop }.asReversed()) })
+                (activity as CategoryActivity).srl.isRefreshing = false
+            } else {
+                for (i in 0 until allNewsSection.itemCount) {
+                    allNewsSection.remove(allNewsSection.getGroup(0))
+                }
             }
-            (activity as CategoryActivity).srl.isRefreshing = false
         })
     }
 
