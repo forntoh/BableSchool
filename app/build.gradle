@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'kotlin-kapt'
-
 apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-android-extensions'
 
@@ -46,7 +46,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.core:core-ktx:1.3.0'
+    implementation 'androidx.core:core-ktx:1.3.1'
 
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
@@ -104,7 +104,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // New Material Design
-    implementation 'com.google.android.material:material:1.3.0-alpha01'
+    implementation 'com.google.android.material:material:1.3.0-alpha02'
 
     // Better date-time support
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
@@ -117,7 +117,7 @@ dependencies {
     implementation 'com.github.Rohyme:PrettyStateView:3.0.0'
     implementation 'com.github.AnyChart:AnyChart-Android:1.0.2'
     implementation 'com.github.AndroidDeveloperLB:Android-Week-View:2.3.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     testImplementation 'junit:junit:4.13'
