@@ -88,6 +88,7 @@ interface ApiService {
                 val request = chain.request()
                         .newBuilder()
                         .addHeader("Accept", "application/json")
+                        .addHeader("Connection", "Keep-Alive")
                         .addHeader("Connection", "close")
                         .build()
 
@@ -100,10 +101,11 @@ interface ApiService {
                     .writeTimeout(1, TimeUnit.MINUTES)
                     .addInterceptor(requestInterceptor)
                     .addInterceptor(connectivityInterceptor)
+                    .retryOnConnectionFailure(true)
                     .build()
 
             return Retrofit.Builder()
-                    .client(okHttpClient)
+                    .client(okHttpClient.apply { dispatcher().maxRequests = 100 })
                     .baseUrl(BASE_URL)
                     .addCallAdapterFactory(CoroutineCallAdapterFactory())
                     .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
