@@ -65,7 +65,7 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
 
     private fun loadData() = launch {
         rv_course_notes.invalidateViewState()
-        viewModel.allCourseNotes.await().observe(viewLifecycleOwner, Observer { courses ->
+        viewModel.getAllCourseNotes().observe(viewLifecycleOwner, Observer { courses ->
             if (!courses.isNullOrEmpty()) {
                 rv_course_notes.toggleViewState(section.apply {
                     update(courses.map {

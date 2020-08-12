@@ -187,7 +187,9 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
                             startActivity(Intent(context, VideoPlayerActivity::class.java).apply { putExtra("video", Gson().toJson(item.toVideo().apply { url = loadedFile.path })) })
                         }
 
-                        override fun onError(request: FileLoadRequest, t: Throwable) = Unit
+                        override fun onError(request: FileLoadRequest, t: Throwable) {
+                            Toast.makeText(requireContext(), t.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }
                     })
         }
     }

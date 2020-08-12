@@ -13,7 +13,7 @@ class CourseNotesViewModel(private val courseNoteRepository: CourseNoteRepositor
 
     var code = ""
 
-    val allCourseNotes by lazyDeferred { courseNoteRepository.retrieveCourses() }
+    suspend fun getAllCourseNotes() = courseNoteRepository.retrieveCourses()
 
     val singleCourseNote by lazyDeferred { courseNoteRepository.retrieveSingleCourse(code) }
 
