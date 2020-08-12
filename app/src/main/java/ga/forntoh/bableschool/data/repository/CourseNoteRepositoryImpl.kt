@@ -34,7 +34,13 @@ class CourseNoteRepositoryImpl(
 
     override fun resetState() {
         appStorage.clearLastSaved(DataKey.COURSES)
-        scope.launch { courseNoteDao.deleteAll() }
+        scope.launch {
+            withContext(Dispatchers.IO) {
+                courseNoteDao.deleteAllVideos()
+                courseNoteDao.deleteAllDocuments()
+                courseNoteDao.deleteAllCourses()
+            }
+        }
     }
 
     // Main

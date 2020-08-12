@@ -43,5 +43,11 @@ interface CourseNoteDao {
     suspend fun numberOfItems(): Int
 
     @Query("DELETE FROM Course")
-    suspend fun deleteAll()
+    fun deleteAllCourses()
+
+    @Query("DELETE FROM Video")
+    fun deleteAllVideos()
+
+    @Query("DELETE FROM Document")
+    fun deleteAllDocuments()
 }
