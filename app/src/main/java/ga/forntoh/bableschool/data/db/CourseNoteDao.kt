@@ -41,4 +41,7 @@ interface CourseNoteDao {
 
     @Query("SELECT COUNT(code) FROM Course")
     suspend fun numberOfItems(): Int
+
+    @Query("DELETE FROM Course")
+    suspend fun deleteAll()
 }

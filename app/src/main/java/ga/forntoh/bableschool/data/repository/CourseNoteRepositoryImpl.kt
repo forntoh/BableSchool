@@ -32,7 +32,10 @@ class CourseNoteRepositoryImpl(
         }
     }
 
-    override fun resetState() = appStorage.clearLastSaved(DataKey.COURSES)
+    override fun resetState() {
+        appStorage.clearLastSaved(DataKey.COURSES)
+        scope.launch { courseNoteDao.deleteAll() }
+    }
 
     // Main
     override suspend fun retrieveCourses() = withContext(Dispatchers.IO) {
