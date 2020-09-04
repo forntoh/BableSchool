@@ -33,6 +33,5 @@ abstract class AppDatabase : RoomDatabase() {
                         .fallbackToDestructiveMigration()
                         .build()
 
-        fun clearAllTables() = this.instance?.clearAllTables()
     }
 }

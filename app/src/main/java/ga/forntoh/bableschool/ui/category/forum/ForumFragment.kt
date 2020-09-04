@@ -114,7 +114,7 @@ class ForumFragment : androidx.fragment.app.Fragment() {
                     putExtra("dialog", Gson().toJson(dialog))
                 })
             }
-            dialogsList.setAdapter<DefaultDialog>(this)
+            dialogsList.setAdapter(this)
         }
 
         val myRef = database.getReference("forumGroupMetadata")

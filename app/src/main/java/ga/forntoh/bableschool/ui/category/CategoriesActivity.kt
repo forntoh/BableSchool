@@ -2,7 +2,6 @@ package ga.forntoh.bableschool.ui.category
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -25,7 +24,7 @@ import org.kodein.di.generic.instance
 
 class CategoriesActivity : BaseActivity() {
 
-    private val viewModelFactory: CategoryViewModelFactory by instance<CategoryViewModelFactory>()
+    private val viewModelFactory: CategoryViewModelFactory by instance()
     private lateinit var viewModel: CategoryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +55,7 @@ class CategoriesActivity : BaseActivity() {
         categoriesAdapter.add(categoriesSection)
 
         rv_categories.invalidateViewState()
-        viewModel.categories.await().observe(this@CategoriesActivity, Observer { list ->
+        viewModel.categories.await().observe(this@CategoriesActivity, { list ->
             rv_categories.toggleViewState(categoriesSection.apply { update(list.map { it.toCategoryView() }) })
         })
 

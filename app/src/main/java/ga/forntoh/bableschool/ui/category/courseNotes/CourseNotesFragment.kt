@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,7 +64,7 @@ class CourseNotesFragment : ScopedFragment(), OnItemClickListener, KodeinAware {
 
     private fun loadData() = launch {
         rv_course_notes.invalidateViewState()
-        viewModel.getAllCourseNotes().observe(viewLifecycleOwner, Observer { courses ->
+        viewModel.getAllCourseNotes().observe(viewLifecycleOwner, { courses ->
             if (!courses.isNullOrEmpty()) {
                 rv_course_notes.toggleViewState(section.apply {
                     update(courses.map {

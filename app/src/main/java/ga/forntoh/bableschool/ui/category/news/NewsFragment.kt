@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +31,7 @@ class NewsFragment : ScopedFragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
-    private val viewModelFactory: NewsViewModelFactory by instance<NewsViewModelFactory>()
+    private val viewModelFactory: NewsViewModelFactory by instance()
     private lateinit var viewModel: NewsViewModel
 
     private val topNewsSection = Section()
@@ -81,14 +80,21 @@ class NewsFragment : ScopedFragment(), KodeinAware {
         rv_top_news.invalidateViewState()
         rv_all_news.invalidateViewState()
 
-        viewModel.getAllNews().observe(viewLifecycleOwner, Observer { news ->
+        viewModel.getAllNews().observe(viewLifecycleOwner, { news ->
             if (!news.isNullOrEmpty()) {
                 val mappedNews = news.map {
                     viewModel.id = it.id
                     it.toNewsView()
                 }
-                rv_top_news.toggleViewState(topNewsSection.apply { update(mappedNews.filter { it.isTop }) })
-                rv_all_news.toggleViewState(allNewsSection.apply { update(mappedNews.filterNot { it.isTop }.asReversed()) })
+
+                val topNews = mappedNews.filter { it.isTop }
+                val allNews = mappedNews.filterNot { it.isTop }.asReversed()
+
+                val single = mappedNews.first()
+                single.isTop = true
+
+                rv_top_news.toggleViewState(topNewsSection.apply { update(if (topNews.isNullOrEmpty()) listOf(single) else topNews) })
+                rv_all_news.toggleViewState(allNewsSection.apply { update(allNews) })
                 (activity as CategoryActivity).srl.isRefreshing = false
             } else {
                 for (i in 0 until allNewsSection.itemCount) {

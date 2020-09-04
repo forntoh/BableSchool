@@ -3,7 +3,6 @@ package ga.forntoh.bableschool.ui.category.profile.timeTable
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekViewEvent
@@ -70,7 +69,7 @@ class TimeTableActivity : BaseActivity(), MonthLoader.MonthChangeListener {
         }
 
 
-        viewModel.periods.await().observe(this@TimeTableActivity, Observer { list ->
+        viewModel.periods.await().observe(this@TimeTableActivity, { list ->
             if (!list.isNullOrEmpty()) {
                 list.forEach { events.add(it.toWeekViewEvent()) }
                 weekView.apply {

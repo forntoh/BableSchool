@@ -58,9 +58,9 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
-    private val viewModelFactory: CourseNotesViewModelFactory by instance<CourseNotesViewModelFactory>()
+    private val viewModelFactory: CourseNotesViewModelFactory by instance()
     private lateinit var viewModel: CourseNotesViewModel
-    private val profileViewModelFactory: ProfileViewModelFactory by instance<ProfileViewModelFactory>()
+    private val profileViewModelFactory: ProfileViewModelFactory by instance()
     private lateinit var profileViewModel: ProfileViewModel
 
     private lateinit var course: Course

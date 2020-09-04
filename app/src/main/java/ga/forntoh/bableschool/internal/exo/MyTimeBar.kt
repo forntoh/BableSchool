@@ -311,14 +311,14 @@ class MyTimeBar(context: Context, attrs: AttributeSet?) : View(context, attrs), 
 
     @SuppressLint("SwitchIntDef")
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
-        val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
         val height = when (heightMode) {
-            View.MeasureSpec.UNSPECIFIED -> touchTargetHeight
-            View.MeasureSpec.EXACTLY -> heightSize
+            MeasureSpec.UNSPECIFIED -> touchTargetHeight
+            MeasureSpec.EXACTLY -> heightSize
             else -> Math.min(touchTargetHeight, heightSize)
         }
-        setMeasuredDimension(View.MeasureSpec.getSize(widthMeasureSpec), height)
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height)
         updateDrawableState()
     }
 
@@ -390,8 +390,8 @@ class MyTimeBar(context: Context, attrs: AttributeSet?) : View(context, attrs), 
 
     @TargetApi(16)
     private fun maybeSetImportantForAccessibilityV16() {
-        if (importantForAccessibility == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        if (importantForAccessibility == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         }
     }
 

@@ -5,7 +5,6 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -76,11 +75,11 @@ class NewsDetailFragment : ScopedFragment(), KodeinAware {
             addItemDecoration(InsetDecoration(16))
         }
 
-        viewModel.comments.await().observe(viewLifecycleOwner, Observer { comments ->
+        viewModel.comments.await().observe(viewLifecycleOwner, { comments ->
             comment_count.text = getString(R.string.comment_counter, comments?.size)
             section.update(comments.map { it.toCommentView() })
         })
-        viewModel.likes.observe(viewLifecycleOwner, Observer { likes ->
+        viewModel.likes.observe(viewLifecycleOwner, { likes ->
             like_count.text = getString(R.string.like_counter, likes.likes)
             if (news.isLiked) Picasso.get().load(R.drawable.ic_heart).into(btn_like)
             else btn_like.setImageResource(R.drawable.ic_heart_outline)

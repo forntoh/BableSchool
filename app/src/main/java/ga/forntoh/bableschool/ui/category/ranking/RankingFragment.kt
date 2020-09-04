@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -76,11 +75,11 @@ class RankingFragment : ScopedFragment(), KodeinAware {
         rv_top_students.invalidateViewState()
         rv_school_ranking.invalidateViewState()
 
-        viewModel.topStudent.await().observe(viewLifecycleOwner, Observer { list ->
+        viewModel.topStudent.await().observe(viewLifecycleOwner, { list ->
             rv_top_students.toggleViewState(topStudentSection.apply { update(list.map { ItemTopStudent(it.name, it.surname, it.image, it.school, it.average) }) })
             (activity as CategoryActivity).srl.isRefreshing = false
         })
-        viewModel.topSchool.await().observe(viewLifecycleOwner, Observer { list ->
+        viewModel.topSchool.await().observe(viewLifecycleOwner, { list ->
             rv_school_ranking.toggleViewState(topSchoolSection.apply { update(list.map { ItemTopSchool(it.schoolName, it.image, it.topStudentName, it.average) }) })
             (activity as CategoryActivity).srl.isRefreshing = false
         })

@@ -72,7 +72,7 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class LongOperation internal constructor(
+    private inner class LongOperation(
             private val anyChartView: AnyChartView,
             val seriesData: ArrayList<DataEntry>,
             val allScores: ArrayList<List<ScoreCoursePair>>
@@ -111,11 +111,11 @@ class YearGraphFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private inner class CustomDataEntry internal constructor(x: String, scores: List<Number>) : ValueDataEntry(x, scores[0]) {
+    private class CustomDataEntry(x: String, scores: List<Number>) : ValueDataEntry(x, scores[0]) {
         init {
             for (i in 1 until scores.size) setValue("value$i", scores[i])
         }
     }
 
-    inner class Wrapper(var seriesData: List<DataEntry>, var allScores: List<List<ScoreCoursePair>>)
+    class Wrapper(var seriesData: List<DataEntry>, var allScores: List<List<ScoreCoursePair>>)
 }
