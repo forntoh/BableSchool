@@ -50,7 +50,7 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta8'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-rc1'
 
     // Kotlin Android Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"

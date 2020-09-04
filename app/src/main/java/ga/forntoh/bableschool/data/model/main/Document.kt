@@ -26,14 +26,14 @@ data class Document(
             return when (extension) {
                 "pdf" -> R.drawable.ic_pdf
                 "doc" -> R.drawable.ic_doc
-                else -> -1
+                else -> R.drawable.ic_pdf
             }
         }
 
     val extension: String
         get() {
             val words = url.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            return words[words.size - 1].toLowerCase()
+            return if (words.isNotEmpty()) words[words.size - 1].toLowerCase() else "pdf"
         }
 }
 

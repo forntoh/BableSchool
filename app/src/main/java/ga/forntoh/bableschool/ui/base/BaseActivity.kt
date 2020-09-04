@@ -96,7 +96,7 @@ open class BaseActivity : ScopedActivity(), KodeinAware {
     override fun onResume() {
         super.onResume()
         launch {
-            if (viewModel.user.await() == null) {
+            if (viewModel.user() == null) {
                 Toast.makeText(this@BaseActivity, "Please login", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this@BaseActivity, LoginActivity::class.java))
                 finish()

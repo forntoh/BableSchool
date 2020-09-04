@@ -3,7 +3,6 @@ package ga.forntoh.bableschool.ui.category.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ga.forntoh.bableschool.data.repository.ProfileRepository
-import ga.forntoh.bableschool.internal.lazyDeferred
 
 class ProfileViewModel(private val userRepository: ProfileRepository) : ViewModel() {
 
@@ -19,7 +18,5 @@ class ProfileViewModel(private val userRepository: ProfileRepository) : ViewMode
 
     fun logout() = userRepository.logout()
 
-    val user by lazyDeferred {
-        userRepository.getUser()
-    }
+    suspend fun user() = userRepository.getUser()
 }

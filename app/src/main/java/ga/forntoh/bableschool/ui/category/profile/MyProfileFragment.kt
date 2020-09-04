@@ -71,7 +71,7 @@ class MyProfileFragment : ScopedFragment(), KodeinAware {
 
         val profileDataSection = Section().apply { profileDataAdapter.add(this) }
 
-        user = (viewModel.user.await() ?: return@launch)
+        user = (viewModel.user() ?: return@launch)
 
         profile_username.text = "@${user.username}"
         profile_class.text = user.classe

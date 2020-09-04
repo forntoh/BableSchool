@@ -92,7 +92,7 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
 
         subject_title?.text = course.title
         subject_abbr?.text = course.abbr
-        subject_class?.text = profileViewModel.user.await()?.profileData?.clazz ?: return@launch
+        subject_class?.text = profileViewModel.user()?.profileData?.clazz ?: return@launch
 
         val bg = GradientDrawable(GradientDrawable.Orientation.TR_BL, intArrayOf(Color.parseColor(startColors[index]), Color.parseColor(endColors[index])))
         bg.shape = GradientDrawable.OVAL

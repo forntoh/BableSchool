@@ -6,6 +6,7 @@ import ga.forntoh.bableschool.data.model.main.*
 import ga.forntoh.bableschool.data.model.other.*
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -100,6 +101,7 @@ interface ApiService {
                     .readTimeout(1, TimeUnit.MINUTES)
                     .writeTimeout(1, TimeUnit.MINUTES)
                     .addInterceptor(requestInterceptor)
+                    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     .addInterceptor(connectivityInterceptor)
                     .retryOnConnectionFailure(true)
                     .build()
