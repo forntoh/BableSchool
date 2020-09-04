@@ -129,12 +129,13 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
         if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
         } else if (item is ItemDocument) {
-            Toast.makeText(context!!, "Loading document...", Toast.LENGTH_SHORT).show()
+            dialog.show()
             FileLoader.with(context)
                     .load(item.url, false)
                     .fromDirectory(context?.getString(R.string.app_name), FileLoader.DIR_EXTERNAL_PRIVATE)
                     .asFile(object : FileRequestListener<File> {
                         override fun onLoad(request: FileLoadRequest, response: FileResponse<File>) {
+                            dialog.dismiss()
                             val loadedFile = response.body
 
                             if (item.extension != "pdf") {
@@ -167,6 +168,7 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
                         }
 
                         override fun onError(request: FileLoadRequest, t: Throwable) {
+                            dialog.dismiss()
                             Log.e("FileLoadError", null, t)
                         }
                     })
@@ -177,17 +179,19 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
         if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
         } else if (item is ItemVideo) {
-            Toast.makeText(context!!, "Loading video...", Toast.LENGTH_SHORT).show()
+            dialog.show()
             FileLoader.with(context)
                     .load(item.url, false)
                     .fromDirectory(context?.getString(R.string.app_name), FileLoader.DIR_EXTERNAL_PRIVATE)
                     .asFile(object : FileRequestListener<File> {
                         override fun onLoad(request: FileLoadRequest, response: FileResponse<File>) {
+                            dialog.dismiss()
                             val loadedFile = response.body
                             startActivity(Intent(context, VideoPlayerActivity::class.java).apply { putExtra("video", Gson().toJson(item.toVideo().apply { url = loadedFile.path })) })
                         }
 
                         override fun onError(request: FileLoadRequest, t: Throwable) {
+                            dialog.dismiss()
                             Toast.makeText(requireContext(), t.localizedMessage, Toast.LENGTH_SHORT).show()
                         }
                     })
