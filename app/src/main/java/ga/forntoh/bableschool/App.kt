@@ -42,7 +42,7 @@ class App : MultiDexApplication(), KodeinAware {
 
         bind() from singleton { AppStorage(instance()) }
 
-        bind<ProfileRepository>() with singleton { ProfileRepositoryImpl(instance(), instance()) }
+        bind<ProfileRepository>() with singleton { ProfileRepositoryImpl(instance(), instance(), instance()) }
         bind<ProfileViewModelFactory>() with provider { ProfileViewModelFactory(instance()) }
 
         bind<CategoryDao>() with singleton { instance<AppDatabase>().categoryDao() }

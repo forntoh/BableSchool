@@ -32,5 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
                 Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "bableschool.db")
                         .fallbackToDestructiveMigration()
                         .build()
+
+        fun clearAllTables() = this.instance?.clearAllTables()
     }
 }

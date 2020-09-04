@@ -1,14 +1,17 @@
 package ga.forntoh.bableschool.data.repository
 
 import ga.forntoh.bableschool.data.AppStorage
+import ga.forntoh.bableschool.data.db.AppDatabase
 import ga.forntoh.bableschool.data.model.main.User
 import ga.forntoh.bableschool.data.network.BableSchoolDataSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileRepositoryImpl(
         private val bableSchoolDataSource: BableSchoolDataSource,
-        private val appStorage: AppStorage
+        private val appStorage: AppStorage,
+        private val appDatabase: AppDatabase
 ) : ProfileRepository() {
 
     init {
@@ -27,6 +30,7 @@ class ProfileRepositoryImpl(
 
     override fun logout() {
         appStorage.clearUser()
+        scope.launch { withContext(Dispatchers.IO) { appDatabase.clearAllTables() } }
     }
 
     override suspend fun getUser(): User? = withContext(Dispatchers.IO) {

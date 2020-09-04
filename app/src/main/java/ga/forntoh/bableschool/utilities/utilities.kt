@@ -1,17 +1,24 @@
 package ga.forntoh.bableschool.utilities
 
 import android.app.Activity
+import android.content.Context
 import android.content.res.Resources
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.text.format.DateUtils
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import androidx.core.content.ContextCompat
+import android.widget.ProgressBar
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.tabs.TabLayout
 import com.tripl3dev.prettystates.StatesConstants
 import com.tripl3dev.prettystates.setState
@@ -32,20 +39,6 @@ object Utils {
             return if (get(Calendar.MONTH) >= Calendar.SEPTEMBER && get(Calendar.MONTH) <= Calendar.DECEMBER) get(Calendar.YEAR).toString() + "-" + (get(Calendar.YEAR) + 1)
             else (get(Calendar.YEAR) - 1).toString() + "-" + get(Calendar.YEAR)
         }
-
-    fun startPopUpWindow(layout: View, root: View, onTouch: View.OnTouchListener?): PopupWindow {
-        return PopupWindow(layout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, false).apply {
-            showAtLocation(root, Gravity.CENTER, 0, 0)
-            isTouchable = true
-            setTouchInterceptor(onTouch)
-            animationStyle = R.style.PopUpAnimation
-            setOnDismissListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) (layout.context as Activity).window.statusBarColor = root.context.resources.getColor(R.color.bgLightGrey)
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                (layout.context as Activity).window.statusBarColor = ContextCompat.getColor(root.context, android.R.color.black)
-        }.also { currentPopupWindow = it }
-    }
 
     fun getRelativeTimeSpanString(date: String?, simpleDateFormat: SimpleDateFormat): String =
             with(simpleDateFormat) {
@@ -133,4 +126,14 @@ fun RecyclerView.toggleViewState(section: Section) {
 fun RecyclerView.invalidateViewState() {
     this.setState(StatesConstants.NORMAL_STATE)
     this.setState(StatesConstants.LOADING_STATE)
+}
+
+fun Context.getLoadingDialog() = MaterialDialog(this).show {
+    customView(view = ProgressBar(context).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            indeterminateDrawable.colorFilter = BlendModeColorFilter(Color.WHITE, BlendMode.MULTIPLY)
+        } else indeterminateDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY)
+    })
+    cancelOnTouchOutside(false)
+    this.view.background = ColorDrawable(Color.TRANSPARENT)
 }

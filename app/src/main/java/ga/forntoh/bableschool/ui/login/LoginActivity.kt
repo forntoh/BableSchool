@@ -3,7 +3,6 @@ package ga.forntoh.bableschool.ui.login
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
@@ -12,7 +11,6 @@ import ga.forntoh.bableschool.ui.base.ScopedActivity
 import ga.forntoh.bableschool.ui.category.CategoriesActivity
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModel
 import ga.forntoh.bableschool.ui.category.profile.ProfileViewModelFactory
-import ga.forntoh.bableschool.utilities.Utils
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -44,12 +42,14 @@ class LoginActivity : ScopedActivity(), KodeinAware {
             return@launch
         }
 
-        Utils.startPopUpWindow(
-                LayoutInflater.from(this@LoginActivity).inflate(R.layout.dialog_loading, null),
-                findViewById(R.id.parent), null)
-
+        dialog.show()
         viewModel.login(matriculation, pass)
         startActivity(Intent(this@LoginActivity, CategoriesActivity::class.java))
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dialog.dismiss()
     }
 }
