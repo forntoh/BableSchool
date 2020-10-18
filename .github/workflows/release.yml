@@ -67,8 +67,9 @@ jobs:
           tag: ${{ env.RELEASE_VERSION }}
           files: ${{ env.SIGNED_RELEASE_FILE }}
           allow_override: true
+          gzip: false
 
       # Push version.properties file changes
 
       - name: Push changes
-        run: git push
+        run: git push origin master

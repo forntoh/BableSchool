@@ -4,14 +4,14 @@ buildscript {
 
     ext {
         room_version = '2.2.5'
-        kotlin_version = '1.4.0'
+        kotlin_version = '1.4.10'
         dbflow_version = '5.0.0-alpha1'
         kodein_version = '6.5.3'
         groupie_version = '2.3.0'
         retrofit_version = '2.9.0'
         lifecycle_version = '2.2.0'
         exoplayer_version = '2.9.4'
-        coroutines_version = '1.3.7'
+        coroutines_version = '1.3.9'
         navigation_version = '1.0.0'
         material_dialogs_version = '3.2.1'
     }
@@ -22,8 +22,8 @@ buildscript {
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
-        classpath 'com.google.gms:google-services:4.3.3'
+        classpath 'com.android.tools.build:gradle:4.0.2'
+        classpath 'com.google.gms:google-services:4.3.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
         // NOTE: Do not place your application dependencies here; they belong
