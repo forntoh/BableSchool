@@ -6,14 +6,17 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-android-extensions'
 
+Properties versionProps = new Properties()
+versionProps.load(new FileInputStream(file('version.properties')))
+
 android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "ga.forntoh.bableschool"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 4
-        versionName "1.4"
+        versionCode versionProps['VERSION_CODE'].toInteger()
+        versionName versionProps['VERSION_NAME']
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
