@@ -16,4 +16,10 @@ data class ItemScoreSummary(var average: Double, var rank: String?) : Item() {
     }
 
     override fun getLayout() = R.layout.item_summary
+
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        return if (other is ItemScoreSummary) other.average == this.average
+                && other.rank == this.rank
+        else super.isSameAs(other)
+    }
 }

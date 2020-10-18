@@ -37,4 +37,11 @@ data class ItemScore(var course: Course?, var firstSequenceMark: Double, var sec
     }
 
     override fun getLayout() = R.layout.item_term_subject
+
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        return if (other is ItemScore) other.course?.code == this.course?.code
+                && other.scoreAverage == this.scoreAverage
+                && other.rank == this.rank
+        else super.isSameAs(other)
+    }
 }

@@ -53,6 +53,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import java.io.File
+import kotlin.random.Random
 
 class CourseNoteFragment : ScopedFragment(), KodeinAware {
 
@@ -85,7 +86,7 @@ class CourseNoteFragment : ScopedFragment(), KodeinAware {
         val startColors = activity!!.resources.getStringArray(R.array.start_colors)
         val endColors = activity!!.resources.getStringArray(R.array.end_colors)
 
-        val index = (arguments?.getInt("index") ?: return@launch) % startColors.size
+        val index = Random.nextInt(startColors.size)
         viewModel.code = arguments?.getString("course") ?: return@launch
 
         course = viewModel.singleCourseNote.await() ?: return@launch

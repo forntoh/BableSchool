@@ -24,4 +24,10 @@ data class ItemCourse(var code: String?, var title: String?, var videosSize: Int
     }
 
     override fun getLayout() = R.layout.item_course_note
+
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        return if (other is ItemCourse) other.code == this.code
+        else super.isSameAs(other)
+    }
+
 }

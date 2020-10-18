@@ -22,4 +22,11 @@ data class ItemTopSchool(var schoolName: String?, var image: String?, var topStu
     }
 
     override fun getLayout() = R.layout.item_school_ranking
+
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        return if (other is ItemTopSchool) other.schoolName == this.schoolName
+                && other.topStudentName == this.topStudentName
+                && other.average == this.average
+        else super.isSameAs(other)
+    }
 }

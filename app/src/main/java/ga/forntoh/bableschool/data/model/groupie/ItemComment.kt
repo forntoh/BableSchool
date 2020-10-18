@@ -22,4 +22,11 @@ data class ItemComment(var sender: String?, var message: String?, var thumbnail:
     }
 
     override fun getLayout() = R.layout.item_comment
+
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        return if (other is ItemComment) other.sender == this.sender
+                && other.message == this.message
+                && other.date == this.date
+        else super.isSameAs(other)
+    }
 }

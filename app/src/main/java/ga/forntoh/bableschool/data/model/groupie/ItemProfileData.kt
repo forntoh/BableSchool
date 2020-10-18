@@ -15,4 +15,10 @@ data class ItemProfileData(var key: String?, var value: String?) : Item() {
     }
 
     override fun getLayout() = R.layout.item_profile_data
+
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        return if (other is ItemProfileData) other.key == this.key
+                && other.value == this.value
+        else super.isSameAs(other)
+    }
 }

@@ -22,10 +22,10 @@ class RankingRepositoryImpl(
 
     init {
         bableSchoolDataSource.downloadedTopSchools.observeForever {
-            scope.launch { saveTopSchools(*it.toTypedArray()) }
+            scope.launch { if (it != null) saveTopSchools(*it.toTypedArray()) }
         }
         bableSchoolDataSource.downloadedTopStudents.observeForever {
-            scope.launch { saveTopStudents(*it.toTypedArray()) }
+            scope.launch { if (it != null) saveTopStudents(*it.toTypedArray()) }
         }
     }
 

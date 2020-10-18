@@ -23,4 +23,9 @@ data class ItemNews(var key: Long, var title: String?, var liked: Boolean, var a
     }
 
     override fun getLayout() = if (isTop) R.layout.item_news_top else R.layout.item_news
+
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        return if (other is ItemNews) other.title == this.title && other.isTop == this.isTop
+        else super.isSameAs(other)
+    }
 }
