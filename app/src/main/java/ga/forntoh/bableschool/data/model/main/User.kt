@@ -9,7 +9,7 @@ data class User(
         var username: String? = null,
         var classe: String? = null,
         var picture: String? = null,
-        var profileData: ProfileData? = null
+        var profileData: ProfileData = ProfileData()
 ) {
 
     fun profileDataMap(): LinkedHashMap<String, String> = ObjectMapper().readValue(
@@ -19,16 +19,16 @@ data class User(
 
     data class ProfileData(
             @SerializedName("Class")
-            var clazz: String,
+            var clazz: String = "",
             @SerializedName("Full name")
-            var fullName: String,
+            var fullName: String = "",
             @SerializedName("Matriculation")
-            var matriculation: String,
+            var matriculation: String = "",
             @SerializedName("Password")
-            var password: String,
+            var password: String = "",
             @SerializedName("Phone")
-            var phone: String,
+            var phone: String = "",
             @SerializedName("School")
-            var school: String
+            var school: String = ""
     )
 }
