@@ -20,7 +20,11 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class ga.forntoh.bableschool.data.model.* { *; }
+-keepnames class ga.forntoh.bableschool.data.model.forum.** { *; }
+-keepnames class ga.forntoh.bableschool.data.model.main.** { *; }
+-keepnames class ga.forntoh.bableschool.data.model.other.** { *; }
+-keepnames class ga.forntoh.bableschool.internal.SquareConstraintLayout { *; }
+-keepnames class ga.forntoh.bableschool.internal.IncomingMessageViewHolder { *; }
 
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.

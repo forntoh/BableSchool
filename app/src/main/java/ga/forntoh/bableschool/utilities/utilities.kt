@@ -42,9 +42,10 @@ object Utils {
 
     fun getRelativeTimeSpanString(date: String?, simpleDateFormat: SimpleDateFormat): String =
             with(simpleDateFormat) {
+                if (date == null) return@with ""
                 isLenient = false
                 return try {
-                    val oldDate = parse(date)
+                    val oldDate = parse(date) as Date
                     DateUtils.getRelativeTimeSpanString(oldDate.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS) as String
                 } catch (ignored: ParseException) {
                     ""

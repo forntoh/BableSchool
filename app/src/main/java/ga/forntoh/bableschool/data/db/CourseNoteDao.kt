@@ -13,7 +13,7 @@ import ga.forntoh.bableschool.data.model.main.Video
 interface CourseNoteDao {
 
     @Query("""
-        Select c.* FROM Course as c
+        SELECT DISTINCT c.* FROM Course as c
         LEFT OUTER JOIN Video as v on v.courseCode = c.code
         LEFT OUTER JOIN Document as d on d.courseCode = c.code
         WHERE d.url IS NOT NULL OR v.url IS NOT NULL

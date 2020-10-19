@@ -32,4 +32,7 @@ interface ScoreDao {
 
     @Query("SELECT Course.code as Course_code, Course.title as Course_title, Score.* FROM Course LEFT OUTER JOIN Score ON Score.course_code = Course.code WHERE term like :term")
     fun retrieveTermScoresAsync(term: Int): MutableList<ScoreCoursePair>
+
+    @Query("DELETE FROM Score")
+    fun deleteAllScores()
 }

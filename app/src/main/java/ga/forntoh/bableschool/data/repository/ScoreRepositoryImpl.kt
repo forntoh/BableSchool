@@ -21,7 +21,14 @@ class ScoreRepositoryImpl(
         private val appStorage: AppStorage
 ) : ScoreRepository() {
 
-    override fun resetState(term: Int) = appStorage.clearLastSaved(getKey(term))
+    override fun resetState(term: Int) {
+        appStorage.clearLastSaved(getKey(term))
+        scope.launch {
+            withContext(Dispatchers.IO) {
+                scoreDao.deleteAllScores()
+            }
+        }
+    }
 
     init {
         bableSchoolDataSource.downloadedTermScores.observeForever {
